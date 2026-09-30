@@ -223,10 +223,6 @@
       margin-top: 12px !important;
     }
 
-    /* ==========================================================
-       AVISO LEGAL COMPACTO
-       ========================================================== */
-
     #legalConsentBox {
       margin-top: 12px;
       max-height: 95px;
@@ -330,10 +326,6 @@
       font-size: 1.25rem;
     }
 
-    /* ==========================================================
-       POPUP DE PARTICIPACIÓN DIARIA
-       ========================================================== */
-
     #cooldownArea {
       display: none;
     }
@@ -368,10 +360,6 @@
       margin-top: 15px;
     }
 
-    /* ==========================================================
-       SECCIONES
-       ========================================================== */
-
     .page-section {
       width: min(900px, calc(100% - 30px));
       margin: 35px auto;
@@ -399,10 +387,6 @@
     #siteSections {
       padding-bottom: 20px;
     }
-
-    /* ==========================================================
-       FOOTER LEGAL DESPLEGABLE
-       ========================================================== */
 
     #legalFooter {
       width: min(900px, calc(100% - 30px));
@@ -579,10 +563,6 @@
 
     <div id="popupContent">
 
-      <!-- ======================================================
-           ÁREA DE PREMIO
-           ====================================================== -->
-
       <div id="winnerArea">
 
         <h2>¡GANASTE! 🎉</h2>
@@ -623,8 +603,6 @@
               en relación con el mismo.
             </p>
 
-            <!-- AVISO LEGAL COMPACTO -->
-
             <div id="legalConsentBox">
 
               <div class="legal-title">
@@ -647,8 +625,6 @@
               </div>
 
             </div>
-
-            <!-- CHECKBOX OBLIGATORIO -->
 
             <label
               id="consentRow"
@@ -680,10 +656,6 @@
 
       </div>
 
-      <!-- ======================================================
-           ÁREA DE PARTICIPACIÓN DIARIA
-           ====================================================== -->
-
       <div id="cooldownArea">
 
         <h2>
@@ -707,10 +679,6 @@
         </div>
 
       </div>
-
-      <!-- ======================================================
-           ÉXITO
-           ====================================================== -->
 
       <div id="successArea" style="display:none;">
 
@@ -802,10 +770,6 @@
 
   </div>
 
-  <!-- ==========================================================
-       FOOTER LEGAL
-       ========================================================== -->
-
   <footer id="legalFooter">
 
     <button
@@ -865,10 +829,8 @@
 
   </footer>
 
-  <!-- SUPABASE -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <!-- CONFETTI -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <script>
@@ -899,7 +861,7 @@
 
 
     /* ==========================================================
-       CONFIGURACIÓN DE RESPALDO
+       CONFIGURACIÓN
        ========================================================== */
 
     const CONFIG_DEFAULT = {
@@ -956,7 +918,13 @@
         false,
 
       roulette_paused_message:
-        ""
+        "",
+
+      participation_enabled:
+        true,
+
+      cooldown_hours:
+        24
 
     };
 
@@ -964,22 +932,37 @@
     let CONFIG =
       { ...CONFIG_DEFAULT };
 
-
     let premios = [];
 
-    let currentRotation = null;
+    let currentRotation =
+      null;
 
-    let currentAngle = 0;
+    let currentAngle =
+      0;
 
-    let lastSpinTime =
-      localStorage.getItem("lastSpinTime");
+    let currentPrize =
+      null;
+
+    let spinning =
+      false;
+
+    let pendingSpin =
+      false;
 
     let cooldownInterval =
       null;
 
+    let cooldownEndMonotonic =
+      0;
+
+    let lastSpinTime =
+      localStorage.getItem(
+        "ciborg_last_spin_time"
+      );
+
 
     /* ==========================================================
-       ORIGEN Y CAMPAÑA
+       ORIGEN / CAMPAÑA
        ========================================================== */
 
     const urlParams =
@@ -1003,73 +986,117 @@
        ========================================================== */
 
     const canvas =
-      document.getElementById("wheelCanvas");
+      document.getElementById(
+        "wheelCanvas"
+      );
 
     const ctx =
       canvas.getContext("2d");
 
     const spinButton =
-      document.getElementById("spinButton");
+      document.getElementById(
+        "spinButton"
+      );
 
     const popup =
-      document.getElementById("popup");
+      document.getElementById(
+        "popup"
+      );
 
     const premioTexto =
-      document.getElementById("premioTexto");
+      document.getElementById(
+        "premioTexto"
+      );
 
     const extraTexto =
-      document.getElementById("extraTexto");
+      document.getElementById(
+        "extraTexto"
+      );
 
     const solicitarBtn =
-      document.getElementById("solicitarBtn");
+      document.getElementById(
+        "solicitarBtn"
+      );
 
     const closePopup =
-      document.getElementById("closePopup");
+      document.getElementById(
+        "closePopup"
+      );
 
     const btnWhatsapp =
-      document.getElementById("btnWhatsapp");
+      document.getElementById(
+        "btnWhatsapp"
+      );
 
     const nombreLead =
-      document.getElementById("nombreLead");
+      document.getElementById(
+        "nombreLead"
+      );
 
     const whatsappLead =
-      document.getElementById("whatsappLead");
+      document.getElementById(
+        "whatsappLead"
+      );
 
     const leadArea =
-      document.getElementById("leadArea");
+      document.getElementById(
+        "leadArea"
+      );
 
     const successArea =
-      document.getElementById("successArea");
+      document.getElementById(
+        "successArea"
+      );
 
     const loading =
-      document.getElementById("loading");
+      document.getElementById(
+        "loading"
+      );
 
     const consentCheckbox =
-      document.getElementById("consentCheckbox");
+      document.getElementById(
+        "consentCheckbox"
+      );
 
     const winnerArea =
-      document.getElementById("winnerArea");
+      document.getElementById(
+        "winnerArea"
+      );
 
     const cooldownArea =
-      document.getElementById("cooldownArea");
+      document.getElementById(
+        "cooldownArea"
+      );
 
     const cooldownMessage =
-      document.getElementById("cooldownMessage");
+      document.getElementById(
+        "cooldownMessage"
+      );
 
     const countdownValue =
-      document.getElementById("countdownValue");
+      document.getElementById(
+        "countdownValue"
+      );
 
     const cooldownContact =
-      document.getElementById("cooldownContact");
+      document.getElementById(
+        "cooldownContact"
+      );
 
     const contactoFacu =
-      document.getElementById("contactoFacu");
+      document.getElementById(
+        "contactoFacu"
+      );
 
     const legalFooter =
-      document.getElementById("legalFooter");
+      document.getElementById(
+        "legalFooter"
+      );
 
     const legalToggle =
-      document.getElementById("legalToggle");
+      document.getElementById(
+        "legalToggle"
+      );
 
 
     /* ==========================================================
@@ -1088,7 +1115,7 @@
 
 
     /* ==========================================================
-       CACHE-BUSTING
+       CACHE BUST
        ========================================================== */
 
     function cacheBust(url) {
@@ -1107,13 +1134,173 @@
           ? "&"
           : "?";
 
-      return `${url}${separator}v=${Date.now()}`;
+      return (
+        url +
+        separator +
+        "v=" +
+        Date.now()
+      );
 
     }
 
 
     /* ==========================================================
-       REGISTRO DE EVENTOS
+       NORMALIZAR WHATSAPP
+       ========================================================== */
+
+    function normalizarWhatsapp(numero) {
+
+      let digits =
+        String(
+          numero || ""
+        ).replace(
+          /\D/g,
+          ""
+        );
+
+      if (!digits) {
+        return "";
+      }
+
+      if (
+        digits.startsWith("549")
+      ) {
+
+        return digits;
+
+      }
+
+      if (
+        digits.startsWith("54")
+      ) {
+
+        if (
+          digits.length >= 12 &&
+          digits.charAt(2) === "9"
+        ) {
+
+          return digits;
+
+        }
+
+        return (
+          "549" +
+          digits.substring(2)
+        );
+
+      }
+
+      if (
+        digits.startsWith("0")
+      ) {
+
+        digits =
+          digits.replace(
+            /^0+/,
+            ""
+          );
+
+      }
+
+      if (
+        digits.length === 10
+      ) {
+
+        return (
+          "549" +
+          digits
+        );
+
+      }
+
+      return digits;
+
+    }
+
+
+    /* ==========================================================
+       FILTRO LOCAL DEL NAVEGADOR
+       ========================================================== */
+
+    function obtenerTiempoLocalDeGiro() {
+
+      const value =
+        localStorage.getItem(
+          "ciborg_last_spin_time"
+        );
+
+      if (!value) {
+        return 0;
+      }
+
+      const timestamp =
+        Number(value);
+
+      if (
+        !Number.isFinite(timestamp)
+      ) {
+
+        return 0;
+
+      }
+
+      return timestamp;
+
+    }
+
+
+    function obtenerBloqueoLocal() {
+
+      const timestamp =
+        obtenerTiempoLocalDeGiro();
+
+      if (!timestamp) {
+        return 0;
+      }
+
+      const cooldown =
+        (
+          Number(
+            CONFIG.cooldown_hours
+          ) || 24
+        ) *
+        60 *
+        60 *
+        1000;
+
+      const remaining =
+        cooldown -
+        (
+          Date.now() -
+          timestamp
+        );
+
+      return Math.max(
+        0,
+        remaining
+      );
+
+    }
+
+
+    function guardarGiroLocal() {
+
+      const now =
+        Date.now();
+
+      localStorage.setItem(
+        "ciborg_last_spin_time",
+        String(now)
+      );
+
+      lastSpinTime =
+        String(now);
+
+    }
+
+
+    /* ==========================================================
+       EVENTOS
        ========================================================== */
 
     async function registrarEvento(
@@ -1124,28 +1311,31 @@
 
         const {
           error
-        } = await supabaseClient
-          .from("events")
-          .insert({
+        } =
+          await supabaseClient
+            .from("events")
+            .insert({
 
-            type:
-              type,
+              type:
+                type,
 
-            source:
-              source || null,
+              source:
+                source ||
+                null,
 
-            campaign:
-              campaign || null,
+              campaign:
+                campaign ||
+                null,
 
-            rotation_id:
-              currentRotation
-                ? currentRotation.id
-                : null,
+              rotation_id:
+                currentRotation
+                  ? currentRotation.id
+                  : null,
 
-            user_agent:
-              navigator.userAgent
+              user_agent:
+                navigator.userAgent
 
-          });
+            });
 
         if (error) {
 
@@ -1169,7 +1359,7 @@
 
 
     /* ==========================================================
-       CARGAR CONFIGURACIÓN
+       CONFIGURACIÓN
        ========================================================== */
 
     async function cargarConfiguracion() {
@@ -1179,11 +1369,12 @@
         const {
           data,
           error
-        } = await supabaseClient
-          .from("site_settings")
-          .select("*")
-          .eq("id", 1)
-          .maybeSingle();
+        } =
+          await supabaseClient
+            .from("site_settings")
+            .select("*")
+            .eq("id", 1)
+            .maybeSingle();
 
         if (error) {
           throw error;
@@ -1206,13 +1397,11 @@
         );
 
         CONFIG =
-          { ...CONFIG_DEFAULT };
+          {
+            ...CONFIG_DEFAULT
+          };
 
       }
-
-      /* --------------------------------------------------------
-         Normalizar booleanos que puedan venir como string
-         -------------------------------------------------------- */
 
       CONFIG.rotation_enabled =
         CONFIG.rotation_enabled === true ||
@@ -1221,6 +1410,10 @@
       CONFIG.roulette_paused =
         CONFIG.roulette_paused === true ||
         CONFIG.roulette_paused === "true";
+
+      CONFIG.participation_enabled =
+        CONFIG.participation_enabled !== false &&
+        CONFIG.participation_enabled !== "false";
 
       aplicarConfiguracion();
 
@@ -1260,10 +1453,6 @@
 
       }
 
-
-      /* --------------------------------------------------------
-         Fondo
-         -------------------------------------------------------- */
 
       const background =
         CONFIG.background_url;
@@ -1305,20 +1494,14 @@
       }
 
 
-      /* --------------------------------------------------------
-         Título
-         -------------------------------------------------------- */
-
       document
-        .getElementById("tituloPrincipal")
+        .getElementById(
+          "tituloPrincipal"
+        )
         .innerText =
         CONFIG.title ||
         CONFIG_DEFAULT.title;
 
-
-      /* --------------------------------------------------------
-         Open Graph
-         -------------------------------------------------------- */
 
       const og =
         document.querySelector(
@@ -1327,25 +1510,17 @@
 
       if (og) {
 
-        if (CONFIG.og_image_url) {
-
-          og.setAttribute(
-            "content",
-            cacheBust(
-              CONFIG.og_image_url
-            )
-          );
-
-        } else {
-
-          og.setAttribute(
-            "content",
-            ""
-          );
-
-        }
+        og.setAttribute(
+          "content",
+          CONFIG.og_image_url
+            ? cacheBust(
+                CONFIG.og_image_url
+              )
+            : ""
+        );
 
       }
+
 
       const ogUrl =
         document.querySelector(
@@ -1361,10 +1536,6 @@
 
       }
 
-
-      /* --------------------------------------------------------
-         Contacto
-         -------------------------------------------------------- */
 
       const contactName =
         CONFIG.contact_name ||
@@ -1461,14 +1632,16 @@
 
 
     /* ==========================================================
-       ESTADO DE PAUSA
+       ESTADO DEL SISTEMA
        ========================================================== */
 
     function aplicarEstadoPausa() {
 
       if (
         CONFIG.roulette_paused === true ||
-        CONFIG.roulette_paused === "true"
+        CONFIG.roulette_paused === "true" ||
+        CONFIG.participation_enabled === false ||
+        CONFIG.participation_enabled === "false"
       ) {
 
         spinButton.disabled =
@@ -1494,7 +1667,7 @@
 
 
     /* ==========================================================
-       DETERMINAR ROTACIÓN ACTIVA
+       ROTACIÓN ACTIVA
        ========================================================== */
 
     async function cargarRotaciones() {
@@ -1502,13 +1675,17 @@
       const {
         data,
         error
-      } = await supabaseClient
-        .from("rotations")
-        .select("*")
-        .eq("active", true)
-        .order("sort_order", {
-          ascending: true
-        });
+      } =
+        await supabaseClient
+          .from("rotations")
+          .select("*")
+          .eq("active", true)
+          .order(
+            "sort_order",
+            {
+              ascending: true
+            }
+          );
 
       if (error) {
         throw error;
@@ -1537,7 +1714,8 @@
               String(
                 CONFIG.active_rotation_id
               )
-          ) || data[0];
+          ) ||
+          data[0];
 
         return;
 
@@ -1575,13 +1753,15 @@
         data.length;
 
       currentRotation =
-        data[rotationIndex];
+        data[
+          rotationIndex
+        ];
 
     }
 
 
     /* ==========================================================
-       CARGAR PREMIOS DESDE SUPABASE
+       PREMIOS
        ========================================================== */
 
     async function cargarPremios() {
@@ -1597,17 +1777,24 @@
       const {
         data,
         error
-      } = await supabaseClient
-        .from("prizes")
-        .select("*")
-        .eq(
-          "rotation_id",
-          currentRotation.id
-        )
-        .eq("active", true)
-        .order("sort_order", {
-          ascending: true
-        });
+      } =
+        await supabaseClient
+          .from("prizes")
+          .select("*")
+          .eq(
+            "rotation_id",
+            currentRotation.id
+          )
+          .eq(
+            "active",
+            true
+          )
+          .order(
+            "sort_order",
+            {
+              ascending: true
+            }
+          );
 
       if (error) {
         throw error;
@@ -1639,7 +1826,10 @@
         canvas.height / 2;
 
       const radius =
-        Math.min(cx, cy);
+        Math.min(
+          cx,
+          cy
+        );
 
       ctx.clearRect(
         0,
@@ -1726,7 +1916,8 @@
 
         let texto =
           String(
-            premios[i].name || ""
+            premios[i].name ||
+            ""
           );
 
         if (
@@ -1737,7 +1928,8 @@
             texto.substring(
               0,
               22
-            ) + "...";
+            ) +
+            "...";
 
         }
 
@@ -1755,69 +1947,7 @@
 
 
     /* ==========================================================
-       TIEMPO 24 HORAS
-       ========================================================== */
-
-    function getRemainingTime() {
-
-      if (!lastSpinTime) {
-        return 0;
-      }
-
-      const diff =
-        Date.now() -
-        parseInt(
-          lastSpinTime
-        );
-
-      return (
-        24 *
-        60 *
-        60 *
-        1000
-      ) - diff;
-
-    }
-
-
-    function formatCountdown(
-      milliseconds
-    ) {
-
-      const totalSeconds =
-        Math.max(
-          0,
-          Math.floor(
-            milliseconds / 1000
-          )
-        );
-
-      const hours =
-        Math.floor(
-          totalSeconds / 3600
-        );
-
-      const minutes =
-        Math.floor(
-          (
-            totalSeconds % 3600
-          ) / 60
-        );
-
-      const seconds =
-        totalSeconds % 60;
-
-      return [
-        String(hours).padStart(2, "0"),
-        String(minutes).padStart(2, "0"),
-        String(seconds).padStart(2, "0")
-      ].join(":");
-
-    }
-
-
-    /* ==========================================================
-       SELECCIONAR PREMIO POR PROBABILIDAD
+       SELECCIÓN ALEATORIA
        ========================================================== */
 
     function seleccionarPremio() {
@@ -1827,7 +1957,9 @@
       }
 
       let disponibles =
-        [...premios];
+        [
+          ...premios
+        ];
 
       const ultimo =
         localStorage.getItem(
@@ -1873,7 +2005,9 @@
           0
         );
 
-      if (total <= 0) {
+      if (
+        total <= 0
+      ) {
 
         return disponibles[0];
 
@@ -1914,7 +2048,7 @@
 
 
     /* ==========================================================
-       CALCULAR ÁNGULO EXACTO DEL PREMIO
+       ÁNGULO DEL PREMIO
        ========================================================== */
 
     function calcularAnguloPremio(
@@ -1989,7 +2123,7 @@
 
 
     /* ==========================================================
-       CONFIGURAR CONTACTO / WHATSAPP
+       WHATSAPP DEL ORGANIZADOR
        ========================================================== */
 
     function configurarWhatsapp() {
@@ -2037,28 +2171,24 @@
 
 
     /* ==========================================================
-       POPUP DE PREMIO
+       MOSTRAR PREMIO
        ========================================================== */
 
     function showPopup(
       premio
     ) {
 
-      detenerCountdown();
-
-      confetti({
-        particleCount: 200,
-        spread: 80,
-        origin: {
-          y: 0.6
-        }
-      });
-
       winnerArea.style.display =
         "block";
 
       cooldownArea.style.display =
         "none";
+
+      successArea.style.display =
+        "none";
+
+      leadArea.style.display =
+        "block";
 
       premioTexto.innerText =
         `FELICIDADES 🎉 Ganaste: ${premio.name}`;
@@ -2069,12 +2199,6 @@
 
       popup.style.display =
         "flex";
-
-      leadArea.style.display =
-        "block";
-
-      successArea.style.display =
-        "none";
 
       nombreLead.value =
         "";
@@ -2106,10 +2230,231 @@
 
 
     /* ==========================================================
-       POPUP YA PARTICIPÓ HOY
+       REGISTRAR PARTICIPACIÓN EN SUPABASE
        ========================================================== */
 
-    function showCooldownPopup() {
+    async function registrarParticipacionWhatsapp(
+      whatsapp,
+      premio
+    ) {
+
+      const numero =
+        normalizarWhatsapp(
+          whatsapp
+        );
+
+      if (!numero) {
+
+        return {
+          ok: false,
+          message:
+            "Ingresá un número de WhatsApp válido."
+        };
+
+      }
+
+      try {
+
+        /*
+         * Este RPC hace la comparación usando
+         * la hora del servidor de PostgreSQL.
+         *
+         * De esta manera no depende de la hora
+         * configurada en la computadora del usuario.
+         */
+
+        const {
+          data,
+          error
+        } =
+          await supabaseClient
+            .rpc(
+              "registrar_participacion",
+              {
+                p_whatsapp:
+                  numero,
+
+                p_rotation_id:
+                  currentRotation
+                    ? currentRotation.id
+                    : null,
+
+                p_prize_id:
+                  premio
+                    ? premio.id
+                    : null,
+
+                p_source:
+                  source ||
+                  null,
+
+                p_campaign:
+                  campaign ||
+                  null
+              }
+            );
+
+        if (error) {
+
+          console.error(
+            "Error en registrar_participacion:",
+            error
+          );
+
+          return {
+            ok: false,
+            message:
+              "No se pudo verificar la participación."
+          };
+
+        }
+
+        const resultado =
+          Array.isArray(data)
+            ? data[0]
+            : data;
+
+        if (!resultado) {
+
+          return {
+            ok: false,
+            message:
+              "No se recibió una respuesta válida del servidor."
+          };
+
+        }
+
+        if (
+          resultado.paused === true
+        ) {
+
+          return {
+            ok: false,
+            paused: true,
+            message:
+              resultado.message ||
+              CONFIG.roulette_paused_message ||
+              "La participación se encuentra temporalmente pausada."
+          };
+
+        }
+
+        if (
+          resultado.allowed === false
+        ) {
+
+          return {
+            ok: false,
+
+            blocked: true,
+
+            remaining_seconds:
+              Number(
+                resultado.remaining_seconds
+              ) || 0,
+
+            message:
+              resultado.message ||
+              "Este número ya participó."
+          };
+
+        }
+
+        if (
+          resultado.allowed === true
+        ) {
+
+          return {
+            ok: true,
+
+            server_now:
+              resultado.server_now ||
+              null,
+
+            remaining_seconds:
+              Number(
+                resultado.remaining_seconds
+              ) || 0
+          };
+
+        }
+
+        return {
+          ok: false,
+          message:
+            "No se pudo confirmar la participación."
+        };
+
+      } catch (error) {
+
+        console.error(
+          error
+        );
+
+        return {
+          ok: false,
+          message:
+            "No se pudo verificar la participación."
+        };
+
+      }
+
+    }
+
+
+    /* ==========================================================
+       COOLDOWN
+       ========================================================== */
+
+    function formatoSegundos(
+      seconds
+    ) {
+
+      const total =
+        Math.max(
+          0,
+          Math.floor(
+            Number(seconds) || 0
+          )
+        );
+
+      const hours =
+        Math.floor(
+          total / 3600
+        );
+
+      const minutes =
+        Math.floor(
+          (
+            total % 3600
+          ) / 60
+        );
+
+      const secs =
+        total % 60;
+
+      return [
+        String(hours).padStart(
+          2,
+          "0"
+        ),
+        String(minutes).padStart(
+          2,
+          "0"
+        ),
+        String(secs).padStart(
+          2,
+          "0"
+        )
+      ].join(":");
+
+    }
+
+
+    function mostrarCooldown(
+      remainingSeconds,
+      mensaje
+    ) {
 
       winnerArea.style.display =
         "none";
@@ -2126,63 +2471,36 @@
       popup.style.display =
         "flex";
 
-      actualizarCooldown();
+      cooldownMessage.innerText =
+        mensaje ||
+        "Ya usaste tu participación.";
+
+      const seconds =
+        Math.max(
+          0,
+          Number(
+            remainingSeconds
+          ) || 0
+        );
+
+      cooldownEndMonotonic =
+        performance.now() +
+        (
+          seconds *
+          1000
+        );
+
+      actualizarCountdownMonotonic();
 
       detenerCountdown();
 
       cooldownInterval =
         setInterval(
-          actualizarCooldown,
+          actualizarCountdownMonotonic,
           1000
         );
 
       configurarWhatsapp();
-
-    }
-
-
-    function actualizarCooldown() {
-
-      const remaining =
-        getRemainingTime();
-
-      if (
-        remaining <= 0
-      ) {
-
-        detenerCountdown();
-
-        popup.style.display =
-          "none";
-
-        lastSpinTime =
-          null;
-
-        localStorage.removeItem(
-          "lastSpinTime"
-        );
-
-        if (
-          !aplicarEstadoPausa() &&
-          premios.length
-        ) {
-
-          spinButton.disabled =
-            false;
-
-          spinButton.innerText =
-            "PARTICIPAR";
-
-        }
-
-        return;
-
-      }
-
-      countdownValue.innerText =
-        formatCountdown(
-          remaining
-        );
 
       const contactName =
         CONFIG.contact_name ||
@@ -2210,6 +2528,41 @@
     }
 
 
+    function actualizarCountdownMonotonic() {
+
+      const remaining =
+        Math.max(
+          0,
+          cooldownEndMonotonic -
+          performance.now()
+        );
+
+      const seconds =
+        Math.ceil(
+          remaining / 1000
+        );
+
+      countdownValue.innerText =
+        formatoSegundos(
+          seconds
+        );
+
+      if (
+        seconds <= 0
+      ) {
+
+        detenerCountdown();
+
+        popup.style.display =
+          "none";
+
+        return;
+
+      }
+
+    }
+
+
     function detenerCountdown() {
 
       if (
@@ -2229,188 +2582,20 @@
 
 
     /* ==========================================================
-       REGISTRAR LEAD
-       ========================================================== */
-
-    async function registrarLead(
-      premio
-    ) {
-
-      if (
-        !consentCheckbox.checked
-      ) {
-
-        alert(
-          "Tenés que aceptar los términos para continuar."
-        );
-
-        return;
-
-      }
-
-      const nombre =
-        nombreLead.value.trim();
-
-      const whatsapp =
-        whatsappLead.value.trim();
-
-      if (!nombre) {
-
-        alert(
-          "Ingresá tu nombre."
-        );
-
-        nombreLead.focus();
-
-        return;
-
-      }
-
-      if (
-        whatsapp.length < 6
-      ) {
-
-        alert(
-          "Ingresá un número de WhatsApp válido."
-        );
-
-        whatsappLead.focus();
-
-        return;
-
-      }
-
-      solicitarBtn.disabled =
-        true;
-
-      solicitarBtn.innerText =
-        "REGISTRANDO...";
-
-      try {
-
-        const {
-          error
-        } = await supabaseClient
-          .from("leads")
-          .insert({
-
-            name:
-              nombre,
-
-            whatsapp:
-              whatsapp,
-
-            prize_id:
-              premio.id,
-
-            prize_name:
-              premio.name,
-
-            prize_description:
-              premio.description || "",
-
-            rotation_id:
-              currentRotation
-                ? currentRotation.id
-                : null,
-
-            source:
-              source || null,
-
-            campaign:
-              campaign || null,
-
-            status:
-              "nuevo"
-
-          });
-
-        if (error) {
-          throw error;
-        }
-
-
-        /* ------------------------------------------------------
-           Evento LEAD
-           ------------------------------------------------------ */
-
-        await registrarEvento(
-          "lead"
-        );
-
-
-        successArea.style.display =
-          "block";
-
-        leadArea.style.display =
-          "none";
-
-
-        /* ------------------------------------------------------
-           WhatsApp organizador
-           ------------------------------------------------------ */
-
-        const numero =
-          CONFIG.whatsapp ||
-          CONFIG.whatsapp_number ||
-          "";
-
-        if (numero) {
-
-          const nombreContacto =
-            CONFIG.contact_name ||
-            "";
-
-          const mensaje =
-            `Hola${nombreContacto ? ` ${nombreContacto}` : ""}, gané en el sistema de premios: ${premio.name}. Mi nombre es ${nombre} y mi WhatsApp es ${whatsapp}.`;
-
-          const url =
-            `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
-
-          setTimeout(
-            () => {
-
-              window.open(
-                url,
-                "_blank"
-              );
-
-            },
-            500
-          );
-
-        }
-
-      } catch (error) {
-
-        console.error(
-          error
-        );
-
-        alert(
-          "No pudimos registrar tus datos. Intentá nuevamente."
-        );
-
-        solicitarBtn.disabled =
-          false;
-
-        solicitarBtn.innerText =
-          "SOLICITAR MI PREMIO";
-
-      }
-
-    }
-
-
-    /* ==========================================================
-       PARTICIPAR
+       INTENTO DE PARTICIPAR
        ========================================================== */
 
     function spinWheel() {
 
+      if (spinning) {
+        return;
+      }
+
       if (
         CONFIG.roulette_paused === true ||
-        CONFIG.roulette_paused === "true"
+        CONFIG.roulette_paused === "true" ||
+        CONFIG.participation_enabled === false ||
+        CONFIG.participation_enabled === "false"
       ) {
 
         aplicarEstadoPausa();
@@ -2419,18 +2604,35 @@
 
       }
 
-      const remaining =
-        getRemainingTime();
+      /*
+       * PRIMER FILTRO:
+       * el mismo navegador ya giró.
+       *
+       * Esto evita que la persona cambie de WhatsApp
+       * después del giro y vuelva a girar.
+       */
+
+      const localRemaining =
+        obtenerBloqueoLocal();
 
       if (
-        remaining > 0
+        localRemaining > 0
       ) {
 
-        showCooldownPopup();
+        const seconds =
+          Math.ceil(
+            localRemaining / 1000
+          );
+
+        mostrarCooldown(
+          seconds,
+          "Ya usaste tu participación de este período."
+        );
 
         return;
 
       }
+
 
       if (!premios.length) {
 
@@ -2444,7 +2646,8 @@
 
 
       /*
-       * Primero seleccionamos el premio.
+       * El premio se determina UNA SOLA VEZ,
+       * antes de comenzar la animación.
        */
 
       const premioElegido =
@@ -2454,26 +2657,18 @@
         return;
       }
 
-
-      /*
-       * Verificación de seguridad.
-       */
-
       const indexElegido =
         premios.findIndex(
           p =>
             String(p.id) ===
-            String(premioElegido.id)
+            String(
+              premioElegido.id
+            )
         );
 
       if (
         indexElegido === -1
       ) {
-
-        console.error(
-          "El premio seleccionado no existe en la rueda:",
-          premioElegido
-        );
 
         alert(
           "No se pudo determinar el premio seleccionado."
@@ -2484,28 +2679,40 @@
       }
 
 
-      /* --------------------------------------------------------
-         Evento SPIN (solo si el premio es válido)
-         -------------------------------------------------------- */
+      currentPrize =
+        premioElegido;
+
+      spinning =
+        true;
+
+      spinButton.disabled =
+        true;
+
+      spinButton.innerText =
+        "PARTICIPANDO...";
+
+
+      /*
+       * IMPORTANTE:
+       *
+       * Acá NO se pide WhatsApp.
+       *
+       * El giro se ejecuta directamente.
+       */
 
       registrarEvento(
         "spin"
       );
 
 
-      spinButton.disabled =
-        true;
-
       sonidoGiro.currentTime =
         0;
 
       sonidoGiro.play()
-        .catch(() => {});
+        .catch(
+          () => {}
+        );
 
-
-      /* ========================================================
-         CALCULAR DESTINO
-         ======================================================== */
 
       const desiredRotation =
         calcularAnguloPremio(
@@ -2516,12 +2723,19 @@
         desiredRotation === null
       ) {
 
+        spinning =
+          false;
+
         spinButton.disabled =
           false;
+
+        spinButton.innerText =
+          "PARTICIPAR";
 
         return;
 
       }
+
 
       const startAngle =
         currentAngle;
@@ -2565,15 +2779,12 @@
         spinAngle;
 
 
-      /* ========================================================
-         ANIMACIÓN DE 4 SEGUNDOS
-         ======================================================== */
-
       const spinTime =
         4000;
 
       const startTime =
         performance.now();
+
 
       function animate(
         time
@@ -2595,7 +2806,8 @@
           const easedProgress =
             1 -
             Math.pow(
-              1 - progress,
+              1 -
+              progress,
               3
             );
 
@@ -2622,7 +2834,9 @@
             0;
 
           sonidoDing.play()
-            .catch(() => {});
+            .catch(
+              () => {}
+            );
 
           currentAngle =
             targetAngle;
@@ -2632,17 +2846,14 @@
           );
 
 
-          /* ----------------------------------------------------
-             GUARDAR PARTICIPACIÓN
-             ---------------------------------------------------- */
+          /*
+           * GUARDAMOS LOCALMENTE EL GIRO.
+           *
+           * Esto es lo que impide que inmediatamente
+           * después intente volver a girar con otro número.
+           */
 
-          lastSpinTime =
-            Date.now();
-
-          localStorage.setItem(
-            "lastSpinTime",
-            lastSpinTime
-          );
+          guardarGiroLocal();
 
           localStorage.setItem(
             "ultimoPremioId",
@@ -2653,25 +2864,26 @@
 
 
           /*
-           * Se utiliza exactamente el mismo premio
-           * seleccionado antes de comenzar la animación.
+           * Ahora sí mostramos el premio.
            */
+
+          spinning =
+            false;
+
+          spinButton.disabled =
+            false;
+
+          spinButton.innerText =
+            "PARTICIPAR";
 
           showPopup(
             premioElegido
           );
 
-          /*
-           * El botón queda deshabilitado hasta que
-           * termine el cooldown o se cierre el popup.
-           */
-
-          spinButton.disabled =
-            true;
-
         }
 
       }
+
 
       requestAnimationFrame(
         animate
@@ -2727,7 +2939,285 @@
 
 
     /* ==========================================================
-       FOOTER DESPLEGABLE
+       REGISTRAR LEAD + VALIDAR WHATSAPP
+       ========================================================== */
+
+    async function registrarLead(
+      premio
+    ) {
+
+      if (
+        !consentCheckbox.checked
+      ) {
+
+        alert(
+          "Tenés que aceptar los términos para continuar."
+        );
+
+        return;
+
+      }
+
+      const nombre =
+        nombreLead.value.trim();
+
+      const whatsappOriginal =
+        whatsappLead.value.trim();
+
+      if (!nombre) {
+
+        alert(
+          "Ingresá tu nombre."
+        );
+
+        nombreLead.focus();
+
+        return;
+
+      }
+
+      if (
+        whatsappOriginal.length < 6
+      ) {
+
+        alert(
+          "Ingresá un número de WhatsApp válido."
+        );
+
+        whatsappLead.focus();
+
+        return;
+
+      }
+
+      const whatsapp =
+        normalizarWhatsapp(
+          whatsappOriginal
+        );
+
+      if (
+        whatsapp.length < 8
+      ) {
+
+        alert(
+          "Ingresá un número de WhatsApp válido."
+        );
+
+        whatsappLead.focus();
+
+        return;
+
+      }
+
+
+      solicitarBtn.disabled =
+        true;
+
+      solicitarBtn.innerText =
+        "VERIFICANDO...";
+
+
+      try {
+
+        /*
+         * ACÁ se hace el filtro humano por WhatsApp.
+         *
+         * El giro ya ocurrió.
+         * El premio ya quedó determinado.
+         *
+         * Si ese número ya participó,
+         * NO se registra el pedido.
+         */
+
+        const participacion =
+          await registrarParticipacionWhatsapp(
+            whatsapp,
+            premio
+          );
+
+
+        if (
+          participacion.paused
+        ) {
+
+          solicitarBtn.disabled =
+            false;
+
+          solicitarBtn.innerText =
+            "SOLICITAR MI PREMIO";
+
+          alert(
+            participacion.message
+          );
+
+          return;
+
+        }
+
+
+        if (
+          participacion.blocked
+        ) {
+
+          solicitarBtn.disabled =
+            false;
+
+          solicitarBtn.innerText =
+            "SOLICITAR MI PREMIO";
+
+          leadArea.style.display =
+            "none";
+
+          mostrarCooldown(
+            participacion.remaining_seconds,
+            participacion.message ||
+              "Este número ya participó dentro del período permitido."
+          );
+
+          return;
+
+        }
+
+
+        if (
+          !participacion.ok
+        ) {
+
+          throw new Error(
+            participacion.message ||
+            "No se pudo verificar el número."
+          );
+
+        }
+
+
+        solicitarBtn.innerText =
+          "REGISTRANDO...";
+
+
+        /*
+         * El número fue aceptado por el servidor.
+         * Ahora registramos el lead.
+         */
+
+        const {
+          error
+        } =
+          await supabaseClient
+            .from("leads")
+            .insert({
+
+              name:
+                nombre,
+
+              whatsapp:
+                whatsapp,
+
+              prize_id:
+                premio.id,
+
+              prize_name:
+                premio.name,
+
+              prize_description:
+                premio.description ||
+                "",
+
+              rotation_id:
+                currentRotation
+                  ? currentRotation.id
+                  : null,
+
+              source:
+                source ||
+                null,
+
+              campaign:
+                campaign ||
+                null,
+
+              status:
+                "nuevo"
+
+            });
+
+        if (error) {
+          throw error;
+        }
+
+
+        await registrarEvento(
+          "lead"
+        );
+
+
+        successArea.style.display =
+          "block";
+
+        leadArea.style.display =
+          "none";
+
+
+        /*
+         * Contacto por WhatsApp del organizador.
+         */
+
+        const numeroContacto =
+          CONFIG.whatsapp ||
+          CONFIG.whatsapp_number ||
+          "";
+
+        if (
+          numeroContacto
+        ) {
+
+          const nombreContacto =
+            CONFIG.contact_name ||
+            "";
+
+          const mensaje =
+            `Hola${nombreContacto ? ` ${nombreContacto}` : ""}, gané en el sistema de premios: ${premio.name}. Mi nombre es ${nombre} y mi WhatsApp es ${whatsapp}.`;
+
+          const url =
+            `https://wa.me/${numeroContacto}?text=${encodeURIComponent(mensaje)}`;
+
+          setTimeout(
+            () => {
+
+              window.open(
+                url,
+                "_blank"
+              );
+
+            },
+            500
+          );
+
+        }
+
+      } catch (error) {
+
+        console.error(
+          error
+        );
+
+        alert(
+          "No pudimos registrar tus datos. Intentá nuevamente."
+        );
+
+        solicitarBtn.disabled =
+          false;
+
+        solicitarBtn.innerText =
+          "SOLICITAR MI PREMIO";
+
+      }
+
+    }
+
+
+    /* ==========================================================
+       FOOTER LEGAL
        ========================================================== */
 
     legalToggle.addEventListener(
@@ -2751,7 +3241,7 @@
 
 
     /* ==========================================================
-       CHECKBOX LEGAL
+       CHECKBOX
        ========================================================== */
 
     consentCheckbox.addEventListener(
@@ -2782,10 +3272,6 @@
     );
 
 
-    /* ==========================================================
-       CERRAR POPUP AL TOCAR FUERA
-       ========================================================== */
-
     popup.addEventListener(
       "click",
       event => {
@@ -2813,55 +3299,21 @@
 
       try {
 
-        /*
-         * Configuración del sitio.
-         */
-
         await cargarConfiguracion();
-
-
-        /*
-         * Rotación activa.
-         */
 
         await cargarRotaciones();
 
-
-        /*
-         * Premios de la rotación.
-         */
-
         await cargarPremios();
 
-
-        /*
-         * Dibujar estado inicial.
-         */
-
         drawWheel();
-
-
-        /*
-         * Registrar visita después de conocer
-         * la rotación activa.
-         */
 
         await registrarEvento(
           "visit"
         );
 
-
-        /*
-         * Ocultar carga.
-         */
-
         loading.style.display =
           "none";
 
-
-        /*
-         * Estado de pausa tiene prioridad.
-         */
 
         if (
           aplicarEstadoPausa()
@@ -2873,13 +3325,15 @@
 
 
         /*
-         * Si todavía está dentro de las 24 horas,
-         * dejamos el botón habilitado para que pueda
-         * tocarlo y recibir el contador.
+         * El filtro local solamente sirve para impedir
+         * que el mismo navegador vuelva a girar.
          */
 
+        const localRemaining =
+          obtenerBloqueoLocal();
+
         if (
-          getRemainingTime() > 0
+          localRemaining > 0
         ) {
 
           spinButton.disabled =
