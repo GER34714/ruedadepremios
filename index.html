@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -551,10 +550,6 @@
     const SUPABASE_ANON_KEY =
       "sb_publishable_1S0XRJIOq1bEnj9S_z4LXQ_AllfS_JC";
 
-    /*
-     * Comprobamos que la librería haya cargado correctamente.
-     */
-
     if (!window.supabase) {
 
       throw new Error(
@@ -562,10 +557,6 @@
       );
 
     }
-
-    /*
-     * Cliente Supabase.
-     */
 
     const supabaseClient =
       window.supabase.createClient(
@@ -624,6 +615,18 @@
 
     let currentRotation = null;
 
+    /*
+     * Ángulo actual de la rueda en grados.
+     *
+     * Importante:
+     * La rueda se dibuja originalmente desde 0°,
+     * que corresponde al lado derecho del canvas.
+     *
+     * El indicador está arriba (-90°).
+     *
+     * Por eso, al calcular dónde debe terminar un premio,
+     * tenemos que compensar esos 90°.
+     */
     let currentAngle = 0;
 
     let lastSpinTime =
@@ -885,8 +888,8 @@
         currentRotation =
           data.find(
             r =>
-              r.id ===
-              CONFIG.active_rotation_id
+              String(r.id) ===
+              String(CONFIG.active_rotation_id)
           ) || data[0];
 
         return;
@@ -930,7 +933,7 @@
 
 
     /* ==========================================================
-       🎁 CARGAR PREMIOS
+       🎁 CARGAR PREMIOS DESDE SUPABASE
        ========================================================== */
 
     async function cargarPremios() {
@@ -962,8 +965,31 @@
         throw error;
       }
 
+      /*
+       * IMPORTANTE:
+       *
+       * Esta lista es la única fuente de verdad
+       * de la ruleta.
+       *
+       * Lo que devuelve Supabase:
+       *
+       * prizes
+       *
+       * es exactamente lo que se dibuja,
+       * exactamente lo que participa del sorteo
+       * y exactamente lo que después se guarda
+       * en leads.
+       */
+
       premios =
-        data || [];
+        Array.isArray(data)
+          ? data
+          : [];
+
+      console.log(
+        "Premios cargados desde Supabase:",
+        premios
+      );
 
     }
 
@@ -1058,7 +1084,9 @@
           "bold 12px Arial";
 
         let texto =
-          premios[i].name;
+          String(
+            premios[i].name || ""
+          );
 
         if (
           texto.length > 22
@@ -1129,6 +1157,15 @@
           "ultimoPremioId"
         );
 
+      /*
+       * localStorage siempre devuelve texto.
+       * Supabase puede devolver el ID como número.
+       *
+       * Comparamos ambos como String para evitar
+       * que el mismo premio sea considerado diferente
+       * por una diferencia de tipo.
+       */
+
       if (
         ultimo &&
         disponibles.length > 1
@@ -1137,7 +1174,8 @@
         const sinUltimo =
           disponibles.filter(
             p =>
-              p.id !== ultimo
+              String(p.id) !==
+              String(ultimo)
           );
 
         if (
@@ -1158,14 +1196,19 @@
             premio
           ) =>
             suma +
-            Number(
-              premio.probability
+            Math.max(
+              0,
+              Number(
+                premio.probability
+              ) || 0
             ),
           0
         );
 
       if (total <= 0) {
+
         return disponibles[0];
+
       }
 
       let random =
@@ -1178,12 +1221,17 @@
       ) {
 
         random -=
-          Number(
-            premio.probability
+          Math.max(
+            0,
+            Number(
+              premio.probability
+            ) || 0
           );
 
         if (random <= 0) {
+
           return premio;
+
         }
 
       }
@@ -1191,6 +1239,119 @@
       return disponibles[
         disponibles.length - 1
       ];
+
+    }
+
+
+    /* ==========================================================
+       🎯 CALCULAR ÁNGULO EXACTO DEL PREMIO
+       ========================================================== */
+
+    function calcularAnguloPremio(
+      premio
+    ) {
+
+      const index =
+        premios.findIndex(
+          p =>
+            String(p.id) ===
+            String(premio.id)
+        );
+
+      if (
+        index < 0
+      ) {
+
+        return null;
+
+      }
+
+      const segmentDeg =
+        360 /
+        premios.length;
+
+      /*
+       * Cada premio ocupa:
+       *
+       * index * segmentDeg
+       * hasta
+       * (index + 1) * segmentDeg
+       *
+       * El indicador está arriba.
+       *
+       * En canvas:
+       * 0° = derecha
+       * 90° = abajo
+       * 180° = izquierda
+       * 270° = arriba
+       *
+       * Por lo tanto, para colocar el centro del
+       * segmento seleccionado debajo del indicador,
+       * compensamos 270°.
+       */
+
+      const segmentStart =
+        index *
+        segmentDeg;
+
+      const segmentEnd =
+        (
+          index + 1
+        ) *
+        segmentDeg;
+
+      /*
+       * No usamos exactamente el borde.
+       * Dejamos margen para que el indicador quede
+       * claramente dentro del segmento ganador.
+       */
+
+      const margin =
+        segmentDeg *
+        0.18;
+
+      const safeStart =
+        segmentStart +
+        margin;
+
+      const safeEnd =
+        segmentEnd -
+        margin;
+
+      const randomInside =
+        safeStart +
+        Math.random() *
+        Math.max(
+          0.01,
+          safeEnd -
+          safeStart
+        );
+
+      /*
+       * El punto elegido del segmento está en
+       * randomInside grados desde la derecha.
+       *
+       * Queremos que ese punto quede en 270°
+       * (arriba).
+       */
+
+      let desiredRotation =
+        270 -
+        randomInside;
+
+      /*
+       * Normalizamos para que sea positivo.
+       */
+
+      desiredRotation =
+        (
+          desiredRotation %
+          360 +
+          360
+        ) %
+        360;
+
+      return desiredRotation;
 
     }
 
@@ -1416,7 +1577,7 @@
 
 
     /* ==========================================================
-       🎡 GIRAR
+       🎡 GIRAR RULETA
        ========================================================== */
 
     function spinWheel() {
@@ -1473,11 +1634,50 @@
 
       }
 
+      /*
+       * 1. Primero seleccionamos el premio.
+       *
+       * Este objeto es la fuente de verdad.
+       *
+       * No volvemos a seleccionar otro premio
+       * durante la animación.
+       */
+
       const premioElegido =
         seleccionarPremio();
 
       if (!premioElegido) {
         return;
+      }
+
+      /*
+       * Verificación de seguridad:
+       * el premio seleccionado tiene que existir
+       * realmente dentro de la lista que se dibujó.
+       */
+
+      const indexElegido =
+        premios.findIndex(
+          p =>
+            String(p.id) ===
+            String(premioElegido.id)
+        );
+
+      if (
+        indexElegido === -1
+      ) {
+
+        console.error(
+          "El premio seleccionado no existe en la rueda:",
+          premioElegido
+        );
+
+        alert(
+          "No se pudo determinar el premio en la ruleta."
+        );
+
+        return;
+
       }
 
       spinButton.disabled =
@@ -1489,67 +1689,63 @@
       sonidoGiro.play()
         .catch(() => {});
 
-      const spinTime =
-        4000;
+
+      /* ========================================================
+         CALCULAR DESTINO
+         ======================================================== */
+
+      const desiredRotation =
+        calcularAnguloPremio(
+          premioElegido
+        );
+
+      if (
+        desiredRotation === null
+      ) {
+
+        spinButton.disabled =
+          false;
+
+        return;
+
+      }
+
+      /*
+       * currentAngle puede ser cualquier número después
+       * de varios giros.
+       *
+       * Calculamos cuánto falta desde la posición actual
+       * hasta la posición exacta del premio elegido.
+       */
 
       const startAngle =
         currentAngle;
 
-      const numSegments =
-        premios.length;
-
-      const segmentDeg =
-        360 /
-        numSegments;
-
-      const indexElegido =
-        premios.findIndex(
-          p =>
-            p.id ===
-            premioElegido.id
-        );
-
-      const centerDeg =
-        (
-          indexElegido *
-          segmentDeg
-        ) +
-        (
-          segmentDeg /
-          2
-        );
-
-      const jitter =
-        (
-          Math.random() -
-          0.5
-        ) *
-        (
-          segmentDeg *
-          0.6
-        );
-
-      const desiredDeg =
-        centerDeg +
-        jitter;
-
       const startMod =
         (
-          (
-            startAngle %
-            360
-          ) +
+          startAngle %
+          360 +
           360
         ) %
         360;
 
-      const delta =
-        (
-          desiredDeg -
-          startMod +
-          360
-        ) %
-        360;
+      let delta =
+        desiredRotation -
+        startMod;
+
+      if (
+        delta < 0
+      ) {
+
+        delta +=
+          360;
+
+      }
+
+      /*
+       * Entre 5 y 7 vueltas completas antes de llegar
+       * al premio.
+       */
 
       const extraSpins =
         5 +
@@ -1567,6 +1763,14 @@
       const targetAngle =
         startAngle +
         spinAngle;
+
+
+      /* ========================================================
+         ANIMACIÓN
+         ======================================================== */
+
+      const spinTime =
+        4000;
 
       const startTime =
         performance.now();
@@ -1588,17 +1792,26 @@
             elapsed /
             spinTime;
 
+          /*
+           * Ease-out cúbico.
+           *
+           * La rueda acelera y después desacelera
+           * suavemente hasta quedar exactamente
+           * sobre el premio seleccionado.
+           */
+
+          const easedProgress =
+            1 -
+            Math.pow(
+              1 - progress,
+              3
+            );
+
           currentAngle =
             startAngle +
             (
               spinAngle *
-              (
-                1 -
-                Math.pow(
-                  1 - progress,
-                  3
-                )
-              )
+              easedProgress
             );
 
           drawRotatedWheel(
@@ -1619,12 +1832,25 @@
           sonidoDing.play()
             .catch(() => {});
 
+          /*
+           * IMPORTANTE:
+           *
+           * Forzamos el ángulo final exacto.
+           * De esta forma no queda ninguna diferencia
+           * entre el cálculo matemático y lo que se ve.
+           */
+
           currentAngle =
             targetAngle;
 
           drawRotatedWheel(
             currentAngle
           );
+
+          /*
+           * Guardamos exactamente el premio que fue
+           * seleccionado antes de comenzar la animación.
+           */
 
           lastSpinTime =
             Date.now();
@@ -1636,8 +1862,15 @@
 
           localStorage.setItem(
             "ultimoPremioId",
-            premioElegido.id
+            String(
+              premioElegido.id
+            )
           );
+
+          /*
+           * El popup utiliza EL MISMO OBJETO que determinó
+           * el segmento visual.
+           */
 
           showPopup(
             premioElegido
@@ -1768,4 +2001,3 @@
 
 </body>
 </html>
-```
