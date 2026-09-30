@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -396,10 +397,7 @@
 
 <body>
 
-
-  <!-- ==========================================================
-       LOGIN
-       ========================================================== -->
+  <!-- LOGIN -->
 
   <div
     id="loginScreen"
@@ -417,9 +415,7 @@
 
       <div class="field">
 
-        <label>
-          Email
-        </label>
+        <label>Email</label>
 
         <input
           type="email"
@@ -431,9 +427,7 @@
 
       <div class="field">
 
-        <label>
-          Contraseña
-        </label>
+        <label>Contraseña</label>
 
         <input
           type="password"
@@ -461,9 +455,7 @@
   </div>
 
 
-  <!-- ==========================================================
-       PANEL
-       ========================================================== -->
+  <!-- PANEL -->
 
   <div
     id="adminPanel"
@@ -488,10 +480,7 @@
 
     <main class="container">
 
-
-      <!-- ======================================================
-           CONFIGURACIÓN GENERAL
-           ====================================================== -->
+      <!-- CONFIGURACIÓN GENERAL -->
 
       <div class="card full">
 
@@ -570,9 +559,7 @@
       </div>
 
 
-      <!-- ======================================================
-           IMÁGENES
-           ====================================================== -->
+      <!-- IMÁGENES -->
 
       <div class="grid">
 
@@ -689,9 +676,7 @@
       </div>
 
 
-      <!-- ======================================================
-           TEXTOS
-           ====================================================== -->
+      <!-- TEXTOS -->
 
       <div class="card full">
 
@@ -765,9 +750,7 @@
       </div>
 
 
-      <!-- ======================================================
-           ROTACIONES
-           ====================================================== -->
+      <!-- ROTACIONES -->
 
       <div class="card full">
 
@@ -804,9 +787,7 @@
               Cambiar cada
             </label>
 
-            <select
-              id="rotationInterval"
-            >
+            <select id="rotationInterval">
 
               <option value="1">
                 1 hora
@@ -848,9 +829,7 @@
           activas según el intervalo configurado.
         </p>
 
-        <div
-          id="rotationList"
-        ></div>
+        <div id="rotationList"></div>
 
         <div class="actions">
 
@@ -873,9 +852,7 @@
       </div>
 
 
-      <!-- ======================================================
-           PREMIOS
-           ====================================================== -->
+      <!-- PREMIOS -->
 
       <div class="card full">
 
@@ -889,9 +866,7 @@
             Rotación a editar
           </label>
 
-          <select
-            id="prizeRotationSelect"
-          ></select>
+          <select id="prizeRotationSelect"></select>
 
         </div>
 
@@ -925,9 +900,7 @@
       </div>
 
 
-      <!-- ======================================================
-           LEADS
-           ====================================================== -->
+      <!-- LEADS -->
 
       <div class="card full">
 
@@ -1030,29 +1003,16 @@
 
               <tr>
 
-                <th>
-                  Fecha
-                </th>
-
-                <th>
-                  Nombre
-                </th>
-
-                <th>
-                  WhatsApp
-                </th>
-
-                <th>
-                  Premio
-                </th>
+                <th>Fecha</th>
+                <th>Nombre</th>
+                <th>WhatsApp</th>
+                <th>Premio</th>
 
               </tr>
 
             </thead>
 
-            <tbody
-              id="leadsTable"
-            ></tbody>
+            <tbody id="leadsTable"></tbody>
 
           </table>
 
@@ -1066,11 +1026,14 @@
         class="message"
       ></div>
 
-
     </main>
 
   </div>
 
+
+  <!-- ==========================================================
+       SUPABASE
+       ========================================================== -->
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -1082,10 +1045,19 @@
        ========================================================== */
 
     const SUPABASE_URL =
-      "TU_SUPABASE_URL";
+      "https://qqeibunzugtfgwwayaxj.supabase.co";
 
     const SUPABASE_ANON_KEY =
-      "TU_SUPABASE_ANON_KEY";
+      "sb_publishable_1S0XRJIOq1bEnj9S_z4LXQ_AllfS_JC";
+
+
+    if (!window.supabase) {
+
+      throw new Error(
+        "No se pudo cargar la librería de Supabase."
+      );
+
+    }
 
 
     const supabaseClient =
@@ -2614,9 +2586,7 @@
 
           const updates = [];
 
-
-          let total =
-            0;
+          let total = 0;
 
 
           items.forEach(
@@ -2680,16 +2650,11 @@
               updates.push({
 
                 id,
-
                 name,
-
                 description,
-
                 probability,
-
                 sort_order:
                   sortOrder,
-
                 active
 
               });
@@ -3222,3 +3187,4 @@
 
 </body>
 </html>
+```
