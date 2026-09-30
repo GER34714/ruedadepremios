@@ -1,0 +1,3224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Panel Admin | FACU CASINO™</title>
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background:
+        radial-gradient(
+          circle at top,
+          #35105c,
+          #09020f 55%,
+          #030107
+        );
+      color: white;
+      min-height: 100vh;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font-family: inherit;
+    }
+
+    .login-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 400px;
+      background: rgba(20, 10, 30, 0.95);
+      border: 1px solid #8b35ff;
+      border-radius: 18px;
+      padding: 30px;
+      box-shadow:
+        0 0 30px rgba(170, 0, 255, 0.3);
+      text-align: center;
+    }
+
+    .login-box img {
+      max-width: 220px;
+      max-height: 120px;
+      object-fit: contain;
+      margin-bottom: 20px;
+    }
+
+    .login-box h1 {
+      color: #ffcc00;
+      margin-top: 0;
+    }
+
+    .field {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 7px;
+      font-weight: bold;
+      color: #ffcc00;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      border: 1px solid #555;
+      border-radius: 8px;
+      padding: 12px;
+      background: #120c18;
+      color: white;
+      outline: none;
+    }
+
+    textarea {
+      min-height: 130px;
+      resize: vertical;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: #00ffff;
+      box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+    }
+
+    button {
+      border: 0;
+      border-radius: 8px;
+      padding: 11px 16px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .btn-primary {
+      background: linear-gradient(
+        45deg,
+        #8b00ff,
+        #d900ff
+      );
+      color: white;
+    }
+
+    .btn-success {
+      background: #00a86b;
+      color: white;
+    }
+
+    .btn-danger {
+      background: #d62828;
+      color: white;
+    }
+
+    .btn-secondary {
+      background: #333;
+      color: white;
+    }
+
+    .btn-blue {
+      background: #0066ff;
+      color: white;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(8, 3, 13, 0.96);
+      border-bottom: 1px solid #422052;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+    }
+
+    .topbar h1 {
+      margin: 0;
+      color: #ffcc00;
+      font-size: 1.3rem;
+    }
+
+    .container {
+      width: min(1200px, calc(100% - 30px));
+      margin: 25px auto 60px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns:
+        repeat(
+          auto-fit,
+          minmax(320px, 1fr)
+        );
+      gap: 20px;
+    }
+
+    .card {
+      background: rgba(20, 10, 30, 0.94);
+      border: 1px solid #43204f;
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow:
+        0 0 20px rgba(130, 0, 200, 0.08);
+    }
+
+    .card.full {
+      grid-column: 1 / -1;
+    }
+
+    .card h2 {
+      margin-top: 0;
+      color: #ffcc00;
+      font-size: 1.2rem;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns:
+        repeat(
+          auto-fit,
+          minmax(200px, 1fr)
+        );
+      gap: 15px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .preview {
+      width: 100%;
+      max-height: 180px;
+      object-fit: contain;
+      background: #080808;
+      border-radius: 10px;
+      margin-top: 10px;
+      padding: 10px;
+    }
+
+    .preview-bg {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      background: #080808;
+      border-radius: 10px;
+      margin-top: 10px;
+    }
+
+    .switch {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .switch input {
+      width: auto;
+    }
+
+    .prize-item {
+      background: #110a18;
+      border: 1px solid #43204f;
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 12px;
+    }
+
+    .prize-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .prize-number {
+      color: #00ffff;
+      font-weight: bold;
+    }
+
+    .rotation-item {
+      background: #110a18;
+      border: 1px solid #43204f;
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 12px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns:
+        repeat(
+          auto-fit,
+          minmax(180px, 1fr)
+        );
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .stat {
+      background: #110a18;
+      border: 1px solid #43204f;
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #00ff99;
+    }
+
+    .lead-table-wrapper {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 700px;
+    }
+
+    th,
+    td {
+      padding: 11px;
+      border-bottom: 1px solid #33233a;
+      text-align: left;
+    }
+
+    th {
+      color: #ffcc00;
+      background: #100817;
+    }
+
+    .message {
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 8px;
+      display: none;
+    }
+
+    .message.success {
+      display: block;
+      background: rgba(0, 180, 100, 0.15);
+      border: 1px solid #00a86b;
+      color: #7dffca;
+    }
+
+    .message.error {
+      display: block;
+      background: rgba(220, 40, 40, 0.15);
+      border: 1px solid #d62828;
+      color: #ff9999;
+    }
+
+    .percentage-total {
+      margin-top: 12px;
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
+
+    .percentage-ok {
+      color: #00ff99;
+    }
+
+    .percentage-error {
+      color: #ff5555;
+    }
+
+    .small {
+      color: #aaa;
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+
+    .empty {
+      padding: 20px;
+      text-align: center;
+      color: #999;
+    }
+
+    @media (max-width: 600px) {
+
+      .container {
+        width: calc(100% - 20px);
+      }
+
+      .topbar {
+        padding: 10px;
+      }
+
+      .topbar h1 {
+        font-size: 1rem;
+      }
+
+      .card {
+        padding: 15px;
+      }
+
+    }
+
+  </style>
+</head>
+
+<body>
+
+
+  <!-- ==========================================================
+       LOGIN
+       ========================================================== -->
+
+  <div
+    id="loginScreen"
+    class="login-screen"
+  >
+
+    <div class="login-box">
+
+      <img
+        src="https://iili.io/KyPwhml.md.png"
+        alt="FACU CASINO"
+      >
+
+      <h1>PANEL ADMIN</h1>
+
+      <div class="field">
+
+        <label>
+          Email
+        </label>
+
+        <input
+          type="email"
+          id="loginEmail"
+          placeholder="admin@email.com"
+        >
+
+      </div>
+
+      <div class="field">
+
+        <label>
+          Contraseña
+        </label>
+
+        <input
+          type="password"
+          id="loginPassword"
+          placeholder="••••••••"
+        >
+
+      </div>
+
+      <button
+        class="btn-primary"
+        style="width:100%;"
+        id="loginBtn"
+      >
+        INGRESAR
+      </button>
+
+      <div
+        id="loginMessage"
+        class="message"
+      ></div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ==========================================================
+       PANEL
+       ========================================================== -->
+
+  <div
+    id="adminPanel"
+    class="hidden"
+  >
+
+    <div class="topbar">
+
+      <h1>
+        🎰 FACU CASINO™ — ADMIN
+      </h1>
+
+      <button
+        class="btn-danger"
+        id="logoutBtn"
+      >
+        CERRAR SESIÓN
+      </button>
+
+    </div>
+
+
+    <main class="container">
+
+
+      <!-- ======================================================
+           CONFIGURACIÓN GENERAL
+           ====================================================== -->
+
+      <div class="card full">
+
+        <h2>
+          ⚙️ Configuración general
+        </h2>
+
+        <div class="row">
+
+          <div class="field">
+
+            <label>
+              Título de la ruleta
+            </label>
+
+            <input
+              id="siteTitle"
+              type="text"
+            >
+
+          </div>
+
+          <div class="field">
+
+            <label>
+              Nombre de contacto
+            </label>
+
+            <input
+              id="contactName"
+              type="text"
+            >
+
+          </div>
+
+          <div class="field">
+
+            <label>
+              Teléfono mostrado
+            </label>
+
+            <input
+              id="phone"
+              type="text"
+            >
+
+          </div>
+
+          <div class="field">
+
+            <label>
+              WhatsApp
+            </label>
+
+            <input
+              id="whatsapp"
+              type="text"
+              placeholder="54911..."
+            >
+
+          </div>
+
+        </div>
+
+        <div class="actions">
+
+          <button
+            class="btn-success"
+            id="saveGeneralBtn"
+          >
+            💾 GUARDAR CONFIGURACIÓN
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- ======================================================
+           IMÁGENES
+           ====================================================== -->
+
+      <div class="grid">
+
+        <div class="card">
+
+          <h2>
+            🖼️ Logo
+          </h2>
+
+          <div class="field">
+
+            <input
+              type="file"
+              id="logoFile"
+              accept="image/png,image/jpeg,image/webp"
+            >
+
+          </div>
+
+          <img
+            id="logoPreview"
+            class="preview"
+            src=""
+            alt="Logo"
+          >
+
+          <div class="actions">
+
+            <button
+              class="btn-success"
+              id="uploadLogoBtn"
+            >
+              SUBIR LOGO
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <div class="card">
+
+          <h2>
+            🌄 Background
+          </h2>
+
+          <div class="field">
+
+            <input
+              type="file"
+              id="backgroundFile"
+              accept="image/png,image/jpeg,image/webp"
+            >
+
+          </div>
+
+          <img
+            id="backgroundPreview"
+            class="preview-bg"
+            src=""
+            alt="Background"
+          >
+
+          <div class="actions">
+
+            <button
+              class="btn-success"
+              id="uploadBackgroundBtn"
+            >
+              SUBIR BACKGROUND
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <div class="card">
+
+          <h2>
+            🖼️ Imagen Open Graph
+          </h2>
+
+          <div class="field">
+
+            <input
+              type="file"
+              id="ogFile"
+              accept="image/png,image/jpeg,image/webp"
+            >
+
+          </div>
+
+          <img
+            id="ogPreview"
+            class="preview"
+            src=""
+            alt="OG"
+          >
+
+          <div class="actions">
+
+            <button
+              class="btn-success"
+              id="uploadOgBtn"
+            >
+              SUBIR OG IMAGE
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- ======================================================
+           TEXTOS
+           ====================================================== -->
+
+      <div class="card full">
+
+        <h2>
+          📝 Textos de la página
+        </h2>
+
+        <div class="row">
+
+          <div class="field">
+
+            <label>
+              📜 Reglas
+            </label>
+
+            <textarea
+              id="rulesText"
+              placeholder="Escribí aquí las reglas..."
+            ></textarea>
+
+          </div>
+
+          <div class="field">
+
+            <label>
+              🎁 Premios
+            </label>
+
+            <textarea
+              id="prizesText"
+              placeholder="Información sobre los premios..."
+            ></textarea>
+
+          </div>
+
+          <div class="field">
+
+            <label>
+              📢 Avisos
+            </label>
+
+            <textarea
+              id="noticesText"
+              placeholder="Avisos para los jugadores..."
+            ></textarea>
+
+          </div>
+
+          <div class="field">
+
+            <label>
+              ⚖️ Aviso legal
+            </label>
+
+            <textarea
+              id="legalText"
+              placeholder="Aviso legal y condiciones..."
+            ></textarea>
+
+          </div>
+
+        </div>
+
+        <button
+          class="btn-success"
+          id="saveTextsBtn"
+        >
+          💾 GUARDAR TEXTOS
+        </button>
+
+      </div>
+
+
+      <!-- ======================================================
+           ROTACIONES
+           ====================================================== -->
+
+      <div class="card full">
+
+        <h2>
+          🔄 Rotación automática
+        </h2>
+
+        <div class="row">
+
+          <div class="field">
+
+            <label>
+              Rotación automática
+            </label>
+
+            <div class="switch">
+
+              <input
+                type="checkbox"
+                id="rotationEnabled"
+              >
+
+              <span>
+                Activada
+              </span>
+
+            </div>
+
+          </div>
+
+          <div class="field">
+
+            <label>
+              Cambiar cada
+            </label>
+
+            <select
+              id="rotationInterval"
+            >
+
+              <option value="1">
+                1 hora
+              </option>
+
+              <option value="6">
+                6 horas
+              </option>
+
+              <option value="12">
+                12 horas
+              </option>
+
+              <option value="24">
+                24 horas
+              </option>
+
+              <option value="48">
+                48 horas
+              </option>
+
+              <option value="72">
+                72 horas
+              </option>
+
+              <option value="168">
+                7 días
+              </option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+        <p class="small">
+          Cuando está activada, la página pública irá
+          cambiando automáticamente entre las rotaciones
+          activas según el intervalo configurado.
+        </p>
+
+        <div
+          id="rotationList"
+        ></div>
+
+        <div class="actions">
+
+          <button
+            class="btn-primary"
+            id="addRotationBtn"
+          >
+            + AGREGAR ROTACIÓN
+          </button>
+
+          <button
+            class="btn-success"
+            id="saveRotationSettingsBtn"
+          >
+            💾 GUARDAR ROTACIÓN
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- ======================================================
+           PREMIOS
+           ====================================================== -->
+
+      <div class="card full">
+
+        <h2>
+          🎁 Premios y probabilidades
+        </h2>
+
+        <div class="field">
+
+          <label>
+            Rotación a editar
+          </label>
+
+          <select
+            id="prizeRotationSelect"
+          ></select>
+
+        </div>
+
+        <div id="prizesList"></div>
+
+        <div
+          id="percentageTotal"
+          class="percentage-total"
+        >
+          Total: 0%
+        </div>
+
+        <div class="actions">
+
+          <button
+            class="btn-primary"
+            id="addPrizeBtn"
+          >
+            + AGREGAR PREMIO
+          </button>
+
+          <button
+            class="btn-success"
+            id="savePrizesBtn"
+          >
+            💾 GUARDAR PREMIOS
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- ======================================================
+           LEADS
+           ====================================================== -->
+
+      <div class="card full">
+
+        <h2>
+          👥 Leads captados
+        </h2>
+
+        <div class="stats">
+
+          <div class="stat">
+
+            <div class="small">
+              TOTAL DE LEADS
+            </div>
+
+            <div
+              class="stat-number"
+              id="totalLeads"
+            >
+              0
+            </div>
+
+          </div>
+
+          <div class="stat">
+
+            <div class="small">
+              LEADS DE HOY
+            </div>
+
+            <div
+              class="stat-number"
+              id="todayLeads"
+            >
+              0
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="row">
+
+          <div class="field">
+
+            <label>
+              Buscar
+            </label>
+
+            <input
+              id="leadSearch"
+              type="text"
+              placeholder="Nombre o WhatsApp..."
+            >
+
+          </div>
+
+          <div class="field">
+
+            <label>
+              Premio
+            </label>
+
+            <input
+              id="leadPrizeFilter"
+              type="text"
+              placeholder="Ej: 15% extra"
+            >
+
+          </div>
+
+        </div>
+
+        <div class="actions">
+
+          <button
+            class="btn-blue"
+            id="loadLeadsBtn"
+          >
+            🔄 ACTUALIZAR LEADS
+          </button>
+
+          <button
+            class="btn-success"
+            id="exportLeadsBtn"
+          >
+            📥 EXPORTAR CSV
+          </button>
+
+        </div>
+
+        <div
+          class="lead-table-wrapper"
+          style="margin-top:20px;"
+        >
+
+          <table>
+
+            <thead>
+
+              <tr>
+
+                <th>
+                  Fecha
+                </th>
+
+                <th>
+                  Nombre
+                </th>
+
+                <th>
+                  WhatsApp
+                </th>
+
+                <th>
+                  Premio
+                </th>
+
+              </tr>
+
+            </thead>
+
+            <tbody
+              id="leadsTable"
+            ></tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+
+      <div
+        id="adminMessage"
+        class="message"
+      ></div>
+
+
+    </main>
+
+  </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+  <script>
+
+    /* ==========================================================
+       🔑 SUPABASE
+       ========================================================== */
+
+    const SUPABASE_URL =
+      "TU_SUPABASE_URL";
+
+    const SUPABASE_ANON_KEY =
+      "TU_SUPABASE_ANON_KEY";
+
+
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+      );
+
+
+    /* ==========================================================
+       ESTADO
+       ========================================================== */
+
+    let settings = null;
+
+    let rotations = [];
+
+    let currentPrizes = [];
+
+    let leads = [];
+
+
+    /* ==========================================================
+       ELEMENTOS
+       ========================================================== */
+
+    const loginScreen =
+      document.getElementById(
+        "loginScreen"
+      );
+
+    const adminPanel =
+      document.getElementById(
+        "adminPanel"
+      );
+
+    const loginMessage =
+      document.getElementById(
+        "loginMessage"
+      );
+
+    const adminMessage =
+      document.getElementById(
+        "adminMessage"
+      );
+
+
+    /* ==========================================================
+       MENSAJES
+       ========================================================== */
+
+    function showMessage(
+      element,
+      message,
+      type
+    ) {
+
+      element.innerText =
+        message;
+
+      element.className =
+        `message ${type}`;
+
+      setTimeout(
+        () => {
+
+          element.className =
+            "message";
+
+        },
+        4000
+      );
+
+    }
+
+
+    /* ==========================================================
+       LOGIN
+       ========================================================== */
+
+    document
+      .getElementById("loginBtn")
+      .addEventListener(
+        "click",
+        login
+      );
+
+
+    async function login() {
+
+      const email =
+        document
+          .getElementById(
+            "loginEmail"
+          )
+          .value
+          .trim();
+
+
+      const password =
+        document
+          .getElementById(
+            "loginPassword"
+          )
+          .value;
+
+
+      if (!email || !password) {
+
+        showMessage(
+          loginMessage,
+          "Completá email y contraseña.",
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      const {
+        error
+      } =
+        await supabaseClient.auth
+          .signInWithPassword({
+
+            email,
+            password
+
+          });
+
+
+      if (error) {
+
+        showMessage(
+          loginMessage,
+          error.message,
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      mostrarPanel();
+
+    }
+
+
+    async function comprobarSesion() {
+
+      const {
+        data
+      } =
+        await supabaseClient.auth
+          .getSession();
+
+
+      if (
+        data &&
+        data.session
+      ) {
+
+        mostrarPanel();
+
+      }
+
+    }
+
+
+    function mostrarPanel() {
+
+      loginScreen.classList.add(
+        "hidden"
+      );
+
+      adminPanel.classList.remove(
+        "hidden"
+      );
+
+      cargarTodo();
+
+    }
+
+
+    document
+      .getElementById("logoutBtn")
+      .addEventListener(
+        "click",
+        async () => {
+
+          await supabaseClient.auth
+            .signOut();
+
+          location.reload();
+
+        }
+      );
+
+
+    /* ==========================================================
+       CONFIGURACIÓN
+       ========================================================== */
+
+    async function cargarConfiguracion() {
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
+          .from("site_settings")
+          .select("*")
+          .eq("id", 1)
+          .single();
+
+
+      if (error) {
+        throw error;
+      }
+
+
+      settings =
+        data;
+
+
+      document
+        .getElementById(
+          "siteTitle"
+        )
+        .value =
+        settings.title || "";
+
+
+      document
+        .getElementById(
+          "contactName"
+        )
+        .value =
+        settings.contact_name || "";
+
+
+      document
+        .getElementById(
+          "phone"
+        )
+        .value =
+        settings.phone || "";
+
+
+      document
+        .getElementById(
+          "whatsapp"
+        )
+        .value =
+        settings.whatsapp || "";
+
+
+      document
+        .getElementById(
+          "rulesText"
+        )
+        .value =
+        settings.rules_text || "";
+
+
+      document
+        .getElementById(
+          "prizesText"
+        )
+        .value =
+        settings.prizes_text || "";
+
+
+      document
+        .getElementById(
+          "noticesText"
+        )
+        .value =
+        settings.notices_text || "";
+
+
+      document
+        .getElementById(
+          "legalText"
+        )
+        .value =
+        settings.legal_text || "";
+
+
+      document
+        .getElementById(
+          "rotationEnabled"
+        )
+        .checked =
+        !!settings.rotation_enabled;
+
+
+      document
+        .getElementById(
+          "rotationInterval"
+        )
+        .value =
+        String(
+          settings.rotation_interval_hours || 24
+        );
+
+
+      document
+        .getElementById(
+          "logoPreview"
+        )
+        .src =
+        settings.logo_url || "";
+
+
+      document
+        .getElementById(
+          "backgroundPreview"
+        )
+        .src =
+        settings.background_url || "";
+
+
+      document
+        .getElementById(
+          "ogPreview"
+        )
+        .src =
+        settings.og_image_url || "";
+
+    }
+
+
+    /* ==========================================================
+       GUARDAR CONFIGURACIÓN GENERAL
+       ========================================================== */
+
+    document
+      .getElementById(
+        "saveGeneralBtn"
+      )
+      .addEventListener(
+        "click",
+        async () => {
+
+          const {
+            error
+          } =
+            await supabaseClient
+              .from("site_settings")
+              .update({
+
+                title:
+                  document
+                    .getElementById(
+                      "siteTitle"
+                    )
+                    .value
+                    .trim(),
+
+                contact_name:
+                  document
+                    .getElementById(
+                      "contactName"
+                    )
+                    .value
+                    .trim(),
+
+                phone:
+                  document
+                    .getElementById(
+                      "phone"
+                    )
+                    .value
+                    .trim(),
+
+                whatsapp:
+                  document
+                    .getElementById(
+                      "whatsapp"
+                    )
+                    .value
+                    .trim()
+
+              })
+              .eq(
+                "id",
+                1
+              );
+
+
+          if (error) {
+
+            showMessage(
+              adminMessage,
+              error.message,
+              "error"
+            );
+
+            return;
+
+          }
+
+
+          showMessage(
+            adminMessage,
+            "Configuración guardada correctamente.",
+            "success"
+          );
+
+        }
+      );
+
+
+    /* ==========================================================
+       GUARDAR TEXTOS
+       ========================================================== */
+
+    document
+      .getElementById(
+        "saveTextsBtn"
+      )
+      .addEventListener(
+        "click",
+        async () => {
+
+          const {
+            error
+          } =
+            await supabaseClient
+              .from("site_settings")
+              .update({
+
+                rules_text:
+                  document
+                    .getElementById(
+                      "rulesText"
+                    )
+                    .value,
+
+                prizes_text:
+                  document
+                    .getElementById(
+                      "prizesText"
+                    )
+                    .value,
+
+                notices_text:
+                  document
+                    .getElementById(
+                      "noticesText"
+                    )
+                    .value,
+
+                legal_text:
+                  document
+                    .getElementById(
+                      "legalText"
+                    )
+                    .value
+
+              })
+              .eq(
+                "id",
+                1
+              );
+
+
+          if (error) {
+
+            showMessage(
+              adminMessage,
+              error.message,
+              "error"
+            );
+
+            return;
+
+          }
+
+
+          showMessage(
+            adminMessage,
+            "Textos guardados correctamente.",
+            "success"
+          );
+
+        }
+      );
+
+
+    /* ==========================================================
+       SUBIR IMÁGENES
+       ========================================================== */
+
+    async function subirImagen(
+      inputId,
+      tipo
+    ) {
+
+      const input =
+        document.getElementById(
+          inputId
+        );
+
+
+      if (
+        !input.files ||
+        !input.files[0]
+      ) {
+
+        alert(
+          "Seleccioná una imagen."
+        );
+
+        return;
+
+      }
+
+
+      const file =
+        input.files[0];
+
+
+      const extension =
+        file.name
+          .split(".")
+          .pop()
+          .toLowerCase();
+
+
+      const nombre =
+        `${tipo}-${Date.now()}.${extension}`;
+
+
+      const {
+        error
+      } =
+        await supabaseClient
+          .storage
+          .from(
+            "ruleta-assets"
+          )
+          .upload(
+            nombre,
+            file,
+            {
+              upsert: true,
+              contentType:
+                file.type
+            }
+          );
+
+
+      if (error) {
+
+        showMessage(
+          adminMessage,
+          error.message,
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      const {
+        data
+      } =
+        supabaseClient
+          .storage
+          .from(
+            "ruleta-assets"
+          )
+          .getPublicUrl(
+            nombre
+          );
+
+
+      const url =
+        data.publicUrl;
+
+
+      const campo =
+        tipo === "logo"
+          ? "logo_url"
+          : tipo === "background"
+            ? "background_url"
+            : "og_image_url";
+
+
+      const {
+        error:
+          updateError
+      } =
+        await supabaseClient
+          .from(
+            "site_settings"
+          )
+          .update({
+            [campo]: url
+          })
+          .eq(
+            "id",
+            1
+          );
+
+
+      if (updateError) {
+
+        showMessage(
+          adminMessage,
+          updateError.message,
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      document
+        .getElementById(
+          tipo === "logo"
+            ? "logoPreview"
+            : tipo === "background"
+              ? "backgroundPreview"
+              : "ogPreview"
+        )
+        .src =
+        url;
+
+
+      showMessage(
+        adminMessage,
+        "Imagen actualizada correctamente.",
+        "success"
+      );
+
+    }
+
+
+    document
+      .getElementById(
+        "uploadLogoBtn"
+      )
+      .addEventListener(
+        "click",
+        () =>
+          subirImagen(
+            "logoFile",
+            "logo"
+          )
+      );
+
+
+    document
+      .getElementById(
+        "uploadBackgroundBtn"
+      )
+      .addEventListener(
+        "click",
+        () =>
+          subirImagen(
+            "backgroundFile",
+            "background"
+          )
+      );
+
+
+    document
+      .getElementById(
+        "uploadOgBtn"
+      )
+      .addEventListener(
+        "click",
+        () =>
+          subirImagen(
+            "ogFile",
+            "og"
+          )
+      );
+
+
+    /* ==========================================================
+       ROTACIONES
+       ========================================================== */
+
+    async function cargarRotaciones() {
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
+          .from("rotations")
+          .select("*")
+          .order(
+            "sort_order",
+            {
+              ascending: true
+            }
+          );
+
+
+      if (error) {
+        throw error;
+      }
+
+
+      rotations =
+        data || [];
+
+
+      renderRotaciones();
+
+      llenarSelectRotaciones();
+
+    }
+
+
+    function renderRotaciones() {
+
+      const container =
+        document.getElementById(
+          "rotationList"
+        );
+
+
+      if (!rotations.length) {
+
+        container.innerHTML =
+          `<div class="empty">
+             No hay rotaciones creadas.
+           </div>`;
+
+        return;
+
+      }
+
+
+      container.innerHTML =
+        rotations
+          .map(
+            rotation => `
+
+              <div
+                class="rotation-item"
+                data-id="${rotation.id}"
+              >
+
+                <div class="row">
+
+                  <div class="field">
+
+                    <label>
+                      Nombre
+                    </label>
+
+                    <input
+                      class="rotation-name"
+                      value="${escapeHtml(rotation.name || "")}"
+                    >
+
+                  </div>
+
+                  <div class="field">
+
+                    <label>
+                      Orden
+                    </label>
+
+                    <input
+                      type="number"
+                      class="rotation-order"
+                      value="${rotation.sort_order || 0}"
+                    >
+
+                  </div>
+
+                </div>
+
+                <div class="switch">
+
+                  <input
+                    type="checkbox"
+                    class="rotation-active"
+                    ${rotation.active ? "checked" : ""}
+                  >
+
+                  <span>
+                    Rotación activa
+                  </span>
+
+                </div>
+
+                <div class="actions">
+
+                  <button
+                    class="btn-success"
+                    onclick="guardarRotacion('${rotation.id}')"
+                  >
+                    GUARDAR
+                  </button>
+
+                  <button
+                    class="btn-danger"
+                    onclick="eliminarRotacion('${rotation.id}')"
+                  >
+                    ELIMINAR
+                  </button>
+
+                </div>
+
+              </div>
+
+            `
+          )
+          .join("");
+
+    }
+
+
+    window.guardarRotacion =
+      async function(id) {
+
+        const item =
+          document.querySelector(
+            `.rotation-item[data-id="${id}"]`
+          );
+
+
+        const name =
+          item
+            .querySelector(
+              ".rotation-name"
+            )
+            .value
+            .trim();
+
+
+        const sortOrder =
+          Number(
+            item
+              .querySelector(
+                ".rotation-order"
+              )
+              .value
+          );
+
+
+        const active =
+          item
+            .querySelector(
+              ".rotation-active"
+            )
+            .checked;
+
+
+        const {
+          error
+        } =
+          await supabaseClient
+            .from("rotations")
+            .update({
+
+              name,
+
+              sort_order:
+                sortOrder,
+
+              active
+
+            })
+            .eq(
+              "id",
+              id
+            );
+
+
+        if (error) {
+
+          showMessage(
+            adminMessage,
+            error.message,
+            "error"
+          );
+
+          return;
+
+        }
+
+
+        await cargarRotaciones();
+
+        showMessage(
+          adminMessage,
+          "Rotación guardada.",
+          "success"
+        );
+
+      };
+
+
+    window.eliminarRotacion =
+      async function(id) {
+
+        if (
+          !confirm(
+            "¿Eliminar esta rotación y sus premios?"
+          )
+        ) {
+          return;
+        }
+
+
+        const {
+          error
+        } =
+          await supabaseClient
+            .from("rotations")
+            .delete()
+            .eq(
+              "id",
+              id
+            );
+
+
+        if (error) {
+
+          showMessage(
+            adminMessage,
+            error.message,
+            "error"
+          );
+
+          return;
+
+        }
+
+
+        await cargarRotaciones();
+
+        await cargarPremios();
+
+      };
+
+
+    document
+      .getElementById(
+        "addRotationBtn"
+      )
+      .addEventListener(
+        "click",
+        async () => {
+
+          const {
+            error
+          } =
+            await supabaseClient
+              .from("rotations")
+              .insert({
+
+                name:
+                  `Rotación ${rotations.length + 1}`,
+
+                sort_order:
+                  rotations.length + 1,
+
+                active:
+                  true
+
+              });
+
+
+          if (error) {
+
+            showMessage(
+              adminMessage,
+              error.message,
+              "error"
+            );
+
+            return;
+
+          }
+
+
+          await cargarRotaciones();
+
+        }
+      );
+
+
+    function llenarSelectRotaciones() {
+
+      const select =
+        document.getElementById(
+          "prizeRotationSelect"
+        );
+
+
+      select.innerHTML =
+        rotations
+          .map(
+            r =>
+              `<option value="${r.id}">
+                ${escapeHtml(r.name)}
+              </option>`
+          )
+          .join("");
+
+
+      if (
+        rotations.length
+      ) {
+
+        cargarPremios();
+
+      }
+
+    }
+
+
+    /* ==========================================================
+       CONFIGURACIÓN DE ROTACIÓN
+       ========================================================== */
+
+    document
+      .getElementById(
+        "saveRotationSettingsBtn"
+      )
+      .addEventListener(
+        "click",
+        async () => {
+
+          const enabled =
+            document
+              .getElementById(
+                "rotationEnabled"
+              )
+              .checked;
+
+
+          const interval =
+            Number(
+              document
+                .getElementById(
+                  "rotationInterval"
+                )
+                .value
+            );
+
+
+          const {
+            error
+          } =
+            await supabaseClient
+              .from("site_settings")
+              .update({
+
+                rotation_enabled:
+                  enabled,
+
+                rotation_interval_hours:
+                  interval,
+
+                rotation_started_at:
+                  new Date().toISOString()
+
+              })
+              .eq(
+                "id",
+                1
+              );
+
+
+          if (error) {
+
+            showMessage(
+              adminMessage,
+              error.message,
+              "error"
+            );
+
+            return;
+
+          }
+
+
+          showMessage(
+            adminMessage,
+            "Rotación automática actualizada.",
+            "success"
+          );
+
+        }
+      );
+
+
+    /* ==========================================================
+       PREMIOS
+       ========================================================== */
+
+    document
+      .getElementById(
+        "prizeRotationSelect"
+      )
+      .addEventListener(
+        "change",
+        cargarPremios
+      );
+
+
+    async function cargarPremios() {
+
+      const rotationId =
+        document
+          .getElementById(
+            "prizeRotationSelect"
+          )
+          .value;
+
+
+      if (!rotationId) {
+
+        currentPrizes = [];
+
+        renderPremios();
+
+        return;
+
+      }
+
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
+          .from("prizes")
+          .select("*")
+          .eq(
+            "rotation_id",
+            rotationId
+          )
+          .order(
+            "sort_order",
+            {
+              ascending: true
+            }
+          );
+
+
+      if (error) {
+
+        showMessage(
+          adminMessage,
+          error.message,
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      currentPrizes =
+        data || [];
+
+
+      renderPremios();
+
+    }
+
+
+    function renderPremios() {
+
+      const container =
+        document.getElementById(
+          "prizesList"
+        );
+
+
+      if (!currentPrizes.length) {
+
+        container.innerHTML =
+          `<div class="empty">
+             Esta rotación todavía no tiene premios.
+           </div>`;
+
+        calcularTotal();
+
+        return;
+
+      }
+
+
+      container.innerHTML =
+        currentPrizes
+          .map(
+            (prize, index) => `
+
+              <div
+                class="prize-item"
+                data-id="${prize.id}"
+              >
+
+                <div class="prize-header">
+
+                  <span class="prize-number">
+                    PREMIO #${index + 1}
+                  </span>
+
+                  <button
+                    class="btn-danger"
+                    onclick="eliminarPremio('${prize.id}')"
+                  >
+                    ELIMINAR
+                  </button>
+
+                </div>
+
+                <div class="row">
+
+                  <div class="field">
+
+                    <label>
+                      Nombre del premio
+                    </label>
+
+                    <input
+                      class="prize-name"
+                      value="${escapeHtml(prize.name || "")}"
+                    >
+
+                  </div>
+
+                  <div class="field">
+
+                    <label>
+                      Descripción
+                    </label>
+
+                    <input
+                      class="prize-description"
+                      value="${escapeHtml(prize.description || "")}"
+                    >
+
+                  </div>
+
+                  <div class="field">
+
+                    <label>
+                      Probabilidad %
+                    </label>
+
+                    <input
+                      type="number"
+                      min="0"
+                      max="100"
+                      step="0.01"
+                      class="prize-probability"
+                      value="${Number(prize.probability || 0)}"
+                      oninput="calcularTotal()"
+                    >
+
+                  </div>
+
+                  <div class="field">
+
+                    <label>
+                      Orden
+                    </label>
+
+                    <input
+                      type="number"
+                      class="prize-order"
+                      value="${prize.sort_order || 0}"
+                    >
+
+                  </div>
+
+                </div>
+
+                <div class="switch">
+
+                  <input
+                    type="checkbox"
+                    class="prize-active"
+                    ${prize.active ? "checked" : ""}
+                    onchange="calcularTotal()"
+                  >
+
+                  <span>
+                    Premio activo
+                  </span>
+
+                </div>
+
+              </div>
+
+            `
+          )
+          .join("");
+
+
+      calcularTotal();
+
+    }
+
+
+    window.calcularTotal =
+      function() {
+
+        const items =
+          document.querySelectorAll(
+            ".prize-item"
+          );
+
+
+        let total = 0;
+
+
+        items.forEach(
+          item => {
+
+            const active =
+              item
+                .querySelector(
+                  ".prize-active"
+                )
+                .checked;
+
+
+            if (!active) {
+              return;
+            }
+
+
+            total +=
+              Number(
+                item
+                  .querySelector(
+                    ".prize-probability"
+                  )
+                  .value
+              ) || 0;
+
+          }
+        );
+
+
+        const element =
+          document.getElementById(
+            "percentageTotal"
+          );
+
+
+        element.innerText =
+          `Total de probabilidades activas: ${total.toFixed(2)}%`;
+
+
+        if (
+          Math.abs(
+            total - 100
+          ) < 0.001
+        ) {
+
+          element.className =
+            "percentage-total percentage-ok";
+
+        } else {
+
+          element.className =
+            "percentage-total percentage-error";
+
+        }
+
+      };
+
+
+    document
+      .getElementById(
+        "addPrizeBtn"
+      )
+      .addEventListener(
+        "click",
+        async () => {
+
+          const rotationId =
+            document
+              .getElementById(
+                "prizeRotationSelect"
+              )
+              .value;
+
+
+          if (!rotationId) {
+
+            alert(
+              "Primero seleccioná una rotación."
+            );
+
+            return;
+
+          }
+
+
+          const {
+            error
+          } =
+            await supabaseClient
+              .from("prizes")
+              .insert({
+
+                rotation_id:
+                  rotationId,
+
+                name:
+                  "Nuevo premio",
+
+                description:
+                  "",
+
+                probability:
+                  0,
+
+                active:
+                  true,
+
+                sort_order:
+                  currentPrizes.length + 1
+
+              });
+
+
+          if (error) {
+
+            showMessage(
+              adminMessage,
+              error.message,
+              "error"
+            );
+
+            return;
+
+          }
+
+
+          await cargarPremios();
+
+        }
+      );
+
+
+    window.eliminarPremio =
+      async function(id) {
+
+        if (
+          !confirm(
+            "¿Eliminar este premio?"
+          )
+        ) {
+          return;
+        }
+
+
+        const {
+          error
+        } =
+          await supabaseClient
+            .from("prizes")
+            .delete()
+            .eq(
+              "id",
+              id
+            );
+
+
+        if (error) {
+
+          showMessage(
+            adminMessage,
+            error.message,
+            "error"
+          );
+
+          return;
+
+        }
+
+
+        await cargarPremios();
+
+      };
+
+
+    document
+      .getElementById(
+        "savePrizesBtn"
+      )
+      .addEventListener(
+        "click",
+        async () => {
+
+          const items =
+            document.querySelectorAll(
+              ".prize-item"
+            );
+
+
+          if (!items.length) {
+
+            alert(
+              "No hay premios para guardar."
+            );
+
+            return;
+
+          }
+
+
+          const updates = [];
+
+
+          let total =
+            0;
+
+
+          items.forEach(
+            item => {
+
+              const id =
+                item.dataset.id;
+
+
+              const name =
+                item
+                  .querySelector(
+                    ".prize-name"
+                  )
+                  .value
+                  .trim();
+
+
+              const description =
+                item
+                  .querySelector(
+                    ".prize-description"
+                  )
+                  .value
+                  .trim();
+
+
+              const probability =
+                Number(
+                  item
+                    .querySelector(
+                      ".prize-probability"
+                    )
+                    .value
+                ) || 0;
+
+
+              const sortOrder =
+                Number(
+                  item
+                    .querySelector(
+                      ".prize-order"
+                    )
+                    .value
+                ) || 0;
+
+
+              const active =
+                item
+                  .querySelector(
+                    ".prize-active"
+                  )
+                  .checked;
+
+
+              if (active) {
+                total += probability;
+              }
+
+
+              updates.push({
+
+                id,
+
+                name,
+
+                description,
+
+                probability,
+
+                sort_order:
+                  sortOrder,
+
+                active
+
+              });
+
+            }
+          );
+
+
+          if (
+            Math.abs(
+              total - 100
+            ) > 0.001
+          ) {
+
+            alert(
+              `Las probabilidades activas deben sumar 100%. Actualmente suman ${total.toFixed(2)}%.`
+            );
+
+            return;
+
+          }
+
+
+          for (
+            const update
+            of updates
+          ) {
+
+            const {
+              error
+            } =
+              await supabaseClient
+                .from("prizes")
+                .update({
+
+                  name:
+                    update.name,
+
+                  description:
+                    update.description,
+
+                  probability:
+                    update.probability,
+
+                  sort_order:
+                    update.sort_order,
+
+                  active:
+                    update.active
+
+                })
+                .eq(
+                  "id",
+                  update.id
+                );
+
+
+            if (error) {
+
+              showMessage(
+                adminMessage,
+                error.message,
+                "error"
+              );
+
+              return;
+
+            }
+
+          }
+
+
+          await cargarPremios();
+
+
+          showMessage(
+            adminMessage,
+            "Premios y probabilidades guardados correctamente.",
+            "success"
+          );
+
+        }
+      );
+
+
+    /* ==========================================================
+       LEADS
+       ========================================================== */
+
+    document
+      .getElementById(
+        "loadLeadsBtn"
+      )
+      .addEventListener(
+        "click",
+        cargarLeads
+      );
+
+
+    async function cargarLeads() {
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
+          .from("leads")
+          .select("*")
+          .order(
+            "created_at",
+            {
+              ascending: false
+            }
+          );
+
+
+      if (error) {
+
+        showMessage(
+          adminMessage,
+          error.message,
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      leads =
+        data || [];
+
+
+      renderLeads();
+
+    }
+
+
+    function renderLeads() {
+
+      const search =
+        document
+          .getElementById(
+            "leadSearch"
+          )
+          .value
+          .trim()
+          .toLowerCase();
+
+
+      const prizeFilter =
+        document
+          .getElementById(
+            "leadPrizeFilter"
+          )
+          .value
+          .trim()
+          .toLowerCase();
+
+
+      const filtered =
+        leads.filter(
+          lead => {
+
+            const matchesSearch =
+              !search ||
+              (
+                String(
+                  lead.name || ""
+                )
+                .toLowerCase()
+                .includes(search)
+              ) ||
+              (
+                String(
+                  lead.whatsapp || ""
+                )
+                .toLowerCase()
+                .includes(search)
+              );
+
+
+            const matchesPrize =
+              !prizeFilter ||
+              String(
+                lead.prize_name || ""
+              )
+              .toLowerCase()
+              .includes(
+                prizeFilter
+              );
+
+
+            return (
+              matchesSearch &&
+              matchesPrize
+            );
+
+          }
+        );
+
+
+      const table =
+        document.getElementById(
+          "leadsTable"
+        );
+
+
+      if (!filtered.length) {
+
+        table.innerHTML =
+          `<tr>
+             <td colspan="4" class="empty">
+               No hay leads.
+             </td>
+           </tr>`;
+
+      } else {
+
+        table.innerHTML =
+          filtered
+            .map(
+              lead => `
+
+                <tr>
+
+                  <td>
+                    ${formatearFecha(
+                      lead.created_at
+                    )}
+                  </td>
+
+                  <td>
+                    ${escapeHtml(
+                      lead.name || ""
+                    )}
+                  </td>
+
+                  <td>
+                    ${escapeHtml(
+                      lead.whatsapp || ""
+                    )}
+                  </td>
+
+                  <td>
+                    ${escapeHtml(
+                      lead.prize_name || ""
+                    )}
+                  </td>
+
+                </tr>
+
+              `
+            )
+            .join("");
+
+      }
+
+
+      document
+        .getElementById(
+          "totalLeads"
+        )
+        .innerText =
+        leads.length;
+
+
+      const hoy =
+        new Date()
+          .toISOString()
+          .slice(
+            0,
+            10
+          );
+
+
+      const todayCount =
+        leads.filter(
+          lead =>
+            String(
+              lead.created_at
+            )
+            .slice(
+              0,
+              10
+            ) === hoy
+        ).length;
+
+
+      document
+        .getElementById(
+          "todayLeads"
+        )
+        .innerText =
+        todayCount;
+
+    }
+
+
+    document
+      .getElementById(
+        "leadSearch"
+      )
+      .addEventListener(
+        "input",
+        renderLeads
+      );
+
+
+    document
+      .getElementById(
+        "leadPrizeFilter"
+      )
+      .addEventListener(
+        "input",
+        renderLeads
+      );
+
+
+    /* ==========================================================
+       EXPORTAR CSV
+       ========================================================== */
+
+    document
+      .getElementById(
+        "exportLeadsBtn"
+      )
+      .addEventListener(
+        "click",
+        () => {
+
+          if (!leads.length) {
+
+            alert(
+              "No hay leads para exportar."
+            );
+
+            return;
+
+          }
+
+
+          const rows = [
+
+            [
+              "Fecha",
+              "Nombre",
+              "WhatsApp",
+              "Premio"
+            ]
+
+          ];
+
+
+          leads.forEach(
+            lead => {
+
+              rows.push([
+
+                formatearFecha(
+                  lead.created_at
+                ),
+
+                lead.name || "",
+
+                lead.whatsapp || "",
+
+                lead.prize_name || ""
+
+              ]);
+
+            }
+          );
+
+
+          const csv =
+            rows
+              .map(
+                row =>
+                  row
+                    .map(
+                      value =>
+                        `"${String(value)
+                          .replace(
+                            /"/g,
+                            '""'
+                          )}"`
+                    )
+                    .join(",")
+              )
+              .join("\n");
+
+
+          const blob =
+            new Blob(
+              [
+                "\uFEFF" +
+                csv
+              ],
+              {
+                type:
+                  "text/csv;charset=utf-8;"
+              }
+            );
+
+
+          const url =
+            URL.createObjectURL(
+              blob
+            );
+
+
+          const a =
+            document.createElement(
+              "a"
+            );
+
+
+          a.href =
+            url;
+
+          a.download =
+            `leads-ruleta-${new Date()
+              .toISOString()
+              .slice(
+                0,
+                10
+              )}.csv`;
+
+
+          a.click();
+
+
+          URL.revokeObjectURL(
+            url
+          );
+
+        }
+      );
+
+
+    /* ==========================================================
+       UTILIDADES
+       ========================================================== */
+
+    function escapeHtml(
+      value
+    ) {
+
+      return String(
+        value || ""
+      )
+      .replace(
+        /&/g,
+        "&amp;"
+      )
+      .replace(
+        /</g,
+        "&lt;"
+      )
+      .replace(
+        />/g,
+        "&gt;"
+      )
+      .replace(
+        /"/g,
+        "&quot;"
+      )
+      .replace(
+        /'/g,
+        "&#039;"
+      );
+
+    }
+
+
+    function formatearFecha(
+      fecha
+    ) {
+
+      if (!fecha) {
+        return "";
+      }
+
+
+      return new Date(
+        fecha
+      ).toLocaleString(
+        "es-AR"
+      );
+
+    }
+
+
+    /* ==========================================================
+       CARGAR TODO
+       ========================================================== */
+
+    async function cargarTodo() {
+
+      try {
+
+        await cargarConfiguracion();
+
+        await cargarRotaciones();
+
+        await cargarLeads();
+
+      } catch (error) {
+
+        console.error(
+          error
+        );
+
+        showMessage(
+          adminMessage,
+          error.message ||
+            "Error cargando el panel.",
+          "error"
+        );
+
+      }
+
+    }
+
+
+    comprobarSesion();
+
+  </script>
+
+</body>
+</html>
