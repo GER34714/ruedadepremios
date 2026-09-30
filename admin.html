@@ -1,4852 +1,3009 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel de Control | Sistema de Captación</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
-  <title>Panel Admin | Rueda de Premios</title>
+  :root {
+    --bg-1: #0a0410;
+    --bg-2: #150923;
+    --bg-3: #1e0d2e;
+    --surface: rgba(30, 15, 45, 0.65);
+    --surface-2: rgba(40, 20, 60, 0.5);
+    --border: rgba(160, 80, 255, 0.15);
+    --border-hi: rgba(180, 100, 255, 0.35);
+    --accent: #b347ff;
+    --accent-2: #7a1fff;
+    --cyan: #00e5ff;
+    --green: #00ffa3;
+    --yellow: #ffcc00;
+    --red: #ff4d6d;
+    --orange: #ff9b47;
+    --text: #ffffff;
+    --text-dim: #b8a8c8;
+    --text-mute: #6b5c7a;
+    --radius: 14px;
+    --radius-lg: 20px;
+  }
 
-  <style>
+  html, body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg-1);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
 
-    * {
-      box-sizing: border-box;
-    }
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 800px 600px at 15% 10%, rgba(179, 71, 255, 0.15), transparent 50%),
+      radial-gradient(ellipse 700px 500px at 85% 20%, rgba(0, 229, 255, 0.08), transparent 50%),
+      radial-gradient(ellipse 900px 700px at 50% 100%, rgba(122, 31, 255, 0.12), transparent 60%);
+    z-index: 0;
+  }
 
-    html {
-      scroll-behavior: smooth;
-    }
+  button, input, textarea, select {
+    font-family: inherit;
+    font-size: 14px;
+  }
 
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background:
-        radial-gradient(
-          circle at top,
-          #35105c,
-          #09020f 55%,
-          #030107
-        );
-      color: white;
-      min-height: 100vh;
-    }
+  button {
+    border: 0;
+    border-radius: 10px;
+    padding: 11px 18px;
+    cursor: pointer;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    white-space: nowrap;
+  }
 
-    body::before {
-      content: "";
+  button:hover:not(:disabled) { transform: translateY(-1px); }
+  button:active:not(:disabled) { transform: translateY(0); }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: white;
+    box-shadow: 0 8px 24px rgba(179, 71, 255, 0.35);
+  }
+  .btn-primary:hover { box-shadow: 0 10px 30px rgba(179, 71, 255, 0.5); }
+
+  .btn-success { background: linear-gradient(135deg, #00c97a, #00a86b); color: white; box-shadow: 0 6px 18px rgba(0, 200, 120, 0.3); }
+  .btn-danger { background: linear-gradient(135deg, #e63946, #c1121f); color: white; box-shadow: 0 6px 18px rgba(230, 57, 70, 0.3); }
+  .btn-ghost { background: rgba(255,255,255,0.06); color: var(--text-dim); border: 1px solid var(--border); }
+  .btn-ghost:hover { background: rgba(255,255,255,0.1); color: white; }
+  .btn-blue { background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; }
+  .btn-warning { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
+
+  .hidden { display: none !important; }
+
+  /* ============ LOGIN ============ */
+  .login-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .login-box {
+    width: 100%;
+    max-width: 420px;
+    background: var(--surface);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid var(--border-hi);
+    border-radius: var(--radius-lg);
+    padding: 40px 32px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.03) inset;
+    text-align: center;
+    animation: fadeUp 0.5s ease;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .login-box .brand-icon {
+    width: 68px; height: 68px;
+    margin: 0 auto 20px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, var(--accent), var(--cyan));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    box-shadow: 0 12px 40px rgba(179, 71, 255, 0.4);
+  }
+
+  .login-box h1 {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 6px;
+    letter-spacing: -0.5px;
+  }
+
+  .login-box .subtitle {
+    color: var(--text-mute);
+    font-size: 0.85rem;
+    margin-bottom: 28px;
+  }
+
+  /* ============ CAMPOS ============ */
+  .field { margin-bottom: 16px; }
+
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  input, textarea, select {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    background: rgba(10, 4, 20, 0.6);
+    color: white;
+    outline: none;
+    min-height: 44px;
+    transition: all 0.2s ease;
+  }
+
+  input:focus, textarea:focus, select:focus {
+    border-color: var(--accent);
+    background: rgba(10, 4, 20, 0.85);
+    box-shadow: 0 0 0 3px rgba(179, 71, 255, 0.15);
+  }
+
+  textarea { min-height: 120px; resize: vertical; font-family: inherit; }
+
+  input[type="checkbox"] {
+    min-height: auto; width: 18px; height: 18px;
+    accent-color: var(--accent); cursor: pointer;
+  }
+
+  input[type="date"] { color-scheme: dark; }
+
+  /* ============ LAYOUT ============ */
+  .app {
+    display: flex;
+    min-height: 100vh;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ============ SIDEBAR ============ */
+  .sidebar {
+    width: 250px;
+    flex-shrink: 0;
+    background: rgba(15, 7, 25, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-right: 1px solid var(--border);
+    padding: 22px 14px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 60;
+  }
+
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  .sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 8px 22px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sidebar-brand-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent), var(--cyan));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .sidebar-brand-text {
+    font-weight: 800;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    color: white;
+    line-height: 1.2;
+  }
+
+  .sidebar-brand-text small {
+    display: block;
+    color: var(--text-mute);
+    font-weight: 500;
+    font-size: 0.68rem;
+    letter-spacing: 0.8px;
+  }
+
+  .sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: transparent;
+    color: var(--text-dim);
+    padding: 11px 14px;
+    border-radius: 10px;
+    font-size: 0.87rem;
+    font-weight: 500;
+    text-align: left;
+    width: 100%;
+    border: 1px solid transparent;
+    transition: all 0.15s ease;
+  }
+
+  .sidebar-item:hover {
+    background: rgba(179, 71, 255, 0.08);
+    color: white;
+    transform: none;
+  }
+
+  .sidebar-item.active {
+    background: linear-gradient(90deg, rgba(179, 71, 255, 0.25), rgba(0, 229, 255, 0.08));
+    color: white;
+    border-color: rgba(179, 71, 255, 0.4);
+    box-shadow: 0 4px 15px rgba(179, 71, 255, 0.15);
+  }
+
+  .sidebar-item .ico { font-size: 1.05rem; width: 20px; text-align: center; }
+
+  .sidebar-sep {
+    height: 1px;
+    background: var(--border);
+    margin: 14px 6px;
+  }
+
+  .sidebar-item.danger { color: #ff9aa6; }
+  .sidebar-item.danger:hover { background: rgba(255, 77, 109, 0.12); color: white; }
+  .sidebar-item.warning { color: #ffc46b; }
+  .sidebar-item.warning:hover { background: rgba(255, 155, 71, 0.12); color: white; }
+
+  /* ============ MAIN ============ */
+  .main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(10, 4, 20, 0.75);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+  }
+
+  .topbar-left { display: flex; align-items: center; gap: 14px; min-width: 0; }
+
+  .page-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: white;
+    letter-spacing: -0.2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .page-subtitle {
+    color: var(--text-mute);
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  .hamburger {
+    display: none;
+    background: rgba(255,255,255,0.06);
+    color: white;
+    padding: 9px 13px;
+    font-size: 1.1rem;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+  }
+
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 13px;
+    border-radius: 999px;
+    background: rgba(0, 255, 163, 0.1);
+    border: 1px solid rgba(0, 255, 163, 0.3);
+    color: var(--green);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .status-pill.paused {
+    background: rgba(255, 77, 109, 0.1);
+    border-color: rgba(255, 77, 109, 0.3);
+    color: var(--red);
+  }
+
+  .status-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 10px var(--green);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  .status-pill.paused .status-dot {
+    background: var(--red);
+    box-shadow: 0 0 10px var(--red);
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  .container {
+    width: 100%;
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+  }
+
+  /* ============ SECCIONES ============ */
+  .admin-section { display: none; }
+  .admin-section.active { display: block; animation: fadeUp 0.3s ease; }
+
+  .section-header { margin-bottom: 24px; }
+  .section-header h2 {
+    color: white;
+    font-size: 1.65rem;
+    font-weight: 800;
+    letter-spacing: -0.6px;
+    margin-bottom: 6px;
+  }
+  .section-header p {
+    color: var(--text-mute);
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  /* ============ CARDS ============ */
+  .card {
+    background: var(--surface);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    margin-bottom: 20px;
+  }
+
+  .card h3 {
+    color: white;
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+  }
+
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+
+  .small { color: var(--text-mute); font-size: 0.83rem; line-height: 1.6; }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 20px;
+  }
+
+  /* ============ HERO / DASHBOARD ============ */
+  .hero-card {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, rgba(122, 31, 255, 0.25), rgba(0, 229, 255, 0.08));
+    border: 1px solid var(--border-hi);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    margin-bottom: 24px;
+    box-shadow: 0 20px 60px rgba(122, 31, 255, 0.15);
+  }
+
+  .hero-card::before {
+    content: "";
+    position: absolute;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(179, 71, 255, 0.3), transparent 70%);
+    top: -150px; right: -100px;
+    pointer-events: none;
+  }
+
+  .hero-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 26px;
+    position: relative;
+  }
+
+  .hero-title {
+    font-size: 1.4rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+  }
+
+  .hero-subtitle { color: var(--text-dim); font-size: 0.85rem; }
+
+  .hero-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 14px;
+    position: relative;
+  }
+
+  .hero-stat {
+    background: rgba(0,0,0,0.35);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+    backdrop-filter: blur(10px);
+  }
+
+  .hero-stat-value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--green);
+    line-height: 1;
+    letter-spacing: -1px;
+  }
+
+  .hero-stat-label {
+    color: var(--text-mute);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 10px;
+    font-weight: 600;
+  }
+
+  .hero-stat-note { color: var(--text-mute); font-size: 0.72rem; margin-top: 4px; }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 24px;
+    position: relative;
+  }
+
+  /* ============ MÉTRICAS ============ */
+  .period-tabs {
+    display: inline-flex;
+    gap: 4px;
+    background: rgba(0,0,0,0.35);
+    border: 1px solid var(--border);
+    padding: 5px;
+    border-radius: 12px;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+  }
+
+  .period-btn {
+    background: transparent;
+    color: var(--text-mute);
+    padding: 9px 16px;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 600;
+  }
+
+  .period-btn:hover { background: rgba(179, 71, 255, 0.1); color: white; transform: none; }
+  .period-btn.active {
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: white;
+    box-shadow: 0 4px 12px rgba(179, 71, 255, 0.3);
+  }
+
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px;
+    margin-bottom: 22px;
+  }
+
+  .metric-box {
+    position: relative;
+    overflow: hidden;
+    background: var(--surface);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    transition: all 0.2s ease;
+  }
+
+  .metric-box:hover {
+    border-color: var(--border-hi);
+    transform: translateY(-2px);
+  }
+
+  .metric-box::after {
+    content: "";
+    position: absolute;
+    width: 90px; height: 90px;
+    right: -30px; top: -30px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(179, 71, 255, 0.18), transparent 70%);
+    pointer-events: none;
+  }
+
+  .metric-box-label {
+    color: var(--text-mute);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .metric-box-value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: white;
+    margin-top: 8px;
+    line-height: 1;
+    letter-spacing: -1px;
+  }
+
+  .metric-box-note { color: var(--text-mute); font-size: 0.72rem; margin-top: 8px; }
+
+  .metric-box.green .metric-box-value { color: var(--green); }
+  .metric-box.cyan .metric-box-value { color: var(--cyan); }
+  .metric-box.yellow .metric-box-value { color: var(--yellow); }
+  .metric-box.purple .metric-box-value { color: var(--accent); }
+  .metric-box.red .metric-box-value { color: var(--red); }
+  .metric-box.orange .metric-box-value { color: var(--orange); }
+
+  /* ============ CHARTS ============ */
+  .chart-wrap {
+    background: rgba(0,0,0,0.25);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+
+  .chart-wrap h4 {
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .chart-canvas { width: 100%; height: 220px; display: block; }
+
+  /* ============ TABLAS ============ */
+  .table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: rgba(0,0,0,0.2);
+  }
+
+  table { width: 100%; border-collapse: collapse; min-width: 800px; }
+
+  th, td { padding: 13px 15px; text-align: left; font-size: 0.85rem; }
+  th {
+    color: var(--text-mute);
+    background: rgba(0,0,0,0.35);
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+    font-weight: 700;
+    border-bottom: 1px solid var(--border);
+  }
+  td { border-bottom: 1px solid rgba(255,255,255,0.04); color: var(--text-dim); }
+  tr:last-child td { border-bottom: 0; }
+  tr:hover td { background: rgba(179, 71, 255, 0.04); }
+
+  /* ============ SOURCES / PRIZES METRICS ============ */
+  .bar-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .bar-row:last-child { border-bottom: 0; }
+  .bar-label { flex: 1; font-size: 0.88rem; color: var(--text-dim); font-weight: 500; }
+  .bar-track {
+    flex: 2;
+    height: 8px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--cyan));
+    border-radius: inherit;
+    transition: width 0.6s ease;
+  }
+  .bar-value { font-weight: 700; color: var(--green); min-width: 70px; text-align: right; font-size: 0.88rem; }
+
+  /* ============ STATUS BADGES ============ */
+  .badge {
+    display: inline-flex;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .badge.nuevo { background: rgba(0, 229, 255, 0.15); color: var(--cyan); border: 1px solid rgba(0, 229, 255, 0.3); }
+  .badge.contactado { background: rgba(255, 204, 0, 0.15); color: var(--yellow); border: 1px solid rgba(255, 204, 0, 0.3); }
+  .badge.interesado { background: rgba(179, 71, 255, 0.15); color: var(--accent); border: 1px solid rgba(179, 71, 255, 0.3); }
+  .badge.convertido { background: rgba(0, 255, 163, 0.15); color: var(--green); border: 1px solid rgba(0, 255, 163, 0.3); }
+  .badge.descartado { background: rgba(255, 77, 109, 0.15); color: var(--red); border: 1px solid rgba(255, 77, 109, 0.3); }
+
+  /* ============ AYUDA ============ */
+  .help-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px;
+    margin-bottom: 18px;
+  }
+
+  .help-card h4 {
+    color: white;
+    font-size: 1rem;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .help-card p { color: var(--text-dim); font-size: 0.88rem; line-height: 1.7; margin-bottom: 12px; }
+
+  .help-example {
+    background: rgba(0,0,0,0.35);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin: 12px 0;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  .help-example b { color: var(--cyan); }
+
+  .prob-formula {
+    background: linear-gradient(135deg, rgba(179, 71, 255, 0.1), rgba(0, 229, 255, 0.05));
+    border: 1px solid var(--border-hi);
+    border-radius: 10px;
+    padding: 16px;
+    font-family: 'Courier New', monospace;
+    color: var(--cyan);
+    text-align: center;
+    font-size: 0.95rem;
+    margin: 12px 0;
+    font-weight: 600;
+  }
+
+  /* ============ PREMIOS (edit) ============ */
+  .prize-item {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-bottom: 14px;
+    transition: all 0.2s ease;
+  }
+
+  .prize-item:hover { border-color: var(--border-hi); }
+  .prize-item.inactive { opacity: 0.5; }
+
+  .prize-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+
+  .prize-title-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--cyan);
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+  }
+
+  .prize-title-badge .num {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--cyan));
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+  }
+
+  .prize-mini-status { color: var(--text-mute); font-size: 0.72rem; margin-top: 4px; }
+
+  .probability-bar {
+    height: 6px;
+    border-radius: 99px;
+    background: rgba(255,255,255,0.06);
+    overflow: hidden;
+    margin-top: 8px;
+  }
+
+  .probability-bar-fill {
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, var(--accent), var(--cyan));
+    border-radius: inherit;
+    transition: width 0.25s ease;
+  }
+
+  .percentage-total {
+    margin-top: 18px;
+    padding: 16px;
+    border-radius: var(--radius);
+    font-size: 0.95rem;
+    font-weight: 700;
+    background: rgba(0,0,0,0.35);
+    border: 1px solid var(--border);
+    text-align: center;
+  }
+
+  .percentage-ok { color: var(--green); border-color: rgba(0, 255, 163, 0.4); background: rgba(0, 255, 163, 0.06); }
+  .percentage-error { color: var(--red); border-color: rgba(255, 77, 109, 0.4); background: rgba(255, 77, 109, 0.06); }
+
+  /* ============ ROTACIONES ============ */
+  .rotation-item {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-bottom: 14px;
+  }
+
+  .rotation-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+
+  .rotation-badge {
+    display: inline-flex;
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    background: rgba(0, 255, 163, 0.12);
+    border: 1px solid rgba(0, 255, 163, 0.35);
+    color: var(--green);
+    text-transform: uppercase;
+  }
+
+  .rotation-badge.off {
+    background: rgba(120, 120, 120, 0.08);
+    border-color: rgba(120, 120, 120, 0.3);
+    color: var(--text-mute);
+  }
+
+  /* ============ INVERSIÓN ============ */
+  .inv-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .inv-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .inv-card::after {
+    content: "";
+    position: absolute;
+    width: 90px; height: 90px;
+    right: -30px; bottom: -30px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 255, 163, 0.12), transparent 70%);
+  }
+
+  .inv-card-label {
+    color: var(--text-mute);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+  }
+
+  .inv-card-value {
+    font-size: 1.9rem;
+    font-weight: 800;
+    color: white;
+    margin-top: 8px;
+    letter-spacing: -1px;
+  }
+
+  .inv-card-note { color: var(--text-mute); font-size: 0.72rem; margin-top: 8px; }
+
+  .inv-card.green .inv-card-value { color: var(--green); }
+  .inv-card.cyan .inv-card-value { color: var(--cyan); }
+  .inv-card.purple .inv-card-value { color: var(--accent); }
+  .inv-card.yellow .inv-card-value { color: var(--yellow); }
+  .inv-card.red .inv-card-value { color: var(--red); }
+  .inv-card.orange .inv-card-value { color: var(--orange); }
+
+  /* ============ MODAL ============ */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(6px);
+    z-index: 200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .modal-backdrop.active { display: flex; animation: fadeUp 0.2s ease; }
+
+  .modal {
+    background: linear-gradient(145deg, #1a0d2a, #0f0618);
+    border: 1px solid var(--border-hi);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    max-width: 520px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.7);
+  }
+
+  .modal h3 {
+    color: white;
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .modal-close {
+    background: transparent;
+    color: var(--text-mute);
+    font-size: 1.4rem;
+    padding: 4px 10px;
+    line-height: 1;
+  }
+
+  .modal-close:hover { color: white; background: rgba(255,255,255,0.05); }
+
+  /* ============ MESSAGE ============ */
+  .message {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    z-index: 999;
+    min-width: 280px;
+    max-width: 420px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+    display: none;
+    animation: slideIn 0.3s ease;
+  }
+
+  @keyframes slideIn {
+    from { transform: translateX(120%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+
+  .message.success {
+    display: block;
+    background: linear-gradient(135deg, #00a86b, #008854);
+    color: white;
+    border: 1px solid rgba(0, 255, 163, 0.5);
+  }
+
+  .message.error {
+    display: block;
+    background: linear-gradient(135deg, #c1121f, #8a0f18);
+    color: white;
+    border: 1px solid rgba(255, 77, 109, 0.5);
+  }
+
+  .empty {
+    padding: 32px 20px;
+    text-align: center;
+    color: var(--text-mute);
+    background: rgba(0,0,0,0.15);
+    border-radius: var(--radius);
+    font-size: 0.88rem;
+    border: 1px dashed var(--border);
+  }
+
+  .overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.65);
+    z-index: 55;
+    backdrop-filter: blur(3px);
+  }
+  .overlay.active { display: block; }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 900px) {
+    .hamburger { display: inline-flex; }
+    .sidebar {
       position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background:
-        radial-gradient(
-          circle at 20% 20%,
-          rgba(180, 0, 255, 0.08),
-          transparent 30%
-        ),
-        radial-gradient(
-          circle at 80% 10%,
-          rgba(0, 255, 255, 0.05),
-          transparent 25%
-        );
-      z-index: -1;
-    }
-
-    button,
-    input,
-    textarea,
-    select {
-      font-family: inherit;
-    }
-
-    button {
-      border: 0;
-      border-radius: 9px;
-      padding: 11px 16px;
-      cursor: pointer;
-      font-weight: bold;
-      transition:
-        transform 0.18s ease,
-        opacity 0.18s ease,
-        box-shadow 0.18s ease;
-    }
-
-    button:hover {
-      transform: translateY(-1px);
-    }
-
-    button:active {
-      transform: translateY(0);
-    }
-
-    button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .btn-primary {
-      background: linear-gradient(
-        45deg,
-        #8b00ff,
-        #d900ff
-      );
-      color: white;
-      box-shadow:
-        0 5px 18px rgba(180, 0, 255, 0.2);
-    }
-
-    .btn-success {
-      background: #00a86b;
-      color: white;
-    }
-
-    .btn-danger {
-      background: #d62828;
-      color: white;
-    }
-
-    .btn-secondary {
-      background: #333;
-      color: white;
-    }
-
-    .btn-blue {
-      background: #0066ff;
-      color: white;
-    }
-
-    .btn-warning {
-      background: #d89400;
-      color: white;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    /* ==========================================================
-       LOGIN
-       ========================================================== */
-
-    .login-screen {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .login-box {
-      width: 100%;
-      max-width: 410px;
-      background:
-        linear-gradient(
-          145deg,
-          rgba(28, 12, 40, 0.98),
-          rgba(10, 5, 15, 0.98)
-        );
-      border: 1px solid #8b35ff;
-      border-radius: 22px;
-      padding: 32px;
-      box-shadow:
-        0 0 30px rgba(170, 0, 255, 0.3),
-        0 20px 60px rgba(0, 0, 0, 0.35);
-      text-align: center;
-    }
-
-    .login-box img {
-      max-width: 220px;
-      max-height: 120px;
-      object-fit: contain;
-      margin-bottom: 18px;
-    }
-
-    .login-box h1 {
-      color: #ffcc00;
-      margin: 0 0 24px;
-      font-size: 1.6rem;
-    }
-
-    /* ==========================================================
-       CAMPOS
-       ========================================================== */
-
-    .field {
-      margin-bottom: 15px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 7px;
-      font-weight: bold;
-      color: #ffcc00;
-      font-size: 0.9rem;
-    }
-
-    input,
-    textarea,
-    select {
-      width: 100%;
-      border: 1px solid #555;
-      border-radius: 9px;
-      padding: 12px;
-      background: #120c18;
-      color: white;
-      outline: none;
-      min-height: 44px;
-    }
-
-    textarea {
-      min-height: 130px;
-      resize: vertical;
-    }
-
-    input:focus,
-    textarea:focus,
-    select:focus {
-      border-color: #00ffff;
-      box-shadow:
-        0 0 10px rgba(0, 255, 255, 0.15);
-    }
-
-    input[type="checkbox"] {
-      min-height: auto;
-      width: auto;
-      accent-color: #a500ff;
-    }
-
-    /* ==========================================================
-       TOPBAR
-       ========================================================== */
-
-    .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      background:
-        rgba(8, 3, 13, 0.97);
-      backdrop-filter: blur(15px);
-      border-bottom: 1px solid #422052;
-      padding: 12px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 15px;
-    }
-
-    .topbar-left {
-      display: flex;
-      align-items: center;
-      gap: 13px;
-      min-width: 0;
-    }
-
-    .topbar h1 {
-      margin: 0;
-      color: #ffcc00;
-      font-size: 1.25rem;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .online-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: rgba(0, 190, 110, 0.12);
-      border: 1px solid rgba(0, 190, 110, 0.4);
-      color: #72ffc5;
-      font-size: 0.75rem;
-      white-space: nowrap;
-    }
-
-    .online-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: #00e889;
-      box-shadow: 0 0 8px #00e889;
-    }
-
-    /* ==========================================================
-       NAVEGACIÓN
-       ========================================================== */
-
-    .admin-nav {
-      position: sticky;
-      top: 61px;
-      z-index: 40;
-      background:
-        rgba(10, 5, 15, 0.94);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid #28182f;
-      padding: 8px 15px;
-      overflow-x: auto;
-    }
-
-    .admin-nav-inner {
-      width: min(1200px, 100%);
-      margin: auto;
-      display: flex;
-      gap: 7px;
-      min-width: max-content;
-    }
-
-    .nav-btn {
-      background: transparent;
-      color: #aaa;
-      border: 1px solid transparent;
-      padding: 9px 12px;
-      border-radius: 8px;
-      font-size: 0.82rem;
-      white-space: nowrap;
-    }
-
-    .nav-btn:hover,
-    .nav-btn.active {
-      color: white;
-      background: rgba(139, 0, 255, 0.14);
-      border-color: #542072;
-    }
-
-    /* ==========================================================
-       CONTENEDOR
-       ========================================================== */
-
-    .container {
-      width: min(1200px, calc(100% - 30px));
-      margin: 25px auto 60px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns:
-        repeat(
-          auto-fit,
-          minmax(320px, 1fr)
-        );
-      gap: 20px;
-    }
-
-    .card {
-      background:
-        linear-gradient(
-          145deg,
-          rgba(25, 12, 35, 0.96),
-          rgba(12, 6, 18, 0.96)
-        );
-      border: 1px solid #43204f;
-      border-radius: 16px;
-      padding: 20px;
-      box-shadow:
-        0 0 20px rgba(130, 0, 200, 0.08);
-    }
-
-    .card.full {
-      grid-column: 1 / -1;
-    }
-
-    .card h2 {
-      margin-top: 0;
-      color: #ffcc00;
-      font-size: 1.15rem;
-    }
-
-    .section-title {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 15px;
-      margin-bottom: 15px;
-    }
-
-    .section-title h2 {
-      margin: 0;
-    }
-
-    .row {
-      display: grid;
-      grid-template-columns:
-        repeat(
-          auto-fit,
-          minmax(200px, 1fr)
-        );
-      gap: 15px;
-    }
-
-    .actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 15px;
-    }
-
-    .small {
-      color: #aaa;
-      font-size: 0.85rem;
-      line-height: 1.5;
-    }
-
-    /* ==========================================================
-       DASHBOARD
-       ========================================================== */
-
-    .welcome-card {
-      background:
-        linear-gradient(
-          135deg,
-          rgba(84, 0, 130, 0.35),
-          rgba(14, 8, 20, 0.96)
-        );
-      border-color: #682b85;
-    }
-
-    .welcome-card h2 {
-      font-size: 1.45rem;
-      margin-bottom: 7px;
-    }
-
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns:
-        repeat(
-          4,
-          minmax(0, 1fr)
-        );
-      gap: 15px;
-      margin-bottom: 20px;
-    }
-
-    .dashboard-stat {
-      position: relative;
-      overflow: hidden;
-      background:
-        linear-gradient(
-          145deg,
-          #160b20,
-          #0c0611
-        );
-      border: 1px solid #43204f;
-      border-radius: 15px;
-      padding: 18px;
-    }
-
-    .dashboard-stat::after {
-      content: "";
-      position: absolute;
-      width: 80px;
-      height: 80px;
-      right: -25px;
-      top: -25px;
-      border-radius: 50%;
-      background: rgba(160, 0, 255, 0.09);
-    }
-
-    .dashboard-stat-label {
-      color: #aaa;
-      font-size: 0.78rem;
-      text-transform: uppercase;
-    }
-
-    .dashboard-stat-value {
-      font-size: 2rem;
-      font-weight: bold;
-      color: #00ff99;
-      margin-top: 5px;
-    }
-
-    .dashboard-stat-note {
-      color: #777;
-      font-size: 0.75rem;
-      margin-top: 5px;
-    }
-
-    .quick-grid {
-      display: grid;
-      grid-template-columns:
-        repeat(
-          auto-fit,
-          minmax(180px, 1fr)
-        );
-      gap: 12px;
-    }
-
-    .quick-btn {
-      text-align: left;
-      background: #120a18;
-      border: 1px solid #40204d;
-      color: white;
-      padding: 15px;
-    }
-
-    .quick-btn strong {
-      display: block;
-      color: #ffcc00;
-      margin-bottom: 5px;
-    }
-
-    .quick-btn span {
-      color: #999;
-      font-size: 0.78rem;
-      font-weight: normal;
-    }
-
-    /* ==========================================================
-       ESTADO
-       ========================================================== */
-
-    .status-box {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 15px;
-      background: #100817;
-      border: 1px solid #392041;
-      border-radius: 12px;
-      padding: 15px;
-    }
-
-    .status-main {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .status-light {
-      width: 11px;
-      height: 11px;
-      border-radius: 50%;
-      background: #00e889;
-      box-shadow: 0 0 12px #00e889;
-      flex: 0 0 auto;
-    }
-
-    .status-light.off {
-      background: #ff4d4d;
-      box-shadow: 0 0 12px #ff4d4d;
-    }
-
-    .status-label {
-      font-weight: bold;
-    }
-
-    /* ==========================================================
-       IMÁGENES
-       ========================================================== */
-
-    .preview {
-      width: 100%;
-      max-height: 180px;
-      object-fit: contain;
-      background: #080808;
-      border-radius: 10px;
-      margin-top: 10px;
-      padding: 10px;
-      border: 1px solid #2d2032;
-    }
-
-    .preview-bg {
-      width: 100%;
-      height: 180px;
-      object-fit: cover;
-      background: #080808;
-      border-radius: 10px;
-      margin-top: 10px;
-    }
-
-    /* ==========================================================
-       SWITCH
-       ========================================================== */
-
-    .switch {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-height: 35px;
-    }
-
-    /* ==========================================================
-       ROTACIONES
-       ========================================================== */
-
-    .rotation-item {
-      background: #110a18;
-      border: 1px solid #43204f;
-      border-radius: 12px;
-      padding: 15px;
-      margin-bottom: 12px;
-      transition: border-color 0.2s ease;
-    }
-
-    .rotation-item:hover {
-      border-color: #743b8c;
-    }
-
-    .rotation-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-
-    .rotation-badge {
-      display: inline-flex;
-      padding: 5px 9px;
-      border-radius: 999px;
-      font-size: 0.72rem;
-      background: rgba(0, 168, 107, 0.12);
-      border: 1px solid rgba(0, 168, 107, 0.3);
-      color: #7dffca;
-    }
-
-    .rotation-badge.off {
-      background: rgba(180, 180, 180, 0.08);
-      border-color: #444;
-      color: #999;
-    }
-
-    /* ==========================================================
-       PREMIOS
-       ========================================================== */
-
-    .prize-item {
-      background:
-        linear-gradient(
-          145deg,
-          #140b1c,
-          #0e0712
-        );
-      border: 1px solid #43204f;
-      border-radius: 13px;
-      padding: 15px;
-      margin-bottom: 12px;
-    }
-
-    .prize-item.inactive {
-      opacity: 0.55;
-    }
-
-    .prize-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-
-    .prize-number {
-      color: #00ffff;
-      font-weight: bold;
-    }
-
-    .prize-mini-status {
-      color: #777;
-      font-size: 0.75rem;
-    }
-
-    .probability-bar {
-      height: 6px;
-      border-radius: 99px;
-      background: #25182b;
-      overflow: hidden;
-      margin-top: 7px;
-    }
-
-    .probability-bar-fill {
-      height: 100%;
-      width: 0;
-      background:
-        linear-gradient(
-          90deg,
-          #8b00ff,
-          #00ffff
-        );
-      border-radius: inherit;
-      transition: width 0.2s ease;
-    }
-
-    .percentage-total {
-      margin-top: 15px;
-      padding: 13px;
-      border-radius: 10px;
-      font-size: 1rem;
-      font-weight: bold;
-      background: #100817;
-      border: 1px solid #38203f;
-    }
-
-    .percentage-ok {
-      color: #00ff99;
-      border-color: rgba(0, 255, 153, 0.3);
-    }
-
-    .percentage-error {
-      color: #ff5555;
-      border-color: rgba(255, 85, 85, 0.3);
-    }
-
-    /* ==========================================================
-       STATS
-       ========================================================== */
-
-    .stats {
-      display: grid;
-      grid-template-columns:
-        repeat(
-          auto-fit,
-          minmax(180px, 1fr)
-        );
-      gap: 15px;
-      margin-bottom: 20px;
-    }
-
-    .stat {
-      background: #110a18;
-      border: 1px solid #43204f;
-      border-radius: 12px;
-      padding: 20px;
-    }
-
-    .stat-number {
-      font-size: 2rem;
-      font-weight: bold;
-      color: #00ff99;
-      margin-top: 5px;
-    }
-
-    /* ==========================================================
-       TABLE
-       ========================================================== */
-
-    .lead-table-wrapper {
-      overflow-x: auto;
-      border: 1px solid #302039;
-      border-radius: 10px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 700px;
-    }
-
-    th,
-    td {
-      padding: 11px;
-      border-bottom: 1px solid #33233a;
-      text-align: left;
-    }
-
-    tr:last-child td {
-      border-bottom: 0;
-    }
-
-    th {
-      color: #ffcc00;
-      background: #100817;
-      position: sticky;
-      top: 0;
-    }
-
-    /* ==========================================================
-       MENSAJES
-       ========================================================== */
-
-    .message {
-      margin-top: 15px;
-      padding: 12px;
-      border-radius: 8px;
-      display: none;
-    }
-
-    .message.success {
-      display: block;
-      background: rgba(0, 180, 100, 0.15);
-      border: 1px solid #00a86b;
-      color: #7dffca;
-    }
-
-    .message.error {
-      display: block;
-      background: rgba(220, 40, 40, 0.15);
-      border: 1px solid #d62828;
-      color: #ff9999;
-    }
-
-    .empty {
-      padding: 25px 15px;
-      text-align: center;
-      color: #999;
-      background: rgba(0,0,0,0.12);
-      border-radius: 10px;
-    }
-
-    /* ==========================================================
-       SECCIONES
-       ========================================================== */
-
-    .admin-section {
-      scroll-margin-top: 115px;
-      margin-bottom: 20px;
-    }
-
-    .section-description {
-      color: #999;
-      font-size: 0.85rem;
-      margin-top: -5px;
-      margin-bottom: 18px;
-    }
-
-    /* ==========================================================
-       MOBILE
-       ========================================================== */
-
-    @media (max-width: 900px) {
-
-      .dashboard-grid {
-        grid-template-columns:
-          repeat(2, minmax(0, 1fr));
-      }
-
-    }
-
-    @media (max-width: 650px) {
-
-      .container {
-        width: calc(100% - 14px);
-        margin-top: 15px;
-      }
-
-      .topbar {
-        padding: 10px;
-        gap: 8px;
-      }
-
-      .topbar h1 {
-        font-size: 0.95rem;
-      }
-
-      .online-badge {
-        display: none;
-      }
-
-      .admin-nav {
-        top: 56px;
-        padding: 7px;
-      }
-
-      .nav-btn {
-        padding: 8px 10px;
-      }
-
-      .card {
-        padding: 14px;
-        border-radius: 13px;
-      }
-
-      .grid {
-        grid-template-columns: 1fr;
-        gap: 12px;
-      }
-
-      .dashboard-grid {
-        grid-template-columns:
-          repeat(2, minmax(0, 1fr));
-        gap: 10px;
-      }
-
-      .dashboard-stat {
-        padding: 14px;
-      }
-
-      .dashboard-stat-value {
-        font-size: 1.55rem;
-      }
-
-      .row {
-        grid-template-columns: 1fr;
-        gap: 0;
-      }
-
-      .actions {
-        display: grid;
-        grid-template-columns: 1fr;
-      }
-
-      .actions button {
-        width: 100%;
-      }
-
-      .section-title,
-      .rotation-top,
-      .status-box {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      .prize-header {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      .login-box {
-        padding: 25px 18px;
-      }
-
-    }
-
-    @media (max-width: 400px) {
-
-      .dashboard-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .topbar-left {
-        min-width: 0;
-      }
-
-    }
-
-  </style>
+      top: 0; left: -280px;
+      transition: left 0.3s cubic-bezier(0.4,0,0.2,1);
+      box-shadow: 8px 0 40px rgba(0,0,0,0.6);
+      z-index: 100;
+    }
+    .sidebar.open { left: 0; }
+    .container { padding: 20px 16px 60px; }
+    .hero-card { padding: 24px; }
+  }
+
+  @media (max-width: 600px) {
+    .topbar { padding: 12px 16px; }
+    .page-title { font-size: 0.9rem; }
+    .status-pill { display: none; }
+    .hero-stat-value { font-size: 1.6rem; }
+    .metric-box-value { font-size: 1.6rem; }
+    .inv-card-value { font-size: 1.5rem; }
+    .section-header h2 { font-size: 1.3rem; }
+    .card { padding: 18px; }
+    .row { grid-template-columns: 1fr; gap: 0; }
+    .actions { display: grid; grid-template-columns: 1fr; }
+    .actions button { width: 100%; }
+    .message { left: 12px; right: 12px; bottom: 12px; min-width: 0; }
+    .chart-canvas { height: 180px; }
+  }
+</style>
 </head>
 
 <body>
 
-  <!-- ==========================================================
-       LOGIN
-       ========================================================== -->
+<!-- ================= LOGIN ================= -->
+<div id="loginScreen" class="login-screen">
+  <div class="login-box">
+    <div class="brand-icon">📈</div>
+    <h1>Panel de Control</h1>
+    <p class="subtitle">Sistema de Captación de Clientes</p>
 
-  <div
-    id="loginScreen"
-    class="login-screen"
-  >
-
-    <div class="login-box">
-
-      <img
-        src="https://iili.io/KyPwhml.md.png"
-        alt="Rueda de Premios"
-      >
-
-      <h1>PANEL ADMIN</h1>
-
-      <div class="field">
-
-        <label for="loginEmail">
-          Email
-        </label>
-
-        <input
-          type="email"
-          id="loginEmail"
-          placeholder="admin@email.com"
-          autocomplete="email"
-        >
-
-      </div>
-
-      <div class="field">
-
-        <label for="loginPassword">
-          Contraseña
-        </label>
-
-        <input
-          type="password"
-          id="loginPassword"
-          placeholder="••••••••"
-          autocomplete="current-password"
-        >
-
-      </div>
-
-      <button
-        class="btn-primary"
-        style="width:100%;"
-        id="loginBtn"
-      >
-        INGRESAR
-      </button>
-
-      <div
-        id="loginMessage"
-        class="message"
-      ></div>
-
+    <div class="field">
+      <label for="loginEmail">Email</label>
+      <input type="email" id="loginEmail" placeholder="admin@email.com" autocomplete="email">
+    </div>
+    <div class="field">
+      <label for="loginPassword">Contraseña</label>
+      <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
     </div>
 
+    <button class="btn-primary" style="width:100%;" id="loginBtn">INGRESAR</button>
+    <div id="loginMessage" class="message"></div>
   </div>
+</div>
 
 
-  <!-- ==========================================================
-       PANEL
-       ========================================================== -->
+<!-- ================= PANEL ================= -->
+<div id="adminPanel" class="hidden">
+  <div class="app">
+    <div class="overlay" id="overlay"></div>
 
-  <div
-    id="adminPanel"
-    class="hidden"
-  >
-
-    <!-- TOPBAR -->
-
-    <div class="topbar">
-
-      <div class="topbar-left">
-
-        <h1>
-          🎯 RUEDA DE PREMIOS — ADMIN
-        </h1>
-
-        <span class="online-badge">
-          <span class="online-dot"></span>
-          CONECTADO
-        </span>
-
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="sidebar-brand-icon">📈</div>
+        <div class="sidebar-brand-text">
+          CAPTACIÓN
+          <small>PANEL DE CONTROL</small>
+        </div>
       </div>
 
-      <button
-        class="btn-danger"
-        id="logoutBtn"
-      >
-        CERRAR SESIÓN
+      <button class="sidebar-item active" data-target="dashboardSection">
+        <span class="ico">🏠</span> Inicio
+      </button>
+      <button class="sidebar-item" data-target="metricsSection">
+        <span class="ico">📊</span> Métricas
+      </button>
+      <button class="sidebar-item" data-target="leadsSection">
+        <span class="ico">👥</span> Contactos
+      </button>
+      <button class="sidebar-item" data-target="investmentSection">
+        <span class="ico">💰</span> Inversión
       </button>
 
-    </div>
+      <div class="sidebar-sep"></div>
 
+      <button class="sidebar-item" data-target="prizesSection">
+        <span class="ico">🎁</span> Premios
+      </button>
+      <button class="sidebar-item" data-target="rotationsSection">
+        <span class="ico">🔄</span> Rotaciones
+      </button>
+      <button class="sidebar-item" data-target="imagesSection">
+        <span class="ico">🖼️</span> Imágenes
+      </button>
+      <button class="sidebar-item" data-target="textsSection">
+        <span class="ico">📝</span> Textos
+      </button>
+      <button class="sidebar-item" data-target="configSection">
+        <span class="ico">⚙️</span> Configuración
+      </button>
 
-    <!-- NAVEGACIÓN -->
+      <div class="sidebar-sep"></div>
 
-    <nav class="admin-nav">
+      <button class="sidebar-item" data-target="helpSection">
+        <span class="ico">❓</span> ¿Cómo funciona?
+      </button>
+      <button class="sidebar-item warning" id="pauseBtn">
+        <span class="ico">⏸️</span> <span id="pauseBtnText">Pausar sistema</span>
+      </button>
+      <button class="sidebar-item danger" data-target="toolsSection">
+        <span class="ico">🛠️</span> Herramientas
+      </button>
+    </aside>
 
-      <div class="admin-nav-inner">
+    <!-- MAIN -->
+    <div class="main">
+      <!-- TOPBAR -->
+      <div class="topbar">
+        <div class="topbar-left">
+          <button class="hamburger" id="hamburgerBtn">☰</button>
+          <div>
+            <div class="page-title" id="pageTitle">Inicio</div>
+            <div class="page-subtitle" id="pageSubtitle">Resumen general del sistema</div>
+          </div>
+        </div>
 
-        <button
-          class="nav-btn active"
-          data-target="dashboardSection"
-        >
-          📊 Inicio
-        </button>
-
-        <button
-          class="nav-btn"
-          data-target="configSection"
-        >
-          ⚙️ Configuración
-        </button>
-
-        <button
-          class="nav-btn"
-          data-target="imagesSection"
-        >
-          🖼️ Imágenes
-        </button>
-
-        <button
-          class="nav-btn"
-          data-target="textsSection"
-        >
-          📝 Textos
-        </button>
-
-        <button
-          class="nav-btn"
-          data-target="rotationsSection"
-        >
-          🔄 Rotaciones
-        </button>
-
-        <button
-          class="nav-btn"
-          data-target="prizesSection"
-        >
-          🎁 Premios
-        </button>
-
-        <button
-          class="nav-btn"
-          data-target="leadsSection"
-        >
-          👥 Participantes
-        </button>
-
+        <div style="display:flex; gap:10px; align-items:center;">
+          <span class="status-pill" id="statusPill">
+            <span class="status-dot"></span>
+            <span id="statusPillText">ACTIVO</span>
+          </span>
+          <button class="btn-ghost" id="logoutBtn">Salir</button>
+        </div>
       </div>
 
-    </nav>
+      <div class="container">
 
-
-    <main class="container">
-
-
-      <!-- ======================================================
-           DASHBOARD
-           ====================================================== -->
-
-      <section
-        id="dashboardSection"
-        class="admin-section"
-      >
-
-        <div class="card welcome-card">
-
-          <h2>
-            Panel de control
-          </h2>
-
-          <p class="small">
-            Desde acá podés administrar la configuración,
-            premios, rotaciones e información de los
-            participantes de tu Rueda de Premios.
-          </p>
-
-        </div>
-
-        <br>
-
-
-        <div class="dashboard-grid">
-
-          <div class="dashboard-stat">
-
-            <div class="dashboard-stat-label">
-              Participantes totales
-            </div>
-
-            <div
-              class="dashboard-stat-value"
-              id="dashboardTotalLeads"
-            >
-              0
-            </div>
-
-            <div class="dashboard-stat-note">
-              Registros almacenados
-            </div>
-
-          </div>
-
-
-          <div class="dashboard-stat">
-
-            <div class="dashboard-stat-label">
-              Participantes hoy
-            </div>
-
-            <div
-              class="dashboard-stat-value"
-              id="dashboardTodayLeads"
-            >
-              0
-            </div>
-
-            <div class="dashboard-stat-note">
-              Durante el día actual
-            </div>
-
-          </div>
-
-
-          <div class="dashboard-stat">
-
-            <div class="dashboard-stat-label">
-              Rotaciones
-            </div>
-
-            <div
-              class="dashboard-stat-value"
-              id="dashboardRotations"
-            >
-              0
-            </div>
-
-            <div class="dashboard-stat-note">
-              Configuradas
-            </div>
-
-          </div>
-
-
-          <div class="dashboard-stat">
-
-            <div class="dashboard-stat-label">
-              Premios activos
-            </div>
-
-            <div
-              class="dashboard-stat-value"
-              id="dashboardPrizes"
-            >
-              0
-            </div>
-
-            <div class="dashboard-stat-note">
-              En todas las rotaciones
-            </div>
-
-          </div>
-
-        </div>
-
-
-        <div class="card">
-
-          <div class="section-title">
-
-            <h2>
-              Estado actual
-            </h2>
-
-          </div>
-
-          <div class="status-box">
-
-            <div class="status-main">
-
-              <span
-                id="rotationStatusLight"
-                class="status-light"
-              ></span>
-
+        <!-- ==================== INICIO ==================== -->
+        <section id="dashboardSection" class="admin-section active">
+          <div class="hero-card">
+            <div class="hero-header">
               <div>
-
-                <div
-                  id="rotationStatusLabel"
-                  class="status-label"
-                >
-                  Cargando...
+                <div class="hero-title">Resumen general</div>
+                <div class="hero-subtitle">
+                  Rotación actual:
+                  <b style="color:var(--cyan);" id="heroRotationName">—</b>
                 </div>
+              </div>
+            </div>
 
-                <div
-                  id="rotationStatusDetail"
-                  class="small"
-                >
-                  -
+            <div class="hero-stats">
+              <div class="hero-stat">
+                <div class="hero-stat-value" id="heroTotal">0</div>
+                <div class="hero-stat-label">Contactos</div>
+              </div>
+              <div class="hero-stat">
+                <div class="hero-stat-value" id="heroToday">0</div>
+                <div class="hero-stat-label">Hoy</div>
+              </div>
+              <div class="hero-stat">
+                <div class="hero-stat-value" id="heroWeek">0</div>
+                <div class="hero-stat-label">Esta semana</div>
+              </div>
+              <div class="hero-stat">
+                <div class="hero-stat-value" id="heroConverted">0</div>
+                <div class="hero-stat-label">Convertidos</div>
+              </div>
+            </div>
+
+            <div class="hero-actions">
+              <button class="btn-primary" data-target="leadsSection">👥 VER CONTACTOS</button>
+              <button class="btn-ghost" data-target="metricsSection">📊 VER MÉTRICAS</button>
+              <button class="btn-ghost" data-target="helpSection">❓ ¿CÓMO FUNCIONA?</button>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="card">
+              <h3>💰 Inversión total</h3>
+              <div class="metric-box-value green" id="dashInvestment">$0</div>
+              <p class="small" style="margin-top:8px;">Gastos cargados en el sistema</p>
+            </div>
+
+            <div class="card">
+              <h3>🎯 Costo por contacto</h3>
+              <div class="metric-box-value cyan" id="dashCPL">$0</div>
+              <p class="small" style="margin-top:8px;">Inversión ÷ contactos generados</p>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ==================== MÉTRICAS ==================== -->
+        <section id="metricsSection" class="admin-section">
+          <div class="section-header">
+            <h2>📊 Métricas y rendimiento</h2>
+            <p>Analizá el movimiento generado por el sistema de captación.</p>
+          </div>
+
+          <div class="period-tabs" id="metricsPeriod">
+            <button class="period-btn active" data-period="today">Hoy</button>
+            <button class="period-btn" data-period="7d">7 días</button>
+            <button class="period-btn" data-period="30d">30 días</button>
+            <button class="period-btn" data-period="all">Todo</button>
+          </div>
+
+          <div class="metric-grid">
+            <div class="metric-box cyan">
+              <div class="metric-box-label">👁️ Visitas</div>
+              <div class="metric-box-value" id="mVisits">0</div>
+              <div class="metric-box-note">Llegaron a la página</div>
+            </div>
+            <div class="metric-box purple">
+              <div class="metric-box-label">🎯 Interacciones</div>
+              <div class="metric-box-value" id="mSpins">0</div>
+              <div class="metric-box-note">Iniciaron el proceso</div>
+            </div>
+            <div class="metric-box green">
+              <div class="metric-box-label">👥 Contactos</div>
+              <div class="metric-box-value" id="mLeads">0</div>
+              <div class="metric-box-note">Dejaron sus datos</div>
+            </div>
+            <div class="metric-box yellow">
+              <div class="metric-box-label">📈 Conversión</div>
+              <div class="metric-box-value" id="mConversion">0%</div>
+              <div class="metric-box-note">Visita → contacto</div>
+            </div>
+          </div>
+
+          <div class="metric-grid">
+            <div class="metric-box orange">
+              <div class="metric-box-label">🎁 Premios entregados</div>
+              <div class="metric-box-value" id="mPrizesWon">0</div>
+              <div class="metric-box-note">Beneficios otorgados</div>
+            </div>
+            <div class="metric-box cyan">
+              <div class="metric-box-label">📱 WhatsApp</div>
+              <div class="metric-box-value" id="mContacts">0</div>
+              <div class="metric-box-note">Con número cargado</div>
+            </div>
+            <div class="metric-box purple">
+              <div class="metric-box-label">✨ Nuevos este mes</div>
+              <div class="metric-box-value" id="mMonthNew">0</div>
+              <div class="metric-box-note">Contactos del mes</div>
+            </div>
+            <div class="metric-box green">
+              <div class="metric-box-label">🏆 Convertidos</div>
+              <div class="metric-box-value" id="mConverted">0</div>
+              <div class="metric-box-note">Clientes finales</div>
+            </div>
+          </div>
+
+          <div class="chart-wrap">
+            <h4>📈 Interacciones por día</h4>
+            <canvas id="chartSpins" class="chart-canvas"></canvas>
+          </div>
+
+          <div class="chart-wrap">
+            <h4>👥 Nuevos contactos por día</h4>
+            <canvas id="chartLeads" class="chart-canvas"></canvas>
+          </div>
+
+          <div class="grid-2">
+            <div class="card">
+              <h3>🌐 Origen de contactos</h3>
+              <div id="metricsSources">
+                <div class="empty">Sin datos en el período.</div>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>🎁 Beneficios obtenidos</h3>
+              <div id="metricsPrizes">
+                <div class="empty">Sin datos en el período.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="btn-ghost" id="exportMetricsBtn">📥 Exportar métricas a CSV</button>
+          </div>
+        </section>
+
+
+        <!-- ==================== CONTACTOS ==================== -->
+        <section id="leadsSection" class="admin-section">
+          <div class="section-header">
+            <h2>👥 Contactos</h2>
+            <p>Administrá los contactos generados. Cambiá su estado, agregá notas y hacé seguimiento.</p>
+          </div>
+
+          <div class="card">
+            <div class="row">
+              <div class="field">
+                <label for="leadSearch">Buscar</label>
+                <input id="leadSearch" type="text" placeholder="Nombre o WhatsApp...">
+              </div>
+              <div class="field">
+                <label for="leadStatusFilter">Estado</label>
+                <select id="leadStatusFilter">
+                  <option value="">Todos</option>
+                  <option value="nuevo">Nuevo</option>
+                  <option value="contactado">Contactado</option>
+                  <option value="interesado">Interesado</option>
+                  <option value="convertido">Convertido</option>
+                  <option value="descartado">Descartado</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="leadSourceFilter">Origen</label>
+                <input id="leadSourceFilter" type="text" placeholder="Instagram, WhatsApp...">
+              </div>
+            </div>
+
+            <div class="actions">
+              <button class="btn-ghost" id="loadLeadsBtn">🔄 Actualizar</button>
+              <button class="btn-success" id="exportLeadsBtn">📥 Exportar CSV</button>
+            </div>
+
+            <div class="table-wrap" style="margin-top:22px;">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Fecha</th>
+                    <th>Nombre</th>
+                    <th>WhatsApp</th>
+                    <th>Premio</th>
+                    <th>Origen</th>
+                    <th>Estado</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="leadsTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ==================== INVERSIÓN ==================== -->
+        <section id="investmentSection" class="admin-section">
+          <div class="section-header">
+            <h2>💰 Inversión y rentabilidad</h2>
+            <p>Registrá tus gastos y descubrí cuánto te cuesta cada contacto y cuál es tu retorno.</p>
+          </div>
+
+          <div class="inv-summary">
+            <div class="inv-card red">
+              <div class="inv-card-label">💸 Inversión total</div>
+              <div class="inv-card-value" id="invTotal">$0</div>
+              <div class="inv-card-note">Todos los gastos cargados</div>
+            </div>
+            <div class="inv-card orange">
+              <div class="inv-card-label">📅 Inversión del mes</div>
+              <div class="inv-card-value" id="invMonth">$0</div>
+              <div class="inv-card-note">Mes actual</div>
+            </div>
+            <div class="inv-card cyan">
+              <div class="inv-card-label">👥 Costo por contacto</div>
+              <div class="inv-card-value" id="invCPL">$0</div>
+              <div class="inv-card-note">Inversión ÷ contactos</div>
+            </div>
+            <div class="inv-card green">
+              <div class="inv-card-label">📈 ROI estimado</div>
+              <div class="inv-card-value" id="invROI">0%</div>
+              <div class="inv-card-note">Basado en valor de venta</div>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="card">
+              <h3>➕ Registrar gasto</h3>
+              <div class="field">
+                <label for="expConcept">Concepto</label>
+                <input id="expConcept" type="text" placeholder="Ej: Publicidad Instagram">
+              </div>
+              <div class="row">
+                <div class="field">
+                  <label for="expAmount">Monto ($)</label>
+                  <input id="expAmount" type="number" step="0.01" placeholder="0.00">
                 </div>
-
+                <div class="field">
+                  <label for="expCategory">Categoría</label>
+                  <select id="expCategory">
+                    <option value="publicidad">Publicidad</option>
+                    <option value="premios">Premios</option>
+                    <option value="diseno">Diseño</option>
+                    <option value="operativo">Operativo</option>
+                    <option value="otro">Otro</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="expDate">Fecha</label>
+                  <input id="expDate" type="date">
+                </div>
               </div>
-
-            </div>
-
-            <div
-              id="activeRotationName"
-              class="small"
-            >
-              Sin rotación
-            </div>
-
-          </div>
-
-        </div>
-
-        <br>
-
-
-        <div class="card">
-
-          <h2>
-            Accesos rápidos
-          </h2>
-
-          <div class="quick-grid">
-
-            <button
-              class="quick-btn"
-              data-target="prizesSection"
-            >
-              <strong>
-                🎁 Administrar premios
-              </strong>
-
-              <span>
-                Editar nombres, probabilidades y estados.
-              </span>
-
-            </button>
-
-
-            <button
-              class="quick-btn"
-              data-target="rotationsSection"
-            >
-              <strong>
-                🔄 Administrar rotaciones
-              </strong>
-
-              <span>
-                Crear y organizar diferentes ruedas.
-              </span>
-
-            </button>
-
-
-            <button
-              class="quick-btn"
-              data-target="leadsSection"
-            >
-              <strong>
-                👥 Ver participantes
-              </strong>
-
-              <span>
-                Consultar registros y exportarlos.
-              </span>
-
-            </button>
-
-
-            <button
-              class="quick-btn"
-              data-target="configSection"
-            >
-              <strong>
-                ⚙️ Configuración
-              </strong>
-
-              <span>
-                Contacto, título y datos generales.
-              </span>
-
-            </button>
-
-          </div>
-
-        </div>
-
-      </section>
-
-
-      <!-- ======================================================
-           CONFIGURACIÓN GENERAL
-           ====================================================== -->
-
-      <section
-        id="configSection"
-        class="admin-section"
-      >
-
-        <div class="card">
-
-          <div class="section-title">
-
-            <div>
-
-              <h2>
-                ⚙️ Configuración general
-              </h2>
-
-              <div class="section-description">
-                Información general que utiliza la página pública.
+              <div class="field">
+                <label for="expNotes">Notas (opcional)</label>
+                <input id="expNotes" type="text" placeholder="Detalles...">
               </div>
-
+              <div class="actions">
+                <button class="btn-success" id="addExpenseBtn">💾 GUARDAR GASTO</button>
+              </div>
             </div>
 
+            <div class="card">
+              <h3>⚙️ Configuración de rentabilidad</h3>
+              <div class="field">
+                <label for="avgSaleValue">Valor promedio de venta ($)</label>
+                <input id="avgSaleValue" type="number" step="0.01" placeholder="0.00">
+                <p class="small" style="margin-top:6px;">Sirve para estimar el ROI.</p>
+              </div>
+              <div class="field">
+                <label for="targetLeads">Objetivo mensual de contactos</label>
+                <input id="targetLeads" type="number" placeholder="100">
+                <p class="small" style="margin-top:6px;">Meta para medir tu progreso.</p>
+              </div>
+              <div class="actions">
+                <button class="btn-primary" id="saveInvSettingsBtn">💾 GUARDAR CONFIGURACIÓN</button>
+              </div>
+            </div>
           </div>
-
-
-          <div class="row">
-
-            <div class="field">
-
-              <label for="siteTitle">
-                Título de la ruleta
-              </label>
-
-              <input
-                id="siteTitle"
-                type="text"
-              >
-
-            </div>
-
-
-            <div class="field">
-
-              <label for="contactName">
-                Nombre de contacto
-              </label>
-
-              <input
-                id="contactName"
-                type="text"
-              >
-
-            </div>
-
-
-            <div class="field">
-
-              <label for="phone">
-                Teléfono mostrado
-              </label>
-
-              <input
-                id="phone"
-                type="text"
-              >
-
-            </div>
-
-
-            <div class="field">
-
-              <label for="whatsapp">
-                WhatsApp
-              </label>
-
-              <input
-                id="whatsapp"
-                type="text"
-                placeholder="54911..."
-              >
-
-            </div>
-
-          </div>
-
-
-          <div class="actions">
-
-            <button
-              class="btn-success"
-              id="saveGeneralBtn"
-            >
-              💾 GUARDAR CONFIGURACIÓN
-            </button>
-
-          </div>
-
-        </div>
-
-      </section>
-
-
-      <!-- ======================================================
-           IMÁGENES
-           ====================================================== -->
-
-      <section
-        id="imagesSection"
-        class="admin-section"
-      >
-
-        <div class="grid">
-
-
-          <!-- LOGO -->
 
           <div class="card">
-
-            <h2>
-              🖼️ Logo
-            </h2>
-
-            <div class="field">
-
-              <input
-                type="file"
-                id="logoFile"
-                accept="image/png,image/jpeg,image/webp"
-              >
-
+            <h3>📋 Historial de gastos</h3>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Fecha</th>
+                    <th>Concepto</th>
+                    <th>Categoría</th>
+                    <th>Monto</th>
+                    <th>Notas</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="expensesTable"></tbody>
+              </table>
             </div>
-
-            <img
-              id="logoPreview"
-              class="preview"
-              src=""
-              alt="Logo"
-            >
-
-            <div class="actions">
-
-              <button
-                class="btn-success"
-                id="uploadLogoBtn"
-              >
-                SUBIR LOGO
-              </button>
-
-            </div>
-
           </div>
+        </section>
 
 
-          <!-- BACKGROUND -->
+        <!-- ==================== PREMIOS ==================== -->
+        <section id="prizesSection" class="admin-section">
+          <div class="section-header">
+            <h2>🎁 Premios y probabilidades</h2>
+            <p>Los premios activos deben sumar exactamente 100% de probabilidad.</p>
+          </div>
 
           <div class="card">
-
-            <h2>
-              🌄 Background
-            </h2>
-
             <div class="field">
-
-              <input
-                type="file"
-                id="backgroundFile"
-                accept="image/png,image/jpeg,image/webp"
-              >
-
+              <label for="prizeRotationSelect">Rotación a editar</label>
+              <select id="prizeRotationSelect"></select>
             </div>
 
-            <img
-              id="backgroundPreview"
-              class="preview-bg"
-              src=""
-              alt="Background"
-            >
+            <div id="prizesList"></div>
+
+            <div id="percentageTotal" class="percentage-total">
+              Total de probabilidades activas: 0.00%
+            </div>
 
             <div class="actions">
-
-              <button
-                class="btn-success"
-                id="uploadBackgroundBtn"
-              >
-                SUBIR BACKGROUND
-              </button>
-
+              <button class="btn-primary" id="addPrizeBtn">+ AGREGAR PREMIO</button>
+              <button class="btn-success" id="savePrizesBtn">💾 GUARDAR PREMIOS</button>
             </div>
-
           </div>
+        </section>
 
 
-          <!-- OG -->
+        <!-- ==================== ROTACIONES ==================== -->
+        <section id="rotationsSection" class="admin-section">
+          <div class="section-header">
+            <h2>🔄 Rotaciones</h2>
+            <p>Una rotación contiene el conjunto de premios que se usarán en un período.</p>
+          </div>
 
           <div class="card">
+            <h3>⚙️ Rotación automática</h3>
+            <div class="row">
+              <div class="field">
+                <label>Rotación automática</label>
+                <div style="display:flex; align-items:center; gap:10px; height:44px;">
+                  <input type="checkbox" id="rotationEnabled">
+                  <span style="color:var(--text-dim); font-size:0.88rem;">Activada</span>
+                </div>
+              </div>
 
-            <h2>
-              🖼️ Imagen Open Graph
-            </h2>
-
-            <div class="field">
-
-              <input
-                type="file"
-                id="ogFile"
-                accept="image/png,image/jpeg,image/webp"
-              >
-
+              <div class="field">
+                <label for="rotationInterval">Cambiar cada</label>
+                <select id="rotationInterval">
+                  <option value="1">1 hora</option>
+                  <option value="6">6 horas</option>
+                  <option value="12">12 horas</option>
+                  <option value="24">24 horas</option>
+                  <option value="48">48 horas</option>
+                  <option value="72">72 horas</option>
+                  <option value="168">7 días</option>
+                </select>
+              </div>
             </div>
 
-            <img
-              id="ogPreview"
-              class="preview"
-              src=""
-              alt="OG"
-            >
+            <div id="rotationList" style="margin-top:22px;"></div>
 
             <div class="actions">
-
-              <button
-                class="btn-success"
-                id="uploadOgBtn"
-              >
-                SUBIR OG IMAGE
-              </button>
-
+              <button class="btn-primary" id="addRotationBtn">+ AGREGAR ROTACIÓN</button>
+              <button class="btn-success" id="saveRotationSettingsBtn">💾 GUARDAR CONFIGURACIÓN</button>
             </div>
+          </div>
+        </section>
 
+
+        <!-- ==================== IMÁGENES ==================== -->
+        <section id="imagesSection" class="admin-section">
+          <div class="section-header">
+            <h2>🖼️ Imágenes</h2>
+            <p>Al subir una imagen se actualiza automáticamente en la página pública.</p>
           </div>
 
-        </div>
-
-      </section>
-
-
-      <!-- ======================================================
-           TEXTOS
-           ====================================================== -->
-
-      <section
-        id="textsSection"
-        class="admin-section"
-      >
-
-        <div class="card">
-
-          <h2>
-            📝 Textos de la página
-          </h2>
-
-          <div class="section-description">
-            Modificá los textos que aparecen en la página pública
-            sin tener que tocar el código.
-          </div>
-
-          <div class="row">
-
-            <div class="field">
-
-              <label for="rulesText">
-                📜 Reglas
-              </label>
-
-              <textarea
-                id="rulesText"
-                placeholder="Escribí aquí las reglas..."
-              ></textarea>
-
-            </div>
-
-
-            <div class="field">
-
-              <label for="prizesText">
-                🎁 Premios
-              </label>
-
-              <textarea
-                id="prizesText"
-                placeholder="Información sobre los premios..."
-              ></textarea>
-
-            </div>
-
-
-            <div class="field">
-
-              <label for="noticesText">
-                📢 Avisos
-              </label>
-
-              <textarea
-                id="noticesText"
-                placeholder="Avisos para los jugadores..."
-              ></textarea>
-
-            </div>
-
-
-            <div class="field">
-
-              <label for="legalText">
-                ⚖️ Aviso legal
-              </label>
-
-              <textarea
-                id="legalText"
-                placeholder="Aviso legal y condiciones..."
-              ></textarea>
-
-            </div>
-
-          </div>
-
-
-          <button
-            class="btn-success"
-            id="saveTextsBtn"
-          >
-            💾 GUARDAR TEXTOS
-          </button>
-
-        </div>
-
-      </section>
-
-
-      <!-- ======================================================
-           ROTACIONES
-           ====================================================== -->
-
-      <section
-        id="rotationsSection"
-        class="admin-section"
-      >
-
-        <div class="card">
-
-          <h2>
-            🔄 Rotación automática
-          </h2>
-
-          <div class="section-description">
-            Configurá cada cuánto tiempo la página pública
-            cambia entre las rotaciones activas.
-          </div>
-
-
-          <div class="row">
-
-            <div class="field">
-
-              <label>
-                Rotación automática
-              </label>
-
-              <div class="switch">
-
-                <input
-                  type="checkbox"
-                  id="rotationEnabled"
-                >
-
-                <span>
-                  Activada
-                </span>
-
+          <div class="grid-2">
+            <div class="card">
+              <h3>🖼️ Logo</h3>
+              <div class="field">
+                <input type="file" id="logoFile" accept="image/png,image/jpeg,image/webp">
               </div>
-
-            </div>
-
-
-            <div class="field">
-
-              <label for="rotationInterval">
-                Cambiar cada
-              </label>
-
-              <select id="rotationInterval">
-
-                <option value="1">
-                  1 hora
-                </option>
-
-                <option value="6">
-                  6 horas
-                </option>
-
-                <option value="12">
-                  12 horas
-                </option>
-
-                <option value="24">
-                  24 horas
-                </option>
-
-                <option value="48">
-                  48 horas
-                </option>
-
-                <option value="72">
-                  72 horas
-                </option>
-
-                <option value="168">
-                  7 días
-                </option>
-
-              </select>
-
-            </div>
-
-          </div>
-
-
-          <p class="small">
-            Cuando está activada, la página pública irá
-            cambiando automáticamente entre las rotaciones
-            activas según el intervalo configurado.
-          </p>
-
-
-          <div id="rotationList"></div>
-
-
-          <div class="actions">
-
-            <button
-              class="btn-primary"
-              id="addRotationBtn"
-            >
-              + AGREGAR ROTACIÓN
-            </button>
-
-            <button
-              class="btn-success"
-              id="saveRotationSettingsBtn"
-            >
-              💾 GUARDAR ROTACIÓN
-            </button>
-
-          </div>
-
-        </div>
-
-      </section>
-
-
-      <!-- ======================================================
-           PREMIOS
-           ====================================================== -->
-
-      <section
-        id="prizesSection"
-        class="admin-section"
-      >
-
-        <div class="card">
-
-          <h2>
-            🎁 Premios y probabilidades
-          </h2>
-
-          <div class="section-description">
-            Los premios activos deben sumar exactamente
-            100% de probabilidad.
-          </div>
-
-
-          <div class="field">
-
-            <label for="prizeRotationSelect">
-              Rotación a editar
-            </label>
-
-            <select id="prizeRotationSelect"></select>
-
-          </div>
-
-
-          <div id="prizesList"></div>
-
-
-          <div
-            id="percentageTotal"
-            class="percentage-total"
-          >
-            Total de probabilidades activas: 0.00%
-          </div>
-
-
-          <div class="actions">
-
-            <button
-              class="btn-primary"
-              id="addPrizeBtn"
-            >
-              + AGREGAR PREMIO
-            </button>
-
-            <button
-              class="btn-success"
-              id="savePrizesBtn"
-            >
-              💾 GUARDAR PREMIOS
-            </button>
-
-          </div>
-
-        </div>
-
-      </section>
-
-
-      <!-- ======================================================
-           LEADS
-           ====================================================== -->
-
-      <section
-        id="leadsSection"
-        class="admin-section"
-      >
-
-        <div class="card">
-
-          <h2>
-            👥 Participantes
-          </h2>
-
-          <div class="section-description">
-            Personas que completaron sus datos después de girar
-            la rueda.
-          </div>
-
-
-          <div class="stats">
-
-            <div class="stat">
-
-              <div class="small">
-                TOTAL DE PARTICIPANTES
+              <img id="logoPreview" style="width:100%; max-height:180px; object-fit:contain; background:#080808; border-radius:10px; margin-top:10px; padding:10px; border:1px solid var(--border); display:none;" alt="Logo">
+              <div class="actions">
+                <button class="btn-success" id="uploadLogoBtn">SUBIR</button>
+                <button class="btn-danger" id="removeLogoBtn">🗑️ QUITAR</button>
               </div>
+            </div>
 
-              <div
-                class="stat-number"
-                id="totalLeads"
-              >
-                0
+            <div class="card">
+              <h3>🌄 Fondo</h3>
+              <div class="field">
+                <input type="file" id="backgroundFile" accept="image/png,image/jpeg,image/webp">
               </div>
-
-            </div>
-
-
-            <div class="stat">
-
-              <div class="small">
-                PARTICIPANTES DE HOY
+              <img id="backgroundPreview" style="width:100%; height:180px; object-fit:cover; background:#080808; border-radius:10px; margin-top:10px; border:1px solid var(--border); display:none;" alt="Fondo">
+              <div class="actions">
+                <button class="btn-success" id="uploadBackgroundBtn">SUBIR</button>
+                <button class="btn-danger" id="removeBackgroundBtn">🗑️ QUITAR</button>
               </div>
+            </div>
 
-              <div
-                class="stat-number"
-                id="todayLeads"
-              >
-                0
+            <div class="card">
+              <h3>🔗 Imagen para compartir</h3>
+              <p class="small">Se muestra cuando compartís el link en WhatsApp o redes.</p>
+              <div class="field">
+                <input type="file" id="ogFile" accept="image/png,image/jpeg,image/webp">
               </div>
+              <img id="ogPreview" style="width:100%; max-height:180px; object-fit:contain; background:#080808; border-radius:10px; margin-top:10px; padding:10px; border:1px solid var(--border); display:none;" alt="OG">
+              <div class="actions">
+                <button class="btn-success" id="uploadOgBtn">SUBIR</button>
+                <button class="btn-danger" id="removeOgBtn">🗑️ QUITAR</button>
+              </div>
+            </div>
+          </div>
+        </section>
 
+
+        <!-- ==================== TEXTOS ==================== -->
+        <section id="textsSection" class="admin-section">
+          <div class="section-header">
+            <h2>📝 Textos de la página</h2>
+            <p>Modificá los textos que aparecen en la página pública.</p>
+          </div>
+
+          <div class="card">
+            <div class="row">
+              <div class="field">
+                <label for="rulesText">📜 Reglas</label>
+                <textarea id="rulesText"></textarea>
+              </div>
+              <div class="field">
+                <label for="prizesText">🎁 Información de premios</label>
+                <textarea id="prizesText"></textarea>
+              </div>
+              <div class="field">
+                <label for="noticesText">📢 Avisos</label>
+                <textarea id="noticesText"></textarea>
+              </div>
+              <div class="field">
+                <label for="legalText">⚖️ Aviso legal</label>
+                <textarea id="legalText"></textarea>
+              </div>
             </div>
 
+            <button class="btn-success" id="saveTextsBtn">💾 GUARDAR TEXTOS</button>
+          </div>
+        </section>
+
+
+        <!-- ==================== CONFIGURACIÓN ==================== -->
+        <section id="configSection" class="admin-section">
+          <div class="section-header">
+            <h2>⚙️ Configuración general</h2>
+            <p>Información general que utiliza la página pública.</p>
           </div>
 
-
-          <div class="row">
-
-            <div class="field">
-
-              <label for="leadSearch">
-                Buscar
-              </label>
-
-              <input
-                id="leadSearch"
-                type="text"
-                placeholder="Nombre o WhatsApp..."
-              >
-
+          <div class="card">
+            <div class="row">
+              <div class="field">
+                <label for="siteTitle">Título de la página</label>
+                <input id="siteTitle" type="text">
+              </div>
+              <div class="field">
+                <label for="contactName">Nombre de contacto</label>
+                <input id="contactName" type="text">
+              </div>
+              <div class="field">
+                <label for="phone">Teléfono mostrado</label>
+                <input id="phone" type="text">
+              </div>
+              <div class="field">
+                <label for="whatsapp">WhatsApp</label>
+                <input id="whatsapp" type="text" placeholder="54911...">
+              </div>
             </div>
 
+            <div class="actions">
+              <button class="btn-success" id="saveGeneralBtn">💾 GUARDAR CONFIGURACIÓN</button>
+            </div>
+          </div>
+        </section>
 
-            <div class="field">
 
-              <label for="leadPrizeFilter">
-                Premio
-              </label>
+        <!-- ==================== AYUDA ==================== -->
+        <section id="helpSection" class="admin-section">
+          <div class="section-header">
+            <h2>❓ ¿Cómo funciona el sistema?</h2>
+            <p>Explicación clara de cómo funciona todo, sin tecnicismos.</p>
+          </div>
 
-              <input
-                id="leadPrizeFilter"
-                type="text"
-                placeholder="Ej: 15% extra"
-              >
+          <div class="help-card">
+            <h4>🎯 ¿Qué es este sistema?</h4>
+            <p>Es una herramienta de <b>captación de clientes</b>. La persona llega a la página, interactúa con el sistema, y a cambio de un premio o beneficio deja sus datos de contacto (nombre + WhatsApp). Vos te quedás con un contacto valioso para hacer seguimiento comercial.</p>
+          </div>
 
+          <div class="help-card">
+            <h4>🎲 ¿Cómo funcionan las probabilidades?</h4>
+            <p>Cada premio tiene una <b>probabilidad asignada en porcentaje</b>. Ese porcentaje indica qué tan probable es que ese premio salga cuando alguien interactúa.</p>
+
+            <div class="help-example">
+              <b>Ejemplo:</b> si tenés 4 premios:
+              <br>• 10% OFF → <b>40%</b>
+              <br>• 20% OFF → <b>30%</b>
+              <br>• Premio sorpresa → <b>20%</b>
+              <br>• $50.000 → <b>10%</b>
+              <br><br>
+              Significa que, en promedio, de cada 100 interacciones:
+              <br>• 40 personas sacarán 10% OFF
+              <br>• 30 personas sacarán 20% OFF
+              <br>• 20 personas sacarán premio sorpresa
+              <br>• 10 personas sacarán $50.000
             </div>
 
+            <div class="prob-formula">
+              Total de probabilidades activas = 100%
+            </div>
+
+            <p>⚠️ <b>Importante:</b> la suma de todos los premios activos debe dar exactamente 100%. Si suma menos, algunos casos no tendrían premio. Si suma más, el sistema no puede calcular correctamente.</p>
           </div>
 
-
-          <div class="actions">
-
-            <button
-              class="btn-blue"
-              id="loadLeadsBtn"
-            >
-              🔄 ACTUALIZAR PARTICIPANTES
-            </button>
-
-            <button
-              class="btn-success"
-              id="exportLeadsBtn"
-            >
-              📥 EXPORTAR CSV
-            </button>
-
+          <div class="help-card">
+            <h4>🔄 ¿Qué es una "rotación"?</h4>
+            <p>Una rotación es un <b>conjunto de premios</b> que se usa durante un período. Por ejemplo:</p>
+            <div class="help-example">
+              <b>Rotación "Septiembre"</b> → 10% OFF (40%), 20% OFF (30%), Premio sorpresa (20%), $50.000 (10%)<br>
+              <b>Rotación "Octubre"</b> → 15% OFF (50%), 25% OFF (30%), Premio sorpresa (20%)
+            </div>
+            <p>Con la <b>rotación automática</b> activada, el sistema va cambiando de rotación cada X horas automáticamente. Muy útil para variar los beneficios según la campaña.</p>
           </div>
 
-
-          <div
-            class="lead-table-wrapper"
-            style="margin-top:20px;"
-          >
-
-            <table>
-
-              <thead>
-
-                <tr>
-
-                  <th>Fecha</th>
-                  <th>Nombre</th>
-                  <th>WhatsApp</th>
-                  <th>Premio</th>
-
-                </tr>
-
-              </thead>
-
-              <tbody id="leadsTable"></tbody>
-
-            </table>
-
+          <div class="help-card">
+            <h4>📈 ¿Qué significa la "tasa de conversión"?</h4>
+            <p>Es el porcentaje de personas que <b>completan el proceso</b> (dejan sus datos) sobre el total de personas que llegaron a la página.</p>
+            <div class="help-example">
+              <b>Ejemplo:</b> si 100 personas entran a la página y 65 dejan sus datos → la conversión es del <b>65%</b>.<br><br>
+              Cuanto más alta, mejor está funcionando el sistema.
+            </div>
           </div>
 
-        </div>
+          <div class="help-card">
+            <h4>💰 ¿Cómo se calcula el "costo por contacto"?</h4>
+            <p>Es lo que te costó conseguir cada contacto. Se calcula dividiendo toda tu inversión por la cantidad de contactos obtenidos.</p>
+            <div class="prob-formula">
+              Costo por contacto = Inversión total ÷ Cantidad de contactos
+            </div>
+            <div class="help-example">
+              <b>Ejemplo:</b> si invertiste $50.000 y conseguiste 100 contactos → cada contacto te costó <b>$500</b>.<br><br>
+              Cuanto más bajo este número, más eficiente es tu campaña.
+            </div>
+          </div>
 
-      </section>
+          <div class="help-card">
+            <h4>📊 ¿Qué es el "ROI"?</h4>
+            <p>ROI = <b>Retorno de Inversión</b>. Te dice cuánto ganaste por cada peso invertido.</p>
+            <div class="prob-formula">
+              ROI = ((Ganancia − Inversión) ÷ Inversión) × 100
+            </div>
+            <div class="help-example">
+              <b>Ejemplo:</b> invertiste $50.000 y ganaste $150.000 → ROI = ((150.000 − 50.000) ÷ 50.000) × 100 = <b>200%</b>.<br><br>
+              Un ROI positivo significa que ganaste más de lo que gastaste.
+            </div>
+            <p class="small" style="margin-top:12px;">💡 <b>Tip:</b> cargá tu "valor promedio de venta" en la sección <b>Inversión</b> para que el sistema calcule el ROI automáticamente.</p>
+          </div>
+
+          <div class="help-card">
+            <h4>🏷️ Estados de los contactos</h4>
+            <p>Cada contacto puede tener uno de estos estados:</p>
+            <div class="help-example">
+              <b>🆕 Nuevo</b> → recién llegó, todavía no lo contactaste.<br>
+              <b>📞 Contactado</b> → ya le escribiste o llamaste.<br>
+              <b>🔥 Interesado</b> → mostró interés, está en proceso.<br>
+              <b>✅ Convertido</b> → se convirtió en cliente.<br>
+              <b>❌ Descartado</b> → no le interesa o no califica.
+            </div>
+            <p>Usá los estados para hacer seguimiento comercial ordenado.</p>
+          </div>
+
+          <div class="help-card">
+            <h4>🌐 ¿Qué es el "origen"?</h4>
+            <p>Es de dónde llegó cada persona. Por ejemplo, si compartís el link con <code style="background:rgba(0,0,0,0.4); padding:2px 6px; border-radius:4px; color:var(--cyan);">?origen=instagram</code>, todos los que entren desde ahí quedan marcados como "instagram".</p>
+            <div class="help-example">
+              <b>Ejemplos de orígenes:</b><br>
+              <code style="color:var(--cyan);">?origen=instagram</code> — desde Instagram<br>
+              <code style="color:var(--cyan);">?origen=whatsapp</code> — desde WhatsApp<br>
+              <code style="color:var(--cyan);">?origen=facebook</code> — desde Facebook<br>
+              <code style="color:var(--cyan);">?origen=qr</code> — desde un código QR<br>
+              <code style="color:var(--cyan);">?origen=difusion</code> — desde difusión masiva
+            </div>
+            <p>Así podés saber <b>qué canal te trae más contactos</b> y enfocar tu esfuerzo ahí.</p>
+          </div>
+        </section>
 
 
-      <!-- MENSAJE GENERAL -->
+        <!-- ==================== HERRAMIENTAS ==================== -->
+        <section id="toolsSection" class="admin-section">
+          <div class="section-header">
+            <h2>🛠️ Herramientas avanzadas</h2>
+            <p>⚠️ Estas acciones pueden modificar o eliminar información. Usá con cuidado.</p>
+          </div>
 
-      <div
-        id="adminMessage"
-        class="message"
-      ></div>
+          <div class="card">
+            <h3>🔄 Restaurar configuración</h3>
+            <p class="small">Vuelve los textos y datos generales a sus valores por defecto.</p>
+            <div class="actions">
+              <button class="btn-warning" id="restoreSettingsBtn">🔄 RESTAURAR CONFIGURACIÓN</button>
+            </div>
+          </div>
 
+          <div class="card">
+            <h3>🎁 Restaurar premios</h3>
+            <p class="small">Reemplaza los premios de la rotación activa por valores por defecto.</p>
+            <div class="actions">
+              <button class="btn-warning" id="restorePrizesBtn">🎁 RESTAURAR PREMIOS</button>
+            </div>
+          </div>
 
-    </main>
+          <div class="card" style="border-color: rgba(255,77,109,0.4);">
+            <h3 style="color: var(--red);">🗑️ Restablecer todo</h3>
+            <p class="small">Elimina TODOS los contactos, eventos, gastos y rotaciones. Esta acción no se puede deshacer.</p>
+            <div class="actions">
+              <button class="btn-danger" id="resetAllBtn">🗑️ RESTABLECER TODO</button>
+            </div>
+          </div>
+        </section>
 
+      </div>
+    </div>
   </div>
+</div>
 
 
-  <!-- ==========================================================
-       SUPABASE
-       ========================================================== -->
+<!-- ================= MODAL: EDITAR CONTACTO ================= -->
+<div class="modal-backdrop" id="leadModal">
+  <div class="modal">
+    <h3>
+      Editar contacto
+      <button class="modal-close" id="closeLeadModal">×</button>
+    </h3>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <input type="hidden" id="leadModalId">
+
+    <div class="field">
+      <label>Nombre</label>
+      <input id="leadModalName" type="text" readonly style="opacity:0.7;">
+    </div>
+
+    <div class="field">
+      <label>WhatsApp</label>
+      <input id="leadModalWhatsapp" type="text" readonly style="opacity:0.7;">
+    </div>
+
+    <div class="field">
+      <label>Estado</label>
+      <select id="leadModalStatus">
+        <option value="nuevo">🆕 Nuevo</option>
+        <option value="contactado">📞 Contactado</option>
+        <option value="interesado">🔥 Interesado</option>
+        <option value="convertido">✅ Convertido</option>
+        <option value="descartado">❌ Descartado</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Valor de venta ($)</label>
+      <input id="leadModalValue" type="number" step="0.01" placeholder="0.00">
+      <p class="small" style="margin-top:6px;">Si se convirtió, cargá cuánto vendiste.</p>
+    </div>
+
+    <div class="field">
+      <label>Notas internas</label>
+      <textarea id="leadModalNotes" placeholder="Escribí notas de seguimiento..."></textarea>
+    </div>
+
+    <div class="actions">
+      <button class="btn-success" id="saveLeadModalBtn">💾 GUARDAR</button>
+      <button class="btn-ghost" id="cancelLeadModalBtn">Cancelar</button>
+    </div>
+  </div>
+</div>
 
 
-  <script>
+<!-- MENSAJE GLOBAL -->
+<div id="adminMessage" class="message"></div>
 
-    /* ==========================================================
-       SUPABASE
-       ========================================================== */
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    const SUPABASE_URL =
-      "https://qqeibunzugtfgwwayaxj.supabase.co";
+<script>
+/* ==========================================================
+   SUPABASE
+   ========================================================== */
+const SUPABASE_URL = "https://qqeibunzugtfgwwayaxj.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_1S0XRJIOq1bEnj9S_z4LXQ_AllfS_JC";
 
-    const SUPABASE_ANON_KEY =
-      "sb_publishable_1S0XRJIOq1bEnj9S_z4LXQ_AllfS_JC";
+if (!window.supabase) throw new Error("No se pudo cargar Supabase.");
 
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    if (!window.supabase) {
+/* ==========================================================
+   ESTADO
+   ========================================================== */
+let settings = null;
+let rotations = [];
+let currentPrizes = [];
+let leads = [];
+let events = [];
+let expenses = [];
+let currentMetricsPeriod = "today";
 
-      throw new Error(
-        "No se pudo cargar la librería de Supabase."
-      );
+/* ==========================================================
+   ELEMENTOS
+   ========================================================== */
+const loginScreen = document.getElementById("loginScreen");
+const adminPanel = document.getElementById("adminPanel");
+const loginMessage = document.getElementById("loginMessage");
+const adminMessage = document.getElementById("adminMessage");
 
+/* ==========================================================
+   MENSAJES
+   ========================================================== */
+function showMessage(el, msg, type) {
+  el.innerText = msg;
+  el.className = `message ${type}`;
+  clearTimeout(el._t);
+  el._t = setTimeout(() => { el.className = "message"; }, 4000);
+}
+
+/* ==========================================================
+   NAVEGACIÓN
+   ========================================================== */
+const PAGE_TITLES = {
+  dashboardSection: ["Inicio", "Resumen general del sistema"],
+  metricsSection: ["Métricas", "Rendimiento y estadísticas"],
+  leadsSection: ["Contactos", "Gestión y seguimiento"],
+  investmentSection: ["Inversión", "Gastos y rentabilidad"],
+  prizesSection: ["Premios", "Beneficios y probabilidades"],
+  rotationsSection: ["Rotaciones", "Conjuntos de premios"],
+  imagesSection: ["Imágenes", "Recursos visuales"],
+  textsSection: ["Textos", "Contenido de la página"],
+  configSection: ["Configuración", "Datos generales"],
+  helpSection: ["Ayuda", "Cómo funciona el sistema"],
+  toolsSection: ["Herramientas", "Acciones avanzadas"]
+};
+
+const sidebarItems = document.querySelectorAll(".sidebar-item[data-target]");
+const sections = document.querySelectorAll(".admin-section");
+const sidebar = document.getElementById("sidebar");
+const overlay = document.getElementById("overlay");
+const hamburgerBtn = document.getElementById("hamburgerBtn");
+
+function irASeccion(id) {
+  sections.forEach(s => s.classList.toggle("active", s.id === id));
+  sidebarItems.forEach(b => b.classList.toggle("active", b.dataset.target === id));
+  window.scrollTo({ top: 0, behavior: "smooth" });
+
+  if (PAGE_TITLES[id]) {
+    document.getElementById("pageTitle").innerText = PAGE_TITLES[id][0];
+    document.getElementById("pageSubtitle").innerText = PAGE_TITLES[id][1];
+  }
+
+  if (id === "metricsSection") cargarMetricas();
+  if (id === "leadsSection") cargarLeads();
+  if (id === "investmentSection") cargarInversion();
+
+  cerrarSidebar();
+}
+
+document.querySelectorAll("[data-target]").forEach(btn => {
+  btn.addEventListener("click", () => irASeccion(btn.dataset.target));
+});
+
+function abrirSidebar() { sidebar.classList.add("open"); overlay.classList.add("active"); }
+function cerrarSidebar() { sidebar.classList.remove("open"); overlay.classList.remove("active"); }
+
+hamburgerBtn.addEventListener("click", abrirSidebar);
+overlay.addEventListener("click", cerrarSidebar);
+
+/* ==========================================================
+   LOGIN
+   ========================================================== */
+document.getElementById("loginBtn").addEventListener("click", login);
+document.getElementById("loginPassword").addEventListener("keydown", e => { if (e.key === "Enter") login(); });
+document.getElementById("loginEmail").addEventListener("keydown", e => { if (e.key === "Enter") login(); });
+
+async function login() {
+  const email = document.getElementById("loginEmail").value.trim();
+  const password = document.getElementById("loginPassword").value;
+
+  if (!email || !password) {
+    showMessage(loginMessage, "Completá email y contraseña.", "error");
+    return;
+  }
+
+  const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+  if (error) { showMessage(loginMessage, error.message, "error"); return; }
+  mostrarPanel();
+}
+
+async function comprobarSesion() {
+  const { data } = await supabaseClient.auth.getSession();
+  if (data && data.session) mostrarPanel();
+}
+
+function mostrarPanel() {
+  loginScreen.classList.add("hidden");
+  adminPanel.classList.remove("hidden");
+  cargarTodo();
+}
+
+document.getElementById("logoutBtn").addEventListener("click", async () => {
+  await supabaseClient.auth.signOut();
+  location.reload();
+});
+
+/* ==========================================================
+   CONFIGURACIÓN
+   ========================================================== */
+async function cargarConfiguracion() {
+  const { data, error } = await supabaseClient.from("site_settings").select("*").eq("id", 1).single();
+  if (error) throw error;
+  settings = data;
+
+  document.getElementById("siteTitle").value = settings.title || "";
+  document.getElementById("contactName").value = settings.contact_name || "";
+  document.getElementById("phone").value = settings.phone || "";
+  document.getElementById("whatsapp").value = settings.whatsapp || "";
+  document.getElementById("rulesText").value = settings.rules_text || "";
+  document.getElementById("prizesText").value = settings.prizes_text || "";
+  document.getElementById("noticesText").value = settings.notices_text || "";
+  document.getElementById("legalText").value = settings.legal_text || "";
+
+  document.getElementById("rotationEnabled").checked = !!settings.rotation_enabled;
+  document.getElementById("rotationInterval").value = String(settings.rotation_interval_hours || 24);
+
+  document.getElementById("avgSaleValue").value = settings.avg_sale_value || 0;
+  document.getElementById("targetLeads").value = settings.target_leads_month || 100;
+
+  setImagePreview("logoPreview", settings.logo_url);
+  setImagePreview("backgroundPreview", settings.background_url);
+  setImagePreview("ogPreview", settings.og_image_url);
+
+  actualizarEstadoSistema();
+}
+
+function setImagePreview(id, url) {
+  const img = document.getElementById(id);
+  if (url) {
+    img.src = url + (url.includes("?") ? "&" : "?") + "t=" + Date.now();
+    img.style.display = "block";
+  } else {
+    img.src = "";
+    img.style.display = "none";
+  }
+}
+
+document.getElementById("saveGeneralBtn").addEventListener("click", async () => {
+  const { error } = await supabaseClient.from("site_settings").update({
+    title: document.getElementById("siteTitle").value.trim(),
+    contact_name: document.getElementById("contactName").value.trim(),
+    phone: document.getElementById("phone").value.trim(),
+    whatsapp: document.getElementById("whatsapp").value.trim()
+  }).eq("id", 1);
+
+  if (error) { showMessage(adminMessage, error.message, "error"); return; }
+  showMessage(adminMessage, "Configuración guardada.", "success");
+});
+
+document.getElementById("saveTextsBtn").addEventListener("click", async () => {
+  const { error } = await supabaseClient.from("site_settings").update({
+    rules_text: document.getElementById("rulesText").value,
+    prizes_text: document.getElementById("prizesText").value,
+    notices_text: document.getElementById("noticesText").value,
+    legal_text: document.getElementById("legalText").value
+  }).eq("id", 1);
+
+  if (error) { showMessage(adminMessage, error.message, "error"); return; }
+  showMessage(adminMessage, "Textos guardados.", "success");
+});
+
+/* ==========================================================
+   IMÁGENES
+   ========================================================== */
+async function subirImagen(inputId, tipo) {
+  const input = document.getElementById(inputId);
+  if (!input.files || !input.files[0]) { alert("Seleccioná una imagen."); return; }
+
+  const file = input.files[0];
+  const extension = file.name.split(".").pop().toLowerCase();
+  const nombre = `${tipo}-${Date.now()}.${extension}`;
+
+  const { error } = await supabaseClient.storage.from("ruleta-assets").upload(nombre, file, { upsert: true, contentType: file.type });
+  if (error) { showMessage(adminMessage, error.message, "error"); return; }
+
+  const { data } = supabaseClient.storage.from("ruleta-assets").getPublicUrl(nombre);
+  const url = data.publicUrl + "?v=" + Date.now();
+
+  const campo = tipo === "logo" ? "logo_url" : tipo === "background" ? "background_url" : "og_image_url";
+
+  const { error: ue } = await supabaseClient.from("site_settings").update({ [campo]: url }).eq("id", 1);
+  if (ue) { showMessage(adminMessage, ue.message, "error"); return; }
+
+  const previewId = tipo === "logo" ? "logoPreview" : tipo === "background" ? "backgroundPreview" : "ogPreview";
+  document.getElementById(previewId).src = url;
+  document.getElementById(previewId).style.display = "block";
+
+  if (settings) settings[campo] = url;
+  showMessage(adminMessage, "Imagen actualizada correctamente.", "success");
+}
+
+async function quitarImagen(tipo) {
+  if (!confirm("¿Quitar esta imagen?")) return;
+  const campo = tipo === "logo" ? "logo_url" : tipo === "background" ? "background_url" : "og_image_url";
+  const previewId = tipo === "logo" ? "logoPreview" : tipo === "background" ? "backgroundPreview" : "ogPreview";
+
+  const { error } = await supabaseClient.from("site_settings").update({ [campo]: null }).eq("id", 1);
+  if (error) { showMessage(adminMessage, error.message, "error"); return; }
+
+  document.getElementById(previewId).src = "";
+  document.getElementById(previewId).style.display = "none";
+  if (settings) settings[campo] = null;
+  showMessage(adminMessage, "Imagen eliminada.", "success");
+}
+
+document.getElementById("uploadLogoBtn").addEventListener("click", () => subirImagen("logoFile", "logo"));
+document.getElementById("uploadBackgroundBtn").addEventListener("click", () => subirImagen("backgroundFile", "background"));
+document.getElementById("uploadOgBtn").addEventListener("click", () => subirImagen("ogFile", "og"));
+document.getElementById("removeLogoBtn").addEventListener("click", () => quitarImagen("logo"));
+document.getElementById("removeBackgroundBtn").addEventListener("click", () => quitarImagen("background"));
+document.getElementById("removeOgBtn").addEventListener("click", () => quitarImagen("og"));
+
+/* ==========================================================
+   ROTACIONES
+   ========================================================== */
+async function cargarRotaciones() {
+  const { data, error } = await supabaseClient.from("rotations").select("*").order("sort_order", { ascending: true });
+  if (error) throw error;
+  rotations = data || [];
+  renderRotaciones();
+  llenarSelectRotaciones();
+
+  const active = rotations.find(r => r.active);
+  document.getElementById("heroRotationName").innerText = active ? active.name : "—";
+}
+
+function renderRotaciones() {
+  const container = document.getElementById("rotationList");
+  if (!rotations.length) {
+    container.innerHTML = `<div class="empty">No hay rotaciones creadas.</div>`;
+    return;
+  }
+
+  container.innerHTML = rotations.map(r => `
+    <div class="rotation-item" data-id="${r.id}">
+      <div class="rotation-top">
+        <strong style="color:white;">${escapeHtml(r.name || "Sin nombre")}</strong>
+        <span class="rotation-badge ${r.active ? "" : "off"}">
+          ${r.active ? "ACTIVA" : "INACTIVA"}
+        </span>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label>Nombre</label>
+          <input class="rotation-name" value="${escapeHtml(r.name || "")}">
+        </div>
+        <div class="field">
+          <label>Orden</label>
+          <input type="number" class="rotation-order" value="${r.sort_order || 0}">
+        </div>
+      </div>
+
+      <div style="display:flex; align-items:center; gap:10px; margin-top:8px;">
+        <input type="checkbox" class="rotation-active" ${r.active ? "checked" : ""}>
+        <span style="color:var(--text-dim); font-size:0.85rem;">Rotación activa</span>
+      </div>
+
+      <div class="actions">
+        <button class="btn-success" onclick="guardarRotacion('${r.id}')">GUARDAR</button>
+        <button class="btn-danger" onclick="eliminarRotacion('${r.id}')">ELIMINAR</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+window.guardarRotacion = async function(id) {
+  const item = document.querySelector(`.rotation-item[data-id="${id}"]`);
+  if (!item) return;
+
+  const name = item.querySelector(".rotation-name").value.trim();
+  const sort_order = Number(item.querySelector(".rotation-order").value);
+  const active = item.querySelector(".rotation-active").checked;
+
+  if (!name) { alert("La rotación necesita un nombre."); return; }
+
+  const { error } = await supabaseClient.from("rotations").update({ name, sort_order, active }).eq("id", id);
+  if (error) { showMessage(adminMessage, error.message, "error"); return; }
+
+  await cargarRotaciones();
+  showMessage(adminMessage, "Rotación guardada.", "success");
+};
+
+window.eliminarRotacion = async function(id) {
+  if (!confirm("¿Eliminar esta rotación y sus premios?")) return;
+  const { error } = await supabaseClient.from("rotations").delete().eq("id", id);
+  if (error) { showMessage(adminMessage, error.message, "error"); return; }
+  await cargarRotaciones();
+  await cargarPremios();
+  showMessage(adminMessage, "Rotación eliminada.", "success");
+};
+
+document.getElementById("addRotationBtn").addEventListener("click", async () => {
+  const { error } = await supabaseClient.from("rotations").insert({
+    name: `Rotación ${rotations.length + 1}`,
+    sort_order: rotations.length + 1,
+    active: true
+  });
+  if (error) { showMessage(adminMessage, error.message, "error"); return; }
+  await cargarRotaciones();
+  showMessage(adminMessage, "Nueva rotación creada.", "success");
+});
+
+function llenarSelectRotaciones() {
+  const select = document.getElementById("prizeRotationSelect");
+  const currentValue = select.value;
+  select.innerHTML = rotations.map(r => `<option value="${r.id}">${escapeHtml(r.name || "Sin nombre")}</option>`).join("");
+
+  if (rotations.length) {
+    if (rotations.some(r => String(r.id) === String(currentValue))) select.value = currentValue;
+    cargarPremios();
+  } else {
+    currentPrizes = [];
+    renderPremios();
+  }
+}
+
+document.getElementById("saveRotationSettingsBtn").addEventListener("click", async () => {
+  const enabled = document.getElementById("rotationEnabled").checked;
+  const interval = Number(document.getElementById("rotationInterval").value);
+
+  const { error } = await supabaseClient.from("site_settings").update({
+    rotation_enabled: enabled,
+    rotation_interval_hours: interval,
+    rotation_started_at: new Date().toISOString()
+  }).eq("id", 1);
+
+  if (error) { showMessage(adminMessage, error.message, "error"); return; }
+  settings = { ...settings, rotation_enabled: enabled, rotation_interval_hours: interval };
+  actualizarEstadoSistema();
+  showMessage(adminMessage, "Rotación automática actualizada.", "success");
+});
+
+/* ==========================================================
+   PREMIOS
+   ========================================================== */
+document.getElementById("prizeRotationSelect").addEventListener("change", cargarPremios);
+
+async function cargarPremios() {
+  const rotationId = document.getElementById("prizeRotationSelect").value;
+  if (!rotationId) { currentPrizes = []; renderPremios(); return; }
+
+  const { data, error } = await supabaseClient.from("prizes").select("*").eq("rotation_id", rotationId).order("sort_order", { ascending: true });
+  if (error) { showMessage(adminMessage, error.message, "error"); return; }
+
+  currentPrizes = data || [];
+  renderPremios();
+}
+
+function renderPremios() {
+  const container = document.getElementById("prizesList");
+  if (!currentPrizes.length) {
+    container.innerHTML = `<div class="empty">Esta rotación todavía no tiene premios.</div>`;
+    calcularTotal();
+    return;
+  }
+
+  container.innerHTML = currentPrizes.map((p, i) => `
+    <div class="prize-item ${p.active ? "" : "inactive"}" data-id="${p.id}">
+      <div class="prize-header">
+        <div>
+          <div class="prize-title-badge">
+            <span class="num">${i + 1}</span>
+            <span>PREMIO</span>
+          </div>
+          <div class="prize-mini-status">${p.active ? "● Activo" : "○ Inactivo"}</div>
+        </div>
+        <div class="actions" style="margin-top:0;">
+          <button class="btn-ghost" onclick="duplicarPremio('${p.id}')">Duplicar</button>
+          <button class="btn-danger" onclick="eliminarPremio('${p.id}')">Eliminar</button>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label>Nombre</label>
+          <input class="prize-name" value="${escapeHtml(p.name || "")}">
+        </div>
+        <div class="field">
+          <label>Descripción</label>
+          <input class="prize-description" value="${escapeHtml(p.description || "")}">
+        </div>
+        <div class="field">
+          <label>Probabilidad %</label>
+          <input type="number" min="0" max="100" step="0.01" class="prize-probability"
+            value="${Number(p.probability || 0)}"
+            oninput="calcularTotal(); actualizarBarra(this);">
+          <div class="probability-bar">
+            <div class="probability-bar-fill" style="width:${Math.min(100, Math.max(0, Number(p.probability || 0)))}%"></div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Orden</label>
+          <input type="number" class="prize-order" value="${p.sort_order || 0}">
+        </div>
+      </div>
+
+      <div style="display:flex; align-items:center; gap:10px; margin-top:8px;">
+        <input type="checkbox" class="prize-active" ${p.active ? "checked" : ""}
+          onchange="calcularTotal(); toggleEstado(this)">
+        <span style="color:var(--text-dim); font-size:0.85rem;">Premio activo</span>
+      </div>
+    </div>
+  `).join("");
+
+  calcularTotal();
+}
+
+window.actualizarBarra = function(input) {
+  const v = Number(input.value) || 0;
+  const item = input.closest(".prize-item");
+  if (!item) return;
+  const bar = item.querySelector(".probability-bar-fill");
+  if (bar) bar.style.width = `${Math.min(100, Math.max(0, v))}%`;
+};
+
+window.toggleEstado = function(input) {
+  const item = input.closest(".prize-item");
+  if (!item) return;
+  item.classList.toggle("inactive", !input.checked);
+  const label = item.querySelector(".prize-mini-status");
+  if (label) label.innerText = input.checked ? "● Activo" : "○ Inactivo";
+};
+
+window.calcularTotal = function() {
+  const items = document.querySelectorAll(".prize-item");
+  let total = 0;
+  items.forEach(item => {
+    if (!item.querySelector(".prize-active").checked) return;
+    total += Number(item.querySelector(".prize-probability").value) || 0;
+  });
+
+  const el = document.getElementById("percentageTotal");
+  el.innerText = `Total de probabilidades activas: ${total.toFixed(2)}%`;
+
+  if (Math.abs(total - 100) < 0.001) {
+    el.className = "percentage-total percentage-ok";
+    el.innerText += " ✓";
+  } else {
+    el.className = "percentage-total percentage-error";
+    el.innerText += ` ✗ (debe sumar 100%)`;
+  }
+};
+
+document.getElementById("addPrizeBtn").addEventListener("click", async () => {
+  const rotationId = document.getElementById("prizeRotationSelect").value;
+  if (!rotationId) { alert("Primero seleccioná una rotación."); return; }
+
+  const { error } = await supabaseClient.from("prizes").insert({
+    rotation_id: rotationId,
+    name: "Nuevo premio",
+    description: "",
+    probability: 0,
+    active: true,
+    sort_order: currentPrizes.length + 1
+  });
+
+  if (error) { showMessage(adminMessage, error.message, "error"); return; }
+  await cargarPremios();
+  showMessage(adminMessage, "Premio agregado.", "success");
+});
+
+window.duplicarPremio = async function(id) {
+  const o = currentPrizes.find(p => String(p.id) === String(id));
+  if (!o) return;
+
+  const { error } = await supabaseClient.from("prizes").insert({
+    rotation_id: o.rotation_id,
+    name: `${o.name || "Premio"} - copia`,
+    description: o.description || "",
+    probability: 0,
+    active: false,
+    sort_order: currentPrizes.length + 1
+  });
+
+  if (error) { showMessage(adminMessage, error.message, "error"); return; }
+  await cargarPremios();
+  showMessage(adminMessage, "Premio duplicado (inactivo, 0%).", "success");
+};
+
+window.eliminarPremio = async function(id) {
+  if (!confirm("¿Eliminar este premio?")) return;
+  const { error } = await supabaseClient.from("prizes").delete().eq("id", id);
+  if (error) { showMessage(adminMessage, error.message, "error"); return; }
+  await cargarPremios();
+  showMessage(adminMessage, "Premio eliminado.", "success");
+};
+
+document.getElementById("savePrizesBtn").addEventListener("click", async () => {
+  const items = document.querySelectorAll(".prize-item");
+  if (!items.length) { alert("No hay premios para guardar."); return; }
+
+  const updates = [];
+  let total = 0;
+
+  items.forEach(item => {
+    const active = item.querySelector(".prize-active").checked;
+    const probability = Number(item.querySelector(".prize-probability").value) || 0;
+    if (active) total += probability;
+
+    updates.push({
+      id: item.dataset.id,
+      name: item.querySelector(".prize-name").value.trim(),
+      description: item.querySelector(".prize-description").value.trim(),
+      probability,
+      sort_order: Number(item.querySelector(".prize-order").value) || 0,
+      active
+    });
+  });
+
+  if (Math.abs(total - 100) > 0.001) {
+    alert(`Las probabilidades activas deben sumar 100%. Actualmente suman ${total.toFixed(2)}%.`);
+    return;
+  }
+
+  for (const u of updates) {
+    const { error } = await supabaseClient.from("prizes").update({
+      name: u.name,
+      description: u.description,
+      probability: u.probability,
+      sort_order: u.sort_order,
+      active: u.active
+    }).eq("id", u.id);
+
+    if (error) { showMessage(adminMessage, error.message, "error"); return; }
+  }
+
+  await cargarPremios();
+  showMessage(adminMessage, "Premios guardados correctamente.", "success");
+});
+
+/* ==========================================================
+   CONTACTOS
+   ========================================================== */
+document.getElementById("loadLeadsBtn").addEventListener("click", cargarLeads);
+
+async function cargarLeads() {
+  const { data, error } = await supabaseClient.from("leads").select("*").order("created_at", { ascending: false });
+  if (error) { showMessage(adminMessage, error.message, "error"); return; }
+  leads = data || [];
+  renderLeads();
+  actualizarHeroStats();
+}
+
+function renderLeads() {
+  const search = document.getElementById("leadSearch").value.trim().toLowerCase();
+  const statusFilter = document.getElementById("leadStatusFilter").value;
+  const sourceFilter = document.getElementById("leadSourceFilter").value.trim().toLowerCase();
+
+  const filtered = leads.filter(l => {
+    const matchSearch = !search ||
+      String(l.name || "").toLowerCase().includes(search) ||
+      String(l.whatsapp || "").toLowerCase().includes(search);
+    const matchStatus = !statusFilter || (l.status || "nuevo") === statusFilter;
+    const matchSource = !sourceFilter || String(l.source || "").toLowerCase().includes(sourceFilter);
+    return matchSearch && matchStatus && matchSource;
+  });
+
+  const table = document.getElementById("leadsTable");
+  if (!filtered.length) {
+    table.innerHTML = `<tr><td colspan="7" class="empty">No hay contactos con esos filtros.</td></tr>`;
+    return;
+  }
+
+  table.innerHTML = filtered.map(l => `
+    <tr>
+      <td>${formatearFecha(l.created_at)}</td>
+      <td style="color:white; font-weight:600;">${escapeHtml(l.name || "")}</td>
+      <td>${escapeHtml(l.whatsapp || "")}</td>
+      <td>${escapeHtml(l.prize_name || "—")}</td>
+      <td>${escapeHtml(l.source || "directo")}</td>
+      <td><span class="badge ${l.status || "nuevo"}">${(l.status || "nuevo").toUpperCase()}</span></td>
+      <td>
+        <button class="btn-ghost" style="padding:6px 12px; font-size:0.78rem;" onclick="abrirLeadModal('${l.id}')">Editar</button>
+      </td>
+    </tr>
+  `).join("");
+}
+
+document.getElementById("leadSearch").addEventListener("input", renderLeads);
+document.getElementById("leadStatusFilter").addEventListener("change", renderLeads);
+document.getElementById("leadSourceFilter").addEventListener("input", renderLeads);
+
+/* MODAL LEAD */
+window.abrirLeadModal = function(id) {
+  const l = leads.find(x => String(x.id) === String(id));
+  if (!l) return;
+
+  document.getElementById("leadModalId").value = l.id;
+  document.getElementById("leadModalName").value = l.name || "";
+  document.getElementById("leadModalWhatsapp").value = l.whatsapp || "";
+  document.getElementById("leadModalStatus").value = l.status || "nuevo";
+  document.getElementById("leadModalValue").value = l.value || 0;
+  document.getElementById("leadModalNotes").value = l.notes || "";
+
+  document.getElementById("leadModal").classList.add("active");
+};
+
+function cerrarLeadModal() {
+  document.getElementById("leadModal").classList.remove("active");
+}
+
+document.getElementById("closeLeadModal").addEventListener("click", cerrarLeadModal);
+document.getElementById("cancelLeadModalBtn").addEventListener("click", cerrarLeadModal);
+
+document.getElementById("saveLeadModalBtn").addEventListener("click", async () => {
+  const id = document.getElementById("leadModalId").value;
+  const status = document.getElementById("leadModalStatus").value;
+  const value = Number(document.getElementById("leadModalValue").value) || 0;
+  const notes = document.getElementById("leadModalNotes").value;
+
+  const { error } = await supabaseClient.from("leads").update({ status, value, notes }).eq("id", id);
+  if (error) { showMessage(adminMessage, error.message, "error"); return; }
+
+  const idx = leads.findIndex(l => String(l.id) === String(id));
+  if (idx >= 0) {
+    leads[idx].status = status;
+    leads[idx].value = value;
+    leads[idx].notes = notes;
+  }
+
+  renderLeads();
+  actualizarHeroStats();
+  cerrarLeadModal();
+  showMessage(adminMessage, "Contacto actualizado.", "success");
+});
+
+/* ==========================================================
+   EXPORTAR CONTACTOS
+   ========================================================== */
+document.getElementById("exportLeadsBtn").addEventListener("click", () => {
+  if (!leads.length) { alert("No hay contactos para exportar."); return; }
+
+  const rows = [["Fecha", "Nombre", "WhatsApp", "Premio", "Origen", "Estado", "Valor", "Notas"]];
+  leads.forEach(l => rows.push([
+    formatearFecha(l.created_at),
+    l.name || "", l.whatsapp || "", l.prize_name || "",
+    l.source || "directo", l.status || "nuevo",
+    l.value || 0, l.notes || ""
+  ]));
+
+  descargarCSV(rows, `contactos-${new Date().toISOString().slice(0, 10)}.csv`);
+});
+
+/* ==========================================================
+   INVERSIÓN
+   ========================================================== */
+async function cargarInversion() {
+  const { data, error } = await supabaseClient.from("expenses").select("*").order("expense_date", { ascending: false });
+  if (error) { showMessage(adminMessage, error.message, "error"); return; }
+  expenses = data || [];
+  renderExpenses();
+  calcularInversion();
+}
+
+function renderExpenses() {
+  const tbody = document.getElementById("expensesTable");
+  if (!expenses.length) {
+    tbody.innerHTML = `<tr><td colspan="6" class="empty">No hay gastos cargados.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = expenses.map(e => `
+    <tr>
+      <td>${formatearFechaCorta(e.expense_date)}</td>
+      <td style="color:white; font-weight:600;">${escapeHtml(e.concept)}</td>
+      <td>${escapeHtml(e.category || "general")}</td>
+      <td style="color:var(--red); font-weight:700;">$${Number(e.amount).toLocaleString("es-AR")}</td>
+      <td>${escapeHtml(e.notes || "—")}</td>
+      <td>
+        <button class="btn-ghost" style="padding:6px 12px; font-size:0.78rem;" onclick="eliminarGasto('${e.id}')">Eliminar</button>
+      </td>
+    </tr>
+  `).join("");
+}
+
+window.eliminarGasto = async function(id) {
+  if (!confirm("¿Eliminar este gasto?")) return;
+  const { error } = await supabaseClient.from("expenses").delete().eq("id", id);
+  if (error) { showMessage(adminMessage, error.message, "error"); return; }
+  await cargarInversion();
+  showMessage(adminMessage, "Gasto eliminado.", "success");
+};
+
+async function calcularInversion() {
+  const total = expenses.reduce((s, e) => s + Number(e.amount || 0), 0);
+
+  const now = new Date();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const monthTotal = expenses
+    .filter(e => new Date(e.expense_date) >= monthStart)
+    .reduce((s, e) => s + Number(e.amount || 0), 0);
+
+  const totalLeads = leads.length;
+  const cpl = totalLeads > 0 ? total / totalLeads : 0;
+
+  // ROI: valor de ventas convertidas vs inversión
+  const totalSalesValue = leads
+    .filter(l => l.status === "convertido")
+    .reduce((s, l) => s + Number(l.value || 0), 0);
+
+  const roi = total > 0 ? ((totalSalesValue - total) / total) * 100 : 0;
+
+  document.getElementById("invTotal").innerText = "$" + total.toLocaleString("es-AR");
+  document.getElementById("invMonth").innerText = "$" + monthTotal.toLocaleString("es-AR");
+  document.getElementById("invCPL").innerText = "$" + Math.round(cpl).toLocaleString("es-AR");
+  document.getElementById("invROI").innerText = roi.toFixed(1) + "%";
+
+  // Dashboard mini
+  document.getElementById("dashInvestment").innerText = "$" + total.toLocaleString("es-AR");
+  document.getElementById("dashCPL").innerText = "$" + Math.round(cpl).toLocaleString("es-AR");
+}
+
+document.getElementById("addExpenseBtn").addEventListener("click", async () => {
+  const concept = document.getElementById("expConcept").value.trim();
+  const amount = Number(document.getElementById("expAmount").value);
+  const category = document.getElementById("expCategory").value;
+  const expense_date = document.getElementById("expDate").value || new Date().toISOString().slice(0, 10);
+  const notes = document.getElementById("expNotes").value.trim();
+
+  if (!concept) { alert("Ingresá un concepto."); return; }
+  if (!amount || amount <= 0) { alert("Ingresá un monto válido."); return; }
+
+  const { error } = await supabaseClient.from("expenses").insert({ concept, amount, category, expense_date, notes });
+  if (error) { showMessage(adminMessage, error.message, "error"); return; }
+
+  document.getElementById("expConcept").value = "";
+  document.getElementById("expAmount").value = "";
+  document.getElementById("expNotes").value = "";
+  document.getElementById("expDate").value = "";
+
+  await cargarInversion();
+  showMessage(adminMessage, "Gasto registrado.", "success");
+});
+
+document.getElementById("saveInvSettingsBtn").addEventListener("click", async () => {
+  const avg = Number(document.getElementById("avgSaleValue").value) || 0;
+  const target = Number(document.getElementById("targetLeads").value) || 100;
+
+  const { error } = await supabaseClient.from("site_settings").update({
+    avg_sale_value: avg,
+    target_leads_month: target
+  }).eq("id", 1);
+
+  if (error) { showMessage(adminMessage, error.message, "error"); return; }
+  if (settings) { settings.avg_sale_value = avg; settings.target_leads_month = target; }
+  showMessage(adminMessage, "Configuración de rentabilidad guardada.", "success");
+});
+
+/* ==========================================================
+   MÉTRICAS
+   ========================================================== */
+document.querySelectorAll(".period-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".period-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentMetricsPeriod = btn.dataset.period;
+    cargarMetricas();
+  });
+});
+
+function getPeriodStart(period) {
+  const now = new Date();
+  const d = new Date(now);
+  if (period === "today") { d.setHours(0, 0, 0, 0); return d; }
+  if (period === "7d") { d.setDate(d.getDate() - 7); return d; }
+  if (period === "30d") { d.setDate(d.getDate() - 30); return d; }
+  return new Date(0);
+}
+
+async function cargarMetricas() {
+  const start = getPeriodStart(currentMetricsPeriod).toISOString();
+
+  const { data: evData } = await supabaseClient.from("events").select("*").gte("created_at", start);
+  events = evData || [];
+
+  const { data: leadsData } = await supabaseClient.from("leads").select("*").gte("created_at", start);
+  const leadsPeriod = leadsData || [];
+
+  const visits = events.filter(e => e.type === "visit").length;
+  const spins = events.filter(e => e.type === "spin").length;
+  const totalLeads = leadsPeriod.length;
+  const contacts = leadsPeriod.filter(l => l.whatsapp && l.whatsapp.length > 3).length;
+  const prizesWon = leadsPeriod.filter(l => l.prize_name).length;
+  const converted = leadsPeriod.filter(l => l.status === "convertido").length;
+
+  const monthStart = new Date();
+  monthStart.setDate(1);
+  monthStart.setHours(0, 0, 0, 0);
+  const monthNew = leadsPeriod.filter(l => new Date(l.created_at) >= monthStart).length;
+
+  const conversion = visits > 0
+    ? ((totalLeads / visits) * 100).toFixed(1)
+    : (spins > 0 ? ((totalLeads / spins) * 100).toFixed(1) : "0");
+
+  document.getElementById("mVisits").innerText = visits;
+  document.getElementById("mSpins").innerText = spins;
+  document.getElementById("mLeads").innerText = totalLeads;
+  document.getElementById("mConversion").innerText = conversion + "%";
+  document.getElementById("mPrizesWon").innerText = prizesWon;
+  document.getElementById("mContacts").innerText = contacts;
+  document.getElementById("mMonthNew").innerText = monthNew;
+  document.getElementById("mConverted").innerText = converted;
+
+  dibujarGrafico("chartSpins", agruparPorDia(events.filter(e => e.type === "spin")), "#00e5ff");
+  dibujarGrafico("chartLeads", agruparPorDia(leadsPeriod), "#00ffa3");
+
+  renderOrigenes(leadsPeriod);
+  renderPremiosMetricas(leadsPeriod);
+}
+
+function agruparPorDia(items) {
+  const hoy = new Date();
+  const numDias = currentMetricsPeriod === "today" ? 1 :
+                  currentMetricsPeriod === "7d" ? 7 :
+                  currentMetricsPeriod === "30d" ? 30 : 14;
+
+  const dias = [];
+  for (let i = numDias - 1; i >= 0; i--) {
+    const d = new Date(hoy);
+    d.setDate(d.getDate() - i);
+    dias.push(d.toISOString().slice(0, 10));
+  }
+
+  const conteo = {};
+  dias.forEach(d => conteo[d] = 0);
+  items.forEach(item => {
+    const d = String(item.created_at).slice(0, 10);
+    if (conteo[d] !== undefined) conteo[d]++;
+  });
+
+  return dias.map(d => ({ label: d.slice(5), value: conteo[d] }));
+}
+
+function dibujarGrafico(canvasId, data, color) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  const w = rect.width, h = rect.height;
+  const pad = { top: 20, right: 15, bottom: 30, left: 38 };
+  const cW = w - pad.left - pad.right;
+  const cH = h - pad.top - pad.bottom;
+
+  ctx.clearRect(0, 0, w, h);
+  if (!data.length) return;
+
+  const maxVal = Math.max(...data.map(d => d.value), 1);
+  const barW = cW / data.length;
+  const spacing = barW * 0.25;
+
+  ctx.strokeStyle = "rgba(255,255,255,0.05)";
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= 4; i++) {
+    const y = pad.top + (cH / 4) * i;
+    ctx.beginPath();
+    ctx.moveTo(pad.left, y);
+    ctx.lineTo(pad.left + cW, y);
+    ctx.stroke();
+
+    const val = Math.round(maxVal - (maxVal / 4) * i);
+    ctx.fillStyle = "#6b5c7a";
+    ctx.font = "10px Inter, sans-serif";
+    ctx.textAlign = "right";
+    ctx.fillText(val, pad.left - 6, y + 3);
+  }
+
+  data.forEach((d, i) => {
+    const x = pad.left + i * barW + spacing / 2;
+    const bH = maxVal > 0 ? (d.value / maxVal) * cH : 0;
+    const y = pad.top + cH - bH;
+
+    const grad = ctx.createLinearGradient(0, y, 0, pad.top + cH);
+    grad.addColorStop(0, color);
+    grad.addColorStop(1, color + "22");
+
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    if (ctx.roundRect) {
+      ctx.roundRect(x, y, barW - spacing, bH, 4);
+    } else {
+      ctx.rect(x, y, barW - spacing, bH);
     }
+    ctx.fill();
 
-
-    const supabaseClient =
-      window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_ANON_KEY
-      );
-
-
-    /* ==========================================================
-       ESTADO
-       ========================================================== */
-
-    let settings = null;
-
-    let rotations = [];
-
-    let currentPrizes = [];
-
-    let leads = [];
-
-
-    /* ==========================================================
-       ELEMENTOS
-       ========================================================== */
-
-    const loginScreen =
-      document.getElementById(
-        "loginScreen"
-      );
-
-    const adminPanel =
-      document.getElementById(
-        "adminPanel"
-      );
-
-    const loginMessage =
-      document.getElementById(
-        "loginMessage"
-      );
-
-    const adminMessage =
-      document.getElementById(
-        "adminMessage"
-      );
-
-
-    /* ==========================================================
-       MENSAJES
-       ========================================================== */
-
-    function showMessage(
-      element,
-      message,
-      type
-    ) {
-
-      element.innerText =
-        message;
-
-      element.className =
-        `message ${type}`;
-
-      setTimeout(
-        () => {
-
-          element.className =
-            "message";
-
-        },
-        4000
-      );
-
+    ctx.fillStyle = "#6b5c7a";
+    ctx.font = "10px Inter, sans-serif";
+    ctx.textAlign = "center";
+    if (data.length <= 10 || i % Math.ceil(data.length / 7) === 0) {
+      ctx.fillText(d.label, x + (barW - spacing) / 2, pad.top + cH + 16);
     }
-
-
-    /* ==========================================================
-       NAVEGACIÓN
-       ========================================================== */
-
-    function irASeccion(id) {
-
-      const section =
-        document.getElementById(id);
-
-      if (!section) {
-        return;
-      }
-
-      section.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-      });
-
-    }
-
-
-    document
-      .querySelectorAll(
-        ".nav-btn, .quick-btn"
-      )
-      .forEach(
-        button => {
-
-          button.addEventListener(
-            "click",
-            () => {
-
-              const target =
-                button.dataset.target;
-
-              irASeccion(target);
-
-            }
-          );
-
-        }
-      );
-
-
-    const navButtons =
-      document.querySelectorAll(
-        ".nav-btn"
-      );
-
-
-    const sections =
-      document.querySelectorAll(
-        ".admin-section"
-      );
-
-
-    window.addEventListener(
-      "scroll",
-      () => {
-
-        let current =
-          "dashboardSection";
-
-
-        sections.forEach(
-          section => {
-
-            const top =
-              section.getBoundingClientRect()
-                .top;
-
-            if (top <= 150) {
-              current =
-                section.id;
-            }
-
-          }
-        );
-
-
-        navButtons.forEach(
-          button => {
-
-            button.classList.toggle(
-              "active",
-              button.dataset.target === current
-            );
-
-          }
-        );
-
-      }
-    );
-
-
-    /* ==========================================================
-       LOGIN
-       ========================================================== */
-
-    document
-      .getElementById("loginBtn")
-      .addEventListener(
-        "click",
-        login
-      );
-
-
-    document
-      .getElementById("loginPassword")
-      .addEventListener(
-        "keydown",
-        event => {
-
-          if (
-            event.key === "Enter"
-          ) {
-
-            login();
-
-          }
-
-        }
-      );
-
-
-    document
-      .getElementById("loginEmail")
-      .addEventListener(
-        "keydown",
-        event => {
-
-          if (
-            event.key === "Enter"
-          ) {
-
-            login();
-
-          }
-
-        }
-      );
-
-
-    async function login() {
-
-      const email =
-        document
-          .getElementById(
-            "loginEmail"
-          )
-          .value
-          .trim();
-
-
-      const password =
-        document
-          .getElementById(
-            "loginPassword"
-          )
-          .value;
-
-
-      if (!email || !password) {
-
-        showMessage(
-          loginMessage,
-          "Completá email y contraseña.",
-          "error"
-        );
-
-        return;
-
-      }
-
-
-      const {
-        error
-      } =
-        await supabaseClient.auth
-          .signInWithPassword({
-
-            email,
-            password
-
-          });
-
-
-      if (error) {
-
-        showMessage(
-          loginMessage,
-          error.message,
-          "error"
-        );
-
-        return;
-
-      }
-
-
-      mostrarPanel();
-
-    }
-
-
-    async function comprobarSesion() {
-
-      const {
-        data
-      } =
-        await supabaseClient.auth
-          .getSession();
-
-
-      if (
-        data &&
-        data.session
-      ) {
-
-        mostrarPanel();
-
-      }
-
-    }
-
-
-    function mostrarPanel() {
-
-      loginScreen.classList.add(
-        "hidden"
-      );
-
-      adminPanel.classList.remove(
-        "hidden"
-      );
-
-      cargarTodo();
-
-    }
-
-
-    document
-      .getElementById("logoutBtn")
-      .addEventListener(
-        "click",
-        async () => {
-
-          await supabaseClient.auth
-            .signOut();
-
-          location.reload();
-
-        }
-      );
-
-
-    /* ==========================================================
-       CONFIGURACIÓN
-       ========================================================== */
-
-    async function cargarConfiguracion() {
-
-      const {
-        data,
-        error
-      } =
-        await supabaseClient
-          .from("site_settings")
-          .select("*")
-          .eq("id", 1)
-          .single();
-
-
-      if (error) {
-        throw error;
-      }
-
-
-      settings =
-        data;
-
-
-      document
-        .getElementById(
-          "siteTitle"
-        )
-        .value =
-        settings.title || "";
-
-
-      document
-        .getElementById(
-          "contactName"
-        )
-        .value =
-        settings.contact_name || "";
-
-
-      document
-        .getElementById(
-          "phone"
-        )
-        .value =
-        settings.phone || "";
-
-
-      document
-        .getElementById(
-          "whatsapp"
-        )
-        .value =
-        settings.whatsapp || "";
-
-
-      document
-        .getElementById(
-          "rulesText"
-        )
-        .value =
-        settings.rules_text || "";
-
-
-      document
-        .getElementById(
-          "prizesText"
-        )
-        .value =
-        settings.prizes_text || "";
-
-
-      document
-        .getElementById(
-          "noticesText"
-        )
-        .value =
-        settings.notices_text || "";
-
-
-      document
-        .getElementById(
-          "legalText"
-        )
-        .value =
-        settings.legal_text || "";
-
-
-      document
-        .getElementById(
-          "rotationEnabled"
-        )
-        .checked =
-        !!settings.rotation_enabled;
-
-
-      document
-        .getElementById(
-          "rotationInterval"
-        )
-        .value =
-        String(
-          settings.rotation_interval_hours || 24
-        );
-
-
-      document
-        .getElementById(
-          "logoPreview"
-        )
-        .src =
-        settings.logo_url || "";
-
-
-      document
-        .getElementById(
-          "backgroundPreview"
-        )
-        .src =
-        settings.background_url || "";
-
-
-      document
-        .getElementById(
-          "ogPreview"
-        )
-        .src =
-        settings.og_image_url || "";
-
-
-      actualizarEstadoDashboard();
-
-    }
-
-
-    /* ==========================================================
-       GUARDAR CONFIGURACIÓN GENERAL
-       ========================================================== */
-
-    document
-      .getElementById(
-        "saveGeneralBtn"
-      )
-      .addEventListener(
-        "click",
-        async () => {
-
-          const {
-            error
-          } =
-            await supabaseClient
-              .from("site_settings")
-              .update({
-
-                title:
-                  document
-                    .getElementById(
-                      "siteTitle"
-                    )
-                    .value
-                    .trim(),
-
-                contact_name:
-                  document
-                    .getElementById(
-                      "contactName"
-                    )
-                    .value
-                    .trim(),
-
-                phone:
-                  document
-                    .getElementById(
-                      "phone"
-                    )
-                    .value
-                    .trim(),
-
-                whatsapp:
-                  document
-                    .getElementById(
-                      "whatsapp"
-                    )
-                    .value
-                    .trim()
-
-              })
-              .eq(
-                "id",
-                1
-              );
-
-
-          if (error) {
-
-            showMessage(
-              adminMessage,
-              error.message,
-              "error"
-            );
-
-            return;
-
-          }
-
-
-          showMessage(
-            adminMessage,
-            "Configuración guardada correctamente.",
-            "success"
-          );
-
-        }
-      );
-
-
-    /* ==========================================================
-       GUARDAR TEXTOS
-       ========================================================== */
-
-    document
-      .getElementById(
-        "saveTextsBtn"
-      )
-      .addEventListener(
-        "click",
-        async () => {
-
-          const {
-            error
-          } =
-            await supabaseClient
-              .from("site_settings")
-              .update({
-
-                rules_text:
-                  document
-                    .getElementById(
-                      "rulesText"
-                    )
-                    .value,
-
-                prizes_text:
-                  document
-                    .getElementById(
-                      "prizesText"
-                    )
-                    .value,
-
-                notices_text:
-                  document
-                    .getElementById(
-                      "noticesText"
-                    )
-                    .value,
-
-                legal_text:
-                  document
-                    .getElementById(
-                      "legalText"
-                    )
-                    .value
-
-              })
-              .eq(
-                "id",
-                1
-              );
-
-
-          if (error) {
-
-            showMessage(
-              adminMessage,
-              error.message,
-              "error"
-            );
-
-            return;
-
-          }
-
-
-          showMessage(
-            adminMessage,
-            "Textos guardados correctamente.",
-            "success"
-          );
-
-        }
-      );
-
-
-    /* ==========================================================
-       SUBIR IMÁGENES
-       ========================================================== */
-
-    async function subirImagen(
-      inputId,
-      tipo
-    ) {
-
-      const input =
-        document.getElementById(
-          inputId
-        );
-
-
-      if (
-        !input.files ||
-        !input.files[0]
-      ) {
-
-        alert(
-          "Seleccioná una imagen."
-        );
-
-        return;
-
-      }
-
-
-      const file =
-        input.files[0];
-
-
-      const extension =
-        file.name
-          .split(".")
-          .pop()
-          .toLowerCase();
-
-
-      const nombre =
-        `${tipo}-${Date.now()}.${extension}`;
-
-
-      const {
-        error
-      } =
-        await supabaseClient
-          .storage
-          .from(
-            "ruleta-assets"
-          )
-          .upload(
-            nombre,
-            file,
-            {
-              upsert: true,
-              contentType:
-                file.type
-            }
-          );
-
-
-      if (error) {
-
-        showMessage(
-          adminMessage,
-          error.message,
-          "error"
-        );
-
-        return;
-
-      }
-
-
-      const {
-        data
-      } =
-        supabaseClient
-          .storage
-          .from(
-            "ruleta-assets"
-          )
-          .getPublicUrl(
-            nombre
-          );
-
-
-      const url =
-        data.publicUrl;
-
-
-      const campo =
-        tipo === "logo"
-          ? "logo_url"
-          : tipo === "background"
-            ? "background_url"
-            : "og_image_url";
-
-
-      const {
-        error:
-          updateError
-      } =
-        await supabaseClient
-          .from(
-            "site_settings"
-          )
-          .update({
-            [campo]: url
-          })
-          .eq(
-            "id",
-            1
-          );
-
-
-      if (updateError) {
-
-        showMessage(
-          adminMessage,
-          updateError.message,
-          "error"
-        );
-
-        return;
-
-      }
-
-
-      const previewId =
-        tipo === "logo"
-          ? "logoPreview"
-          : tipo === "background"
-            ? "backgroundPreview"
-            : "ogPreview";
-
-
-      document
-        .getElementById(
-          previewId
-        )
-        .src =
-        url;
-
-
-      showMessage(
-        adminMessage,
-        "Imagen actualizada correctamente.",
-        "success"
-      );
-
-    }
-
-
-    document
-      .getElementById(
-        "uploadLogoBtn"
-      )
-      .addEventListener(
-        "click",
-        () =>
-          subirImagen(
-            "logoFile",
-            "logo"
-          )
-      );
-
-
-    document
-      .getElementById(
-        "uploadBackgroundBtn"
-      )
-      .addEventListener(
-        "click",
-        () =>
-          subirImagen(
-            "backgroundFile",
-            "background"
-          )
-      );
-
-
-    document
-      .getElementById(
-        "uploadOgBtn"
-      )
-      .addEventListener(
-        "click",
-        () =>
-          subirImagen(
-            "ogFile",
-            "og"
-          )
-      );
-
-
-    /* ==========================================================
-       ROTACIONES
-       ========================================================== */
-
-    async function cargarRotaciones() {
-
-      const {
-        data,
-        error
-      } =
-        await supabaseClient
-          .from("rotations")
-          .select("*")
-          .order(
-            "sort_order",
-            {
-              ascending: true
-            }
-          );
-
-
-      if (error) {
-        throw error;
-      }
-
-
-      rotations =
-        data || [];
-
-
-      renderRotaciones();
-
-      llenarSelectRotaciones();
-
-      actualizarDashboardRotaciones();
-
-    }
-
-
-    function renderRotaciones() {
-
-      const container =
-        document.getElementById(
-          "rotationList"
-        );
-
-
-      if (!rotations.length) {
-
-        container.innerHTML =
-          `<div class="empty">
-             No hay rotaciones creadas.
-           </div>`;
-
-        return;
-
-      }
-
-
-      container.innerHTML =
-        rotations
-          .map(
-            rotation => `
-
-              <div
-                class="rotation-item"
-                data-id="${rotation.id}"
-              >
-
-                <div class="rotation-top">
-
-                  <strong>
-                    ${escapeHtml(
-                      rotation.name || "Sin nombre"
-                    )}
-                  </strong>
-
-                  <span
-                    class="rotation-badge ${
-                      rotation.active
-                        ? ""
-                        : "off"
-                    }"
-                  >
-                    ${
-                      rotation.active
-                        ? "ACTIVA"
-                        : "INACTIVA"
-                    }
-                  </span>
-
-                </div>
-
-                <div class="row">
-
-                  <div class="field">
-
-                    <label>
-                      Nombre
-                    </label>
-
-                    <input
-                      class="rotation-name"
-                      value="${escapeHtml(
-                        rotation.name || ""
-                      )}"
-                    >
-
-                  </div>
-
-                  <div class="field">
-
-                    <label>
-                      Orden
-                    </label>
-
-                    <input
-                      type="number"
-                      class="rotation-order"
-                      value="${rotation.sort_order || 0}"
-                    >
-
-                  </div>
-
-                </div>
-
-                <div class="switch">
-
-                  <input
-                    type="checkbox"
-                    class="rotation-active"
-                    ${rotation.active ? "checked" : ""}
-                  >
-
-                  <span>
-                    Rotación activa
-                  </span>
-
-                </div>
-
-                <div class="actions">
-
-                  <button
-                    class="btn-success"
-                    onclick="guardarRotacion('${rotation.id}')"
-                  >
-                    GUARDAR
-                  </button>
-
-                  <button
-                    class="btn-danger"
-                    onclick="eliminarRotacion('${rotation.id}')"
-                  >
-                    ELIMINAR
-                  </button>
-
-                </div>
-
-              </div>
-
-            `
-          )
-          .join("");
-
-    }
-
-
-    window.guardarRotacion =
-      async function(id) {
-
-        const item =
-          document.querySelector(
-            `.rotation-item[data-id="${id}"]`
-          );
-
-
-        if (!item) {
-          return;
-        }
-
-
-        const name =
-          item
-            .querySelector(
-              ".rotation-name"
-            )
-            .value
-            .trim();
-
-
-        const sortOrder =
-          Number(
-            item
-              .querySelector(
-                ".rotation-order"
-              )
-              .value
-          );
-
-
-        const active =
-          item
-            .querySelector(
-              ".rotation-active"
-            )
-            .checked;
-
-
-        if (!name) {
-
-          alert(
-            "La rotación necesita un nombre."
-          );
-
-          return;
-
-        }
-
-
-        const {
-          error
-        } =
-          await supabaseClient
-            .from("rotations")
-            .update({
-
-              name,
-
-              sort_order:
-                sortOrder,
-
-              active
-
-            })
-            .eq(
-              "id",
-              id
-            );
-
-
-        if (error) {
-
-          showMessage(
-            adminMessage,
-            error.message,
-            "error"
-          );
-
-          return;
-
-        }
-
-
-        await cargarRotaciones();
-
-        showMessage(
-          adminMessage,
-          "Rotación guardada.",
-          "success"
-        );
-
-      };
-
-
-    window.eliminarRotacion =
-      async function(id) {
-
-        if (
-          !confirm(
-            "¿Eliminar esta rotación y sus premios?"
-          )
-        ) {
-          return;
-        }
-
-
-        const {
-          error
-        } =
-          await supabaseClient
-            .from("rotations")
-            .delete()
-            .eq(
-              "id",
-              id
-            );
-
-
-        if (error) {
-
-          showMessage(
-            adminMessage,
-            error.message,
-            "error"
-          );
-
-          return;
-
-        }
-
-
-        await cargarRotaciones();
-
-        await cargarPremios();
-
-        showMessage(
-          adminMessage,
-          "Rotación eliminada.",
-          "success"
-        );
-
-      };
-
-
-    document
-      .getElementById(
-        "addRotationBtn"
-      )
-      .addEventListener(
-        "click",
-        async () => {
-
-          const {
-            error
-          } =
-            await supabaseClient
-              .from("rotations")
-              .insert({
-
-                name:
-                  `Rotación ${rotations.length + 1}`,
-
-                sort_order:
-                  rotations.length + 1,
-
-                active:
-                  true
-
-              });
-
-
-          if (error) {
-
-            showMessage(
-              adminMessage,
-              error.message,
-              "error"
-            );
-
-            return;
-
-          }
-
-
-          await cargarRotaciones();
-
-          showMessage(
-            adminMessage,
-            "Nueva rotación creada.",
-            "success"
-          );
-
-        }
-      );
-
-
-    function llenarSelectRotaciones() {
-
-      const select =
-        document.getElementById(
-          "prizeRotationSelect"
-        );
-
-
-      const currentValue =
-        select.value;
-
-
-      select.innerHTML =
-        rotations
-          .map(
-            r =>
-              `<option value="${r.id}">
-                ${escapeHtml(r.name || "Sin nombre")}
-              </option>`
-          )
-          .join("");
-
-
-      if (
-        rotations.length
-      ) {
-
-        const exists =
-          rotations.some(
-            r =>
-              String(r.id) ===
-              String(currentValue)
-          );
-
-
-        if (exists) {
-
-          select.value =
-            currentValue;
-
-        }
-
-
-        cargarPremios();
-
-      } else {
-
-        currentPrizes = [];
-
-        renderPremios();
-
-      }
-
-    }
-
-
-    /* ==========================================================
-       CONFIGURACIÓN DE ROTACIÓN
-       ========================================================== */
-
-    document
-      .getElementById(
-        "saveRotationSettingsBtn"
-      )
-      .addEventListener(
-        "click",
-        async () => {
-
-          const enabled =
-            document
-              .getElementById(
-                "rotationEnabled"
-              )
-              .checked;
-
-
-          const interval =
-            Number(
-              document
-                .getElementById(
-                  "rotationInterval"
-                )
-                .value
-            );
-
-
-          const {
-            error
-          } =
-            await supabaseClient
-              .from("site_settings")
-              .update({
-
-                rotation_enabled:
-                  enabled,
-
-                rotation_interval_hours:
-                  interval,
-
-                rotation_started_at:
-                  new Date().toISOString()
-
-              })
-              .eq(
-                "id",
-                1
-              );
-
-
-          if (error) {
-
-            showMessage(
-              adminMessage,
-              error.message,
-              "error"
-            );
-
-            return;
-
-          }
-
-
-          settings = {
-            ...settings,
-            rotation_enabled:
-              enabled,
-            rotation_interval_hours:
-              interval
-          };
-
-
-          actualizarEstadoDashboard();
-
-
-          showMessage(
-            adminMessage,
-            "Rotación automática actualizada.",
-            "success"
-          );
-
-        }
-      );
-
-
-    /* ==========================================================
-       PREMIOS
-       ========================================================== */
-
-    document
-      .getElementById(
-        "prizeRotationSelect"
-      )
-      .addEventListener(
-        "change",
-        cargarPremios
-      );
-
-
-    async function cargarPremios() {
-
-      const rotationId =
-        document
-          .getElementById(
-            "prizeRotationSelect"
-          )
-          .value;
-
-
-      if (!rotationId) {
-
-        currentPrizes = [];
-
-        renderPremios();
-
-        return;
-
-      }
-
-
-      const {
-        data,
-        error
-      } =
-        await supabaseClient
-          .from("prizes")
-          .select("*")
-          .eq(
-            "rotation_id",
-            rotationId
-          )
-          .order(
-            "sort_order",
-            {
-              ascending: true
-            }
-          );
-
-
-      if (error) {
-
-        showMessage(
-          adminMessage,
-          error.message,
-          "error"
-        );
-
-        return;
-
-      }
-
-
-      currentPrizes =
-        data || [];
-
-
-      renderPremios();
-
-      actualizarDashboardPremios();
-
-    }
-
-
-    function renderPremios() {
-
-      const container =
-        document.getElementById(
-          "prizesList"
-        );
-
-
-      if (!currentPrizes.length) {
-
-        container.innerHTML =
-          `<div class="empty">
-             Esta rotación todavía no tiene premios.
-           </div>`;
-
-        calcularTotal();
-
-        return;
-
-      }
-
-
-      container.innerHTML =
-        currentPrizes
-          .map(
-            (prize, index) => `
-
-              <div
-                class="prize-item ${
-                  prize.active
-                    ? ""
-                    : "inactive"
-                }"
-                data-id="${prize.id}"
-              >
-
-                <div class="prize-header">
-
-                  <div>
-
-                    <span class="prize-number">
-                      PREMIO #${index + 1}
-                    </span>
-
-                    <div class="prize-mini-status">
-                      ${
-                        prize.active
-                          ? "Premio activo"
-                          : "Premio desactivado"
-                      }
-                    </div>
-
-                  </div>
-
-                  <div class="actions" style="margin-top:0;">
-
-                    <button
-                      class="btn-secondary"
-                      onclick="duplicarPremio('${prize.id}')"
-                    >
-                      DUPLICAR
-                    </button>
-
-                    <button
-                      class="btn-danger"
-                      onclick="eliminarPremio('${prize.id}')"
-                    >
-                      ELIMINAR
-                    </button>
-
-                  </div>
-
-                </div>
-
-
-                <div class="row">
-
-                  <div class="field">
-
-                    <label>
-                      Nombre del premio
-                    </label>
-
-                    <input
-                      class="prize-name"
-                      value="${escapeHtml(
-                        prize.name || ""
-                      )}"
-                    >
-
-                  </div>
-
-
-                  <div class="field">
-
-                    <label>
-                      Descripción
-                    </label>
-
-                    <input
-                      class="prize-description"
-                      value="${escapeHtml(
-                        prize.description || ""
-                      )}"
-                    >
-
-                  </div>
-
-
-                  <div class="field">
-
-                    <label>
-                      Probabilidad %
-                    </label>
-
-                    <input
-                      type="number"
-                      min="0"
-                      max="100"
-                      step="0.01"
-                      class="prize-probability"
-                      value="${Number(
-                        prize.probability || 0
-                      )}"
-                      oninput="calcularTotal(); actualizarBarraPremio(this);"
-                    >
-
-                    <div class="probability-bar">
-
-                      <div
-                        class="probability-bar-fill"
-                        style="width:${Math.min(
-                          100,
-                          Math.max(
-                            0,
-                            Number(
-                              prize.probability || 0
-                            )
-                          )
-                        )}%"
-                      ></div>
-
-                    </div>
-
-                  </div>
-
-
-                  <div class="field">
-
-                    <label>
-                      Orden
-                    </label>
-
-                    <input
-                      type="number"
-                      class="prize-order"
-                      value="${prize.sort_order || 0}"
-                    >
-
-                  </div>
-
-                </div>
-
-
-                <div class="switch">
-
-                  <input
-                    type="checkbox"
-                    class="prize-active"
-                    ${prize.active ? "checked" : ""}
-                    onchange="calcularTotal(); actualizarEstadoPremio(this)"
-                  >
-
-                  <span>
-                    Premio activo
-                  </span>
-
-                </div>
-
-              </div>
-
-            `
-          )
-          .join("");
-
-
-      calcularTotal();
-
-    }
-
-
-    window.actualizarBarraPremio =
-      function(input) {
-
-        const value =
-          Number(input.value) || 0;
-
-
-        const item =
-          input.closest(
-            ".prize-item"
-          );
-
-
-        if (!item) {
-          return;
-        }
-
-
-        const bar =
-          item.querySelector(
-            ".probability-bar-fill"
-          );
-
-
-        if (bar) {
-
-          bar.style.width =
-            `${Math.min(
-              100,
-              Math.max(
-                0,
-                value
-              )
-            )}%`;
-
-        }
-
-      };
-
-
-    window.actualizarEstadoPremio =
-      function(input) {
-
-        const item =
-          input.closest(
-            ".prize-item"
-          );
-
-
-        if (!item) {
-          return;
-        }
-
-
-        item.classList.toggle(
-          "inactive",
-          !input.checked
-        );
-
-
-        const label =
-          item.querySelector(
-            ".prize-mini-status"
-          );
-
-
-        if (label) {
-
-          label.innerText =
-            input.checked
-              ? "Premio activo"
-              : "Premio desactivado";
-
-        }
-
-      };
-
-
-    window.calcularTotal =
-      function() {
-
-        const items =
-          document.querySelectorAll(
-            ".prize-item"
-          );
-
-
-        let total = 0;
-
-
-        items.forEach(
-          item => {
-
-            const active =
-              item
-                .querySelector(
-                  ".prize-active"
-                )
-                .checked;
-
-
-            if (!active) {
-              return;
-            }
-
-
-            total +=
-              Number(
-                item
-                  .querySelector(
-                    ".prize-probability"
-                  )
-                  .value
-              ) || 0;
-
-          }
-        );
-
-
-        const element =
-          document.getElementById(
-            "percentageTotal"
-          );
-
-
-        element.innerText =
-          `Total de probabilidades activas: ${total.toFixed(2)}%`;
-
-
-        if (
-          Math.abs(
-            total - 100
-          ) < 0.001
-        ) {
-
-          element.className =
-            "percentage-total percentage-ok";
-
-        } else {
-
-          element.className =
-            "percentage-total percentage-error";
-
-        }
-
-      };
-
-
-    document
-      .getElementById(
-        "addPrizeBtn"
-      )
-      .addEventListener(
-        "click",
-        async () => {
-
-          const rotationId =
-            document
-              .getElementById(
-                "prizeRotationSelect"
-              )
-              .value;
-
-
-          if (!rotationId) {
-
-            alert(
-              "Primero seleccioná una rotación."
-            );
-
-            return;
-
-          }
-
-
-          const {
-            error
-          } =
-            await supabaseClient
-              .from("prizes")
-              .insert({
-
-                rotation_id:
-                  rotationId,
-
-                name:
-                  "Nuevo premio",
-
-                description:
-                  "",
-
-                probability:
-                  0,
-
-                active:
-                  true,
-
-                sort_order:
-                  currentPrizes.length + 1
-
-              });
-
-
-          if (error) {
-
-            showMessage(
-              adminMessage,
-              error.message,
-              "error"
-            );
-
-            return;
-
-          }
-
-
-          await cargarPremios();
-
-          showMessage(
-            adminMessage,
-            "Nuevo premio agregado.",
-            "success"
-          );
-
-        }
-      );
-
-
-    window.duplicarPremio =
-      async function(id) {
-
-        const original =
-          currentPrizes.find(
-            prize =>
-              String(prize.id) ===
-              String(id)
-          );
-
-
-        if (!original) {
-          return;
-        }
-
-
-        const {
-          error
-        } =
-          await supabaseClient
-            .from("prizes")
-            .insert({
-
-              rotation_id:
-                original.rotation_id,
-
-              name:
-                `${original.name || "Premio"} - copia`,
-
-              description:
-                original.description || "",
-
-              probability:
-                0,
-
-              active:
-                false,
-
-              sort_order:
-                currentPrizes.length + 1
-
-            });
-
-
-        if (error) {
-
-          showMessage(
-            adminMessage,
-            error.message,
-            "error"
-          );
-
-          return;
-
-        }
-
-
-        await cargarPremios();
-
-
-        showMessage(
-          adminMessage,
-          "Premio duplicado como inactivo con 0% para que puedas configurarlo.",
-          "success"
-        );
-
-      };
-
-
-    window.eliminarPremio =
-      async function(id) {
-
-        if (
-          !confirm(
-            "¿Eliminar este premio?"
-          )
-        ) {
-          return;
-        }
-
-
-        const {
-          error
-        } =
-          await supabaseClient
-            .from("prizes")
-            .delete()
-            .eq(
-              "id",
-              id
-            );
-
-
-        if (error) {
-
-          showMessage(
-            adminMessage,
-            error.message,
-            "error"
-          );
-
-          return;
-
-        }
-
-
-        await cargarPremios();
-
-        showMessage(
-          adminMessage,
-          "Premio eliminado.",
-          "success"
-        );
-
-      };
-
-
-    document
-      .getElementById(
-        "savePrizesBtn"
-      )
-      .addEventListener(
-        "click",
-        async () => {
-
-          const items =
-            document.querySelectorAll(
-              ".prize-item"
-            );
-
-
-          if (!items.length) {
-
-            alert(
-              "No hay premios para guardar."
-            );
-
-            return;
-
-          }
-
-
-          const updates = [];
-
-          let total = 0;
-
-
-          items.forEach(
-            item => {
-
-              const id =
-                item.dataset.id;
-
-
-              const name =
-                item
-                  .querySelector(
-                    ".prize-name"
-                  )
-                  .value
-                  .trim();
-
-
-              const description =
-                item
-                  .querySelector(
-                    ".prize-description"
-                  )
-                  .value
-                  .trim();
-
-
-              const probability =
-                Number(
-                  item
-                    .querySelector(
-                      ".prize-probability"
-                    )
-                    .value
-                ) || 0;
-
-
-              const sortOrder =
-                Number(
-                  item
-                    .querySelector(
-                      ".prize-order"
-                    )
-                    .value
-                ) || 0;
-
-
-              const active =
-                item
-                  .querySelector(
-                    ".prize-active"
-                  )
-                  .checked;
-
-
-              if (active) {
-                total += probability;
-              }
-
-
-              updates.push({
-
-                id,
-                name,
-                description,
-                probability,
-                sort_order:
-                  sortOrder,
-                active
-
-              });
-
-            }
-          );
-
-
-          if (
-            Math.abs(
-              total - 100
-            ) > 0.001
-          ) {
-
-            alert(
-              `Las probabilidades activas deben sumar 100%. Actualmente suman ${total.toFixed(2)}%.`
-            );
-
-            return;
-
-          }
-
-
-          for (
-            const update
-            of updates
-          ) {
-
-            const {
-              error
-            } =
-              await supabaseClient
-                .from("prizes")
-                .update({
-
-                  name:
-                    update.name,
-
-                  description:
-                    update.description,
-
-                  probability:
-                    update.probability,
-
-                  sort_order:
-                    update.sort_order,
-
-                  active:
-                    update.active
-
-                })
-                .eq(
-                  "id",
-                  update.id
-                );
-
-
-            if (error) {
-
-              showMessage(
-                adminMessage,
-                error.message,
-                "error"
-              );
-
-              return;
-
-            }
-
-          }
-
-
-          await cargarPremios();
-
-          actualizarDashboardPremios();
-
-
-          showMessage(
-            adminMessage,
-            "Premios y probabilidades guardados correctamente.",
-            "success"
-          );
-
-        }
-      );
-
-
-    /* ==========================================================
-       LEADS
-       ========================================================== */
-
-    document
-      .getElementById(
-        "loadLeadsBtn"
-      )
-      .addEventListener(
-        "click",
-        cargarLeads
-      );
-
-
-    async function cargarLeads() {
-
-      const {
-        data,
-        error
-      } =
-        await supabaseClient
-          .from("leads")
-          .select("*")
-          .order(
-            "created_at",
-            {
-              ascending: false
-            }
-          );
-
-
-      if (error) {
-
-        showMessage(
-          adminMessage,
-          error.message,
-          "error"
-        );
-
-        return;
-
-      }
-
-
-      leads =
-        data || [];
-
-
-      renderLeads();
-
-      actualizarDashboardLeads();
-
-    }
-
-
-    function renderLeads() {
-
-      const search =
-        document
-          .getElementById(
-            "leadSearch"
-          )
-          .value
-          .trim()
-          .toLowerCase();
-
-
-      const prizeFilter =
-        document
-          .getElementById(
-            "leadPrizeFilter"
-          )
-          .value
-          .trim()
-          .toLowerCase();
-
-
-      const filtered =
-        leads.filter(
-          lead => {
-
-            const matchesSearch =
-              !search ||
-              (
-                String(
-                  lead.name || ""
-                )
-                .toLowerCase()
-                .includes(search)
-              ) ||
-              (
-                String(
-                  lead.whatsapp || ""
-                )
-                .toLowerCase()
-                .includes(search)
-              );
-
-
-            const matchesPrize =
-              !prizeFilter ||
-              String(
-                lead.prize_name || ""
-              )
-              .toLowerCase()
-              .includes(
-                prizeFilter
-              );
-
-
-            return (
-              matchesSearch &&
-              matchesPrize
-            );
-
-          }
-        );
-
-
-      const table =
-        document.getElementById(
-          "leadsTable"
-        );
-
-
-      if (!filtered.length) {
-
-        table.innerHTML =
-          `<tr>
-             <td colspan="4" class="empty">
-               No hay participantes.
-             </td>
-           </tr>`;
-
-      } else {
-
-        table.innerHTML =
-          filtered
-            .map(
-              lead => `
-
-                <tr>
-
-                  <td>
-                    ${formatearFecha(
-                      lead.created_at
-                    )}
-                  </td>
-
-                  <td>
-                    ${escapeHtml(
-                      lead.name || ""
-                    )}
-                  </td>
-
-                  <td>
-                    ${escapeHtml(
-                      lead.whatsapp || ""
-                    )}
-                  </td>
-
-                  <td>
-                    ${escapeHtml(
-                      lead.prize_name || ""
-                    )}
-                  </td>
-
-                </tr>
-
-              `
-            )
-            .join("");
-
-      }
-
-
-      document
-        .getElementById(
-          "totalLeads"
-        )
-        .innerText =
-        leads.length;
-
-
-      const hoy =
-        new Date()
-          .toISOString()
-          .slice(
-            0,
-            10
-          );
-
-
-      const todayCount =
-        leads.filter(
-          lead =>
-            String(
-              lead.created_at
-            )
-            .slice(
-              0,
-              10
-            ) === hoy
-        ).length;
-
-
-      document
-        .getElementById(
-          "todayLeads"
-        )
-        .innerText =
-        todayCount;
-
-    }
-
-
-    document
-      .getElementById(
-        "leadSearch"
-      )
-      .addEventListener(
-        "input",
-        renderLeads
-      );
-
-
-    document
-      .getElementById(
-        "leadPrizeFilter"
-      )
-      .addEventListener(
-        "input",
-        renderLeads
-      );
-
-
-    /* ==========================================================
-       EXPORTAR CSV
-       ========================================================== */
-
-    document
-      .getElementById(
-        "exportLeadsBtn"
-      )
-      .addEventListener(
-        "click",
-        () => {
-
-          if (!leads.length) {
-
-            alert(
-              "No hay participantes para exportar."
-            );
-
-            return;
-
-          }
-
-
-          const rows = [
-
-            [
-              "Fecha",
-              "Nombre",
-              "WhatsApp",
-              "Premio"
-            ]
-
-          ];
-
-
-          leads.forEach(
-            lead => {
-
-              rows.push([
-
-                formatearFecha(
-                  lead.created_at
-                ),
-
-                lead.name || "",
-
-                lead.whatsapp || "",
-
-                lead.prize_name || ""
-
-              ]);
-
-            }
-          );
-
-
-          const csv =
-            rows
-              .map(
-                row =>
-                  row
-                    .map(
-                      value =>
-                        `"${String(value)
-                          .replace(
-                            /"/g,
-                            '""'
-                          )}"`
-                    )
-                    .join(",")
-              )
-              .join("\n");
-
-
-          const blob =
-            new Blob(
-              [
-                "\uFEFF" +
-                csv
-              ],
-              {
-                type:
-                  "text/csv;charset=utf-8;"
-              }
-            );
-
-
-          const url =
-            URL.createObjectURL(
-              blob
-            );
-
-
-          const a =
-            document.createElement(
-              "a"
-            );
-
-
-          a.href =
-            url;
-
-          a.download =
-            `participantes-rueda-${new Date()
-              .toISOString()
-              .slice(
-                0,
-                10
-              )}.csv`;
-
-
-          document.body.appendChild(a);
-
-          a.click();
-
-          a.remove();
-
-
-          setTimeout(
-            () => {
-              URL.revokeObjectURL(
-                url
-              );
-            },
-            100
-          );
-
-        }
-      );
-
-
-    /* ==========================================================
-       DASHBOARD
-       ========================================================== */
-
-    function actualizarDashboardLeads() {
-
-      document
-        .getElementById(
-          "dashboardTotalLeads"
-        )
-        .innerText =
-        leads.length;
-
-
-      const hoy =
-        new Date()
-          .toISOString()
-          .slice(
-            0,
-            10
-          );
-
-
-      const today =
-        leads.filter(
-          lead =>
-            String(
-              lead.created_at
-            )
-            .slice(
-              0,
-              10
-            ) === hoy
-        ).length;
-
-
-      document
-        .getElementById(
-          "dashboardTodayLeads"
-        )
-        .innerText =
-        today;
-
-    }
-
-
-    function actualizarDashboardRotaciones() {
-
-      document
-        .getElementById(
-          "dashboardRotations"
-        )
-        .innerText =
-        rotations.length;
-
-
-      const active =
-        rotations.find(
-          rotation =>
-            rotation.active
-        );
-
-
-      document
-        .getElementById(
-          "activeRotationName"
-        )
-        .innerText =
-        active
-          ? active.name
-          : "No hay rotaciones activas";
-
-    }
-
-
-    async function actualizarDashboardPremios() {
-
-      if (!rotations.length) {
-
-        document
-          .getElementById(
-            "dashboardPrizes"
-          )
-          .innerText =
-          "0";
-
-        return;
-
-      }
-
-
-      let total =
-        0;
-
-
-      for (
-        const rotation
-        of rotations
-      ) {
-
-        const {
-          count,
-          error
-        } =
-          await supabaseClient
-            .from("prizes")
-            .select(
-              "id",
-              {
-                count: "exact",
-                head: true
-              }
-            )
-            .eq(
-              "rotation_id",
-              rotation.id
-            )
-            .eq(
-              "active",
-              true
-            );
-
-
-        if (!error) {
-
-          total +=
-            count || 0;
-
-        }
-
-      }
-
-
-      document
-        .getElementById(
-          "dashboardPrizes"
-        )
-        .innerText =
-        total;
-
-    }
-
-
-    function actualizarEstadoDashboard() {
-
-      if (!settings) {
-        return;
-      }
-
-
-      const enabled =
-        !!settings.rotation_enabled;
-
-
-      const light =
-        document.getElementById(
-          "rotationStatusLight"
-        );
-
-
-      const label =
-        document.getElementById(
-          "rotationStatusLabel"
-        );
-
-
-      const detail =
-        document.getElementById(
-          "rotationStatusDetail"
-        );
-
-
-      light.classList.toggle(
-        "off",
-        !enabled
-      );
-
-
-      label.innerText =
-        enabled
-          ? "Rotación automática activa"
-          : "Rotación automática desactivada";
-
-
-      detail.innerText =
-        enabled
-          ? `Cambio configurado cada ${settings.rotation_interval_hours || 24} hora(s).`
-          : "La rotación automática está desactivada.";
-
-    }
-
-
-    function actualizarDashboardRotaciones() {
-
-      document
-        .getElementById(
-          "dashboardRotations"
-        )
-        .innerText =
-        rotations.length;
-
-
-      const active =
-        rotations.find(
-          rotation =>
-            rotation.active
-        );
-
-
-      document
-        .getElementById(
-          "activeRotationName"
-        )
-        .innerText =
-        active
-          ? active.name
-          : "No hay rotaciones activas";
-
-    }
-
-
-    function actualizarDashboard() {
-
-      actualizarDashboardLeads();
-
-      actualizarDashboardRotaciones();
-
-      actualizarDashboardPremios();
-
-      actualizarEstadoDashboard();
-
-    }
-
-
-    /* ==========================================================
-       UTILIDADES
-       ========================================================== */
-
-    function escapeHtml(
-      value
-    ) {
-
-      return String(
-        value || ""
-      )
-      .replace(
-        /&/g,
-        "&amp;"
-      )
-      .replace(
-        /</g,
-        "&lt;"
-      )
-      .replace(
-        />/g,
-        "&gt;"
-      )
-      .replace(
-        /"/g,
-        "&quot;"
-      )
-      .replace(
-        /'/g,
-        "&#039;"
-      );
-
-    }
-
-
-    function formatearFecha(
-      fecha
-    ) {
-
-      if (!fecha) {
-        return "";
-      }
-
-
-      return new Date(
-        fecha
-      ).toLocaleString(
-        "es-AR"
-      );
-
-    }
-
-
-    /* ==========================================================
-       CARGAR TODO
-       ========================================================== */
-
-    async function cargarTodo() {
-
-      try {
-
-        await cargarConfiguracion();
-
-        await cargarRotaciones();
-
-        await cargarLeads();
-
-        await actualizarDashboardPremios();
-
-        actualizarDashboard();
-
-      } catch (error) {
-
-        console.error(
-          error
-        );
-
-        showMessage(
-          adminMessage,
-          error.message ||
-            "Error cargando el panel.",
-          "error"
-        );
-
-      }
-
-    }
-
-
-    /* ==========================================================
-       INICIO
-       ========================================================== */
-
-    comprobarSesion();
-
-  </script>
+  });
+}
+
+function renderOrigenes(leadsPeriod) {
+  const container = document.getElementById("metricsSources");
+  const conteo = {};
+  leadsPeriod.forEach(l => {
+    const src = l.source || "directo";
+    conteo[src] = (conteo[src] || 0) + 1;
+  });
+
+  const entries = Object.entries(conteo).sort((a, b) => b[1] - a[1]);
+  if (!entries.length) { container.innerHTML = `<div class="empty">Sin datos en el período.</div>`; return; }
+
+  const max = entries[0][1];
+  container.innerHTML = entries.map(([name, count]) => `
+    <div class="bar-row">
+      <div class="bar-label">${escapeHtml(name)}</div>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:${(count / max) * 100}%"></div>
+      </div>
+      <div class="bar-value">${count}</div>
+    </div>
+  `).join("");
+}
+
+function renderPremiosMetricas(leadsPeriod) {
+  const container = document.getElementById("metricsPrizes");
+  const conteo = {};
+  leadsPeriod.forEach(l => {
+    const p = l.prize_name || "(sin premio)";
+    conteo[p] = (conteo[p] || 0) + 1;
+  });
+
+  const entries = Object.entries(conteo).sort((a, b) => b[1] - a[1]);
+  if (!entries.length) { container.innerHTML = `<div class="empty">Sin datos en el período.</div>`; return; }
+
+  const total = entries.reduce((s, [, c]) => s + c, 0);
+  const max = entries[0][1];
+
+  container.innerHTML = entries.map(([name, count]) => {
+    const pct = total > 0 ? ((count / total) * 100).toFixed(1) : "0";
+    return `
+      <div class="bar-row">
+        <div class="bar-label">${escapeHtml(name)}</div>
+        <div class="bar-track">
+          <div class="bar-fill" style="width:${(count / max) * 100}%"></div>
+        </div>
+        <div class="bar-value">${count} (${pct}%)</div>
+      </div>
+    `;
+  }).join("");
+}
+
+document.getElementById("exportMetricsBtn").addEventListener("click", () => {
+  const start = getPeriodStart(currentMetricsPeriod);
+  const rows = [
+    ["Métrica", "Valor"],
+    ["Período", currentMetricsPeriod],
+    ["Desde", start.toISOString().slice(0, 10)],
+    ["Visitas", document.getElementById("mVisits").innerText],
+    ["Interacciones", document.getElementById("mSpins").innerText],
+    ["Contactos", document.getElementById("mLeads").innerText],
+    ["Conversión", document.getElementById("mConversion").innerText],
+    ["Premios entregados", document.getElementById("mPrizesWon").innerText],
+    ["WhatsApp", document.getElementById("mContacts").innerText],
+    ["Nuevos este mes", document.getElementById("mMonthNew").innerText],
+    ["Convertidos", document.getElementById("mConverted").innerText]
+  ];
+  descargarCSV(rows, `metricas-${new Date().toISOString().slice(0, 10)}.csv`);
+});
+
+/* ==========================================================
+   HERO STATS
+   ========================================================== */
+function actualizarHeroStats() {
+  const total = leads.length;
+  const hoy = new Date().toISOString().slice(0, 10);
+  const today = leads.filter(l => String(l.created_at).slice(0, 10) === hoy).length;
+
+  const weekStart = new Date();
+  weekStart.setDate(weekStart.getDate() - 7);
+  const week = leads.filter(l => new Date(l.created_at) >= weekStart).length;
+
+  const converted = leads.filter(l => l.status === "convertido").length;
+
+  document.getElementById("heroTotal").innerText = total;
+  document.getElementById("heroToday").innerText = today;
+  document.getElementById("heroWeek").innerText = week;
+  document.getElementById("heroConverted").innerText = converted;
+}
+
+/* ==========================================================
+   ESTADO DEL SISTEMA (PAUSA)
+   ========================================================== */
+function actualizarEstadoSistema() {
+  if (!settings) return;
+  const paused = !!settings.roulette_paused;
+  const pill = document.getElementById("statusPill");
+  const pillText = document.getElementById("statusPillText");
+  const pauseBtnText = document.getElementById("pauseBtnText");
+
+  if (paused) {
+    pill.classList.add("paused");
+    pillText.innerText = "PAUSADO";
+    pauseBtnText.innerText = "Reactivar sistema";
+  } else {
+    pill.classList.remove("paused");
+    pillText.innerText = "ACTIVO";
+    pauseBtnText.innerText = "Pausar sistema";
+  }
+}
+
+document.getElementById("pauseBtn").addEventListener("click", async () => {
+  if (!settings) return;
+  const nuevo = !settings.roulette_paused;
+
+  const { error } = await supabaseClient.from("site_settings").update({ roulette_paused: nuevo }).eq("id", 1);
+  if (error) { showMessage(adminMessage, error.message, "error"); return; }
+
+  settings.roulette_paused = nuevo;
+  actualizarEstadoSistema();
+  showMessage(adminMessage, nuevo ? "Sistema pausado." : "Sistema reactivado.", "success");
+});
+
+/* ==========================================================
+   HERRAMIENTAS
+   ========================================================== */
+document.getElementById("restoreSettingsBtn").addEventListener("click", async () => {
+  if (!confirm("¿Restaurar configuración a valores por defecto?")) return;
+
+  const { error } = await supabaseClient.from("site_settings").update({
+    title: "Sistema de Captación",
+    contact_name: "", phone: "", whatsapp: "",
+    rules_text: "", prizes_text: "", notices_text: "", legal_text: ""
+  }).eq("id", 1);
+
+  if (error) { showMessage(adminMessage, error.message, "error"); return; }
+  await cargarConfiguracion();
+  showMessage(adminMessage, "Configuración restaurada.", "success");
+});
+
+document.getElementById("restorePrizesBtn").addEventListener("click", async () => {
+  if (!confirm("¿Restaurar premios por defecto en la rotación activa?")) return;
+  const active = rotations.find(r => r.active);
+  if (!active) { alert("No hay rotación activa."); return; }
+
+  await supabaseClient.from("prizes").delete().eq("rotation_id", active.id);
+  await supabaseClient.from("prizes").insert([
+    { rotation_id: active.id, name: "10% OFF", description: "Descuento", probability: 40, active: true, sort_order: 1 },
+    { rotation_id: active.id, name: "20% OFF", description: "Descuento", probability: 30, active: true, sort_order: 2 },
+    { rotation_id: active.id, name: "Premio Sorpresa", description: "Sorpresa", probability: 20, active: true, sort_order: 3 },
+    { rotation_id: active.id, name: "$50.000", description: "Efectivo", probability: 10, active: true, sort_order: 4 }
+  ]);
+
+  await cargarPremios();
+  showMessage(adminMessage, "Premios restaurados.", "success");
+});
+
+document.getElementById("resetAllBtn").addEventListener("click", async () => {
+  if (!confirm("⚠️ Esto ELIMINA todos los contactos, eventos, gastos y rotaciones. ¿Continuar?")) return;
+  const c2 = prompt('Escribí "BORRAR TODO" para confirmar:');
+  if (c2 !== "BORRAR TODO") { alert("Cancelado."); return; }
+
+  await supabaseClient.from("leads").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+  await supabaseClient.from("events").delete().neq("id", 0);
+  await supabaseClient.from("expenses").delete().neq("id", 0);
+  await supabaseClient.from("prizes").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+  await supabaseClient.from("rotations").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+
+  showMessage(adminMessage, "Todo restablecido.", "success");
+  setTimeout(() => location.reload(), 1500);
+});
+
+/* ==========================================================
+   UTILIDADES
+   ========================================================== */
+function escapeHtml(v) {
+  return String(v || "")
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+}
+
+function formatearFecha(f) {
+  if (!f) return "";
+  return new Date(f).toLocaleString("es-AR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
+}
+
+function formatearFechaCorta(f) {
+  if (!f) return "";
+  const d = new Date(f);
+  return d.toLocaleDateString("es-AR", { day: "2-digit", month: "2-digit", year: "numeric" });
+}
+
+function descargarCSV(rows, filename) {
+  const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
+  const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 100);
+}
+
+/* ==========================================================
+   CARGAR TODO
+   ========================================================== */
+async function cargarTodo() {
+  try {
+    await cargarConfiguracion();
+    await cargarRotaciones();
+    await cargarLeads();
+    await cargarInversion();
+    actualizarHeroStats();
+  } catch (e) {
+    console.error(e);
+    showMessage(adminMessage, e.message || "Error cargando el panel.", "error");
+  }
+}
+
+/* ==========================================================
+   INIT
+   ========================================================== */
+comprobarSesion();
+</script>
 
 </body>
 </html>
