@@ -8,12 +8,16 @@
     content="width=device-width, initial-scale=1.0"
   >
 
-  <title>Panel Admin | FACU CASINO™</title>
+  <title>Panel Admin | Rueda de Premios</title>
 
   <style>
 
     * {
       box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
     }
 
     body {
@@ -30,6 +34,25 @@
       min-height: 100vh;
     }
 
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(
+          circle at 20% 20%,
+          rgba(180, 0, 255, 0.08),
+          transparent 30%
+        ),
+        radial-gradient(
+          circle at 80% 10%,
+          rgba(0, 255, 255, 0.05),
+          transparent 25%
+        );
+      z-index: -1;
+    }
+
     button,
     input,
     textarea,
@@ -37,79 +60,30 @@
       font-family: inherit;
     }
 
-    .login-screen {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .login-box {
-      width: 100%;
-      max-width: 400px;
-      background: rgba(20, 10, 30, 0.95);
-      border: 1px solid #8b35ff;
-      border-radius: 18px;
-      padding: 30px;
-      box-shadow:
-        0 0 30px rgba(170, 0, 255, 0.3);
-      text-align: center;
-    }
-
-    .login-box img {
-      max-width: 220px;
-      max-height: 120px;
-      object-fit: contain;
-      margin-bottom: 20px;
-    }
-
-    .login-box h1 {
-      color: #ffcc00;
-      margin-top: 0;
-    }
-
-    .field {
-      margin-bottom: 15px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 7px;
-      font-weight: bold;
-      color: #ffcc00;
-    }
-
-    input,
-    textarea,
-    select {
-      width: 100%;
-      border: 1px solid #555;
-      border-radius: 8px;
-      padding: 12px;
-      background: #120c18;
-      color: white;
-      outline: none;
-    }
-
-    textarea {
-      min-height: 130px;
-      resize: vertical;
-    }
-
-    input:focus,
-    textarea:focus,
-    select:focus {
-      border-color: #00ffff;
-      box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
-    }
-
     button {
       border: 0;
-      border-radius: 8px;
+      border-radius: 9px;
       padding: 11px 16px;
       cursor: pointer;
       font-weight: bold;
+      transition:
+        transform 0.18s ease,
+        opacity 0.18s ease,
+        box-shadow 0.18s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
     }
 
     .btn-primary {
@@ -119,6 +93,8 @@
         #d900ff
       );
       color: white;
+      box-shadow:
+        0 5px 18px rgba(180, 0, 255, 0.2);
     }
 
     .btn-success {
@@ -141,20 +117,117 @@
       color: white;
     }
 
-    button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
+    .btn-warning {
+      background: #d89400;
+      color: white;
     }
 
     .hidden {
       display: none !important;
     }
 
+    /* ==========================================================
+       LOGIN
+       ========================================================== */
+
+    .login-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 410px;
+      background:
+        linear-gradient(
+          145deg,
+          rgba(28, 12, 40, 0.98),
+          rgba(10, 5, 15, 0.98)
+        );
+      border: 1px solid #8b35ff;
+      border-radius: 22px;
+      padding: 32px;
+      box-shadow:
+        0 0 30px rgba(170, 0, 255, 0.3),
+        0 20px 60px rgba(0, 0, 0, 0.35);
+      text-align: center;
+    }
+
+    .login-box img {
+      max-width: 220px;
+      max-height: 120px;
+      object-fit: contain;
+      margin-bottom: 18px;
+    }
+
+    .login-box h1 {
+      color: #ffcc00;
+      margin: 0 0 24px;
+      font-size: 1.6rem;
+    }
+
+    /* ==========================================================
+       CAMPOS
+       ========================================================== */
+
+    .field {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 7px;
+      font-weight: bold;
+      color: #ffcc00;
+      font-size: 0.9rem;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      border: 1px solid #555;
+      border-radius: 9px;
+      padding: 12px;
+      background: #120c18;
+      color: white;
+      outline: none;
+      min-height: 44px;
+    }
+
+    textarea {
+      min-height: 130px;
+      resize: vertical;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: #00ffff;
+      box-shadow:
+        0 0 10px rgba(0, 255, 255, 0.15);
+    }
+
+    input[type="checkbox"] {
+      min-height: auto;
+      width: auto;
+      accent-color: #a500ff;
+    }
+
+    /* ==========================================================
+       TOPBAR
+       ========================================================== */
+
     .topbar {
       position: sticky;
       top: 0;
       z-index: 50;
-      background: rgba(8, 3, 13, 0.96);
+      background:
+        rgba(8, 3, 13, 0.97);
+      backdrop-filter: blur(15px);
       border-bottom: 1px solid #422052;
       padding: 12px 20px;
       display: flex;
@@ -163,11 +236,87 @@
       gap: 15px;
     }
 
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      min-width: 0;
+    }
+
     .topbar h1 {
       margin: 0;
       color: #ffcc00;
-      font-size: 1.3rem;
+      font-size: 1.25rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
+
+    .online-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(0, 190, 110, 0.12);
+      border: 1px solid rgba(0, 190, 110, 0.4);
+      color: #72ffc5;
+      font-size: 0.75rem;
+      white-space: nowrap;
+    }
+
+    .online-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #00e889;
+      box-shadow: 0 0 8px #00e889;
+    }
+
+    /* ==========================================================
+       NAVEGACIÓN
+       ========================================================== */
+
+    .admin-nav {
+      position: sticky;
+      top: 61px;
+      z-index: 40;
+      background:
+        rgba(10, 5, 15, 0.94);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid #28182f;
+      padding: 8px 15px;
+      overflow-x: auto;
+    }
+
+    .admin-nav-inner {
+      width: min(1200px, 100%);
+      margin: auto;
+      display: flex;
+      gap: 7px;
+      min-width: max-content;
+    }
+
+    .nav-btn {
+      background: transparent;
+      color: #aaa;
+      border: 1px solid transparent;
+      padding: 9px 12px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      white-space: nowrap;
+    }
+
+    .nav-btn:hover,
+    .nav-btn.active {
+      color: white;
+      background: rgba(139, 0, 255, 0.14);
+      border-color: #542072;
+    }
+
+    /* ==========================================================
+       CONTENEDOR
+       ========================================================== */
 
     .container {
       width: min(1200px, calc(100% - 30px));
@@ -185,9 +334,14 @@
     }
 
     .card {
-      background: rgba(20, 10, 30, 0.94);
+      background:
+        linear-gradient(
+          145deg,
+          rgba(25, 12, 35, 0.96),
+          rgba(12, 6, 18, 0.96)
+        );
       border: 1px solid #43204f;
-      border-radius: 15px;
+      border-radius: 16px;
       padding: 20px;
       box-shadow:
         0 0 20px rgba(130, 0, 200, 0.08);
@@ -200,7 +354,19 @@
     .card h2 {
       margin-top: 0;
       color: #ffcc00;
-      font-size: 1.2rem;
+      font-size: 1.15rem;
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .section-title h2 {
+      margin: 0;
     }
 
     .row {
@@ -220,6 +386,159 @@
       margin-top: 15px;
     }
 
+    .small {
+      color: #aaa;
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+
+    /* ==========================================================
+       DASHBOARD
+       ========================================================== */
+
+    .welcome-card {
+      background:
+        linear-gradient(
+          135deg,
+          rgba(84, 0, 130, 0.35),
+          rgba(14, 8, 20, 0.96)
+        );
+      border-color: #682b85;
+    }
+
+    .welcome-card h2 {
+      font-size: 1.45rem;
+      margin-bottom: 7px;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns:
+        repeat(
+          4,
+          minmax(0, 1fr)
+        );
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .dashboard-stat {
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(
+          145deg,
+          #160b20,
+          #0c0611
+        );
+      border: 1px solid #43204f;
+      border-radius: 15px;
+      padding: 18px;
+    }
+
+    .dashboard-stat::after {
+      content: "";
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      right: -25px;
+      top: -25px;
+      border-radius: 50%;
+      background: rgba(160, 0, 255, 0.09);
+    }
+
+    .dashboard-stat-label {
+      color: #aaa;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+    }
+
+    .dashboard-stat-value {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #00ff99;
+      margin-top: 5px;
+    }
+
+    .dashboard-stat-note {
+      color: #777;
+      font-size: 0.75rem;
+      margin-top: 5px;
+    }
+
+    .quick-grid {
+      display: grid;
+      grid-template-columns:
+        repeat(
+          auto-fit,
+          minmax(180px, 1fr)
+        );
+      gap: 12px;
+    }
+
+    .quick-btn {
+      text-align: left;
+      background: #120a18;
+      border: 1px solid #40204d;
+      color: white;
+      padding: 15px;
+    }
+
+    .quick-btn strong {
+      display: block;
+      color: #ffcc00;
+      margin-bottom: 5px;
+    }
+
+    .quick-btn span {
+      color: #999;
+      font-size: 0.78rem;
+      font-weight: normal;
+    }
+
+    /* ==========================================================
+       ESTADO
+       ========================================================== */
+
+    .status-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      background: #100817;
+      border: 1px solid #392041;
+      border-radius: 12px;
+      padding: 15px;
+    }
+
+    .status-main {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .status-light {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: #00e889;
+      box-shadow: 0 0 12px #00e889;
+      flex: 0 0 auto;
+    }
+
+    .status-light.off {
+      background: #ff4d4d;
+      box-shadow: 0 0 12px #ff4d4d;
+    }
+
+    .status-label {
+      font-weight: bold;
+    }
+
+    /* ==========================================================
+       IMÁGENES
+       ========================================================== */
+
     .preview {
       width: 100%;
       max-height: 180px;
@@ -228,6 +547,7 @@
       border-radius: 10px;
       margin-top: 10px;
       padding: 10px;
+      border: 1px solid #2d2032;
     }
 
     .preview-bg {
@@ -239,22 +559,77 @@
       margin-top: 10px;
     }
 
+    /* ==========================================================
+       SWITCH
+       ========================================================== */
+
     .switch {
       display: flex;
       align-items: center;
       gap: 10px;
+      min-height: 35px;
     }
 
-    .switch input {
-      width: auto;
-    }
+    /* ==========================================================
+       ROTACIONES
+       ========================================================== */
 
-    .prize-item {
+    .rotation-item {
       background: #110a18;
       border: 1px solid #43204f;
       border-radius: 12px;
       padding: 15px;
       margin-bottom: 12px;
+      transition: border-color 0.2s ease;
+    }
+
+    .rotation-item:hover {
+      border-color: #743b8c;
+    }
+
+    .rotation-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .rotation-badge {
+      display: inline-flex;
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      background: rgba(0, 168, 107, 0.12);
+      border: 1px solid rgba(0, 168, 107, 0.3);
+      color: #7dffca;
+    }
+
+    .rotation-badge.off {
+      background: rgba(180, 180, 180, 0.08);
+      border-color: #444;
+      color: #999;
+    }
+
+    /* ==========================================================
+       PREMIOS
+       ========================================================== */
+
+    .prize-item {
+      background:
+        linear-gradient(
+          145deg,
+          #140b1c,
+          #0e0712
+        );
+      border: 1px solid #43204f;
+      border-radius: 13px;
+      padding: 15px;
+      margin-bottom: 12px;
+    }
+
+    .prize-item.inactive {
+      opacity: 0.55;
     }
 
     .prize-header {
@@ -270,13 +645,55 @@
       font-weight: bold;
     }
 
-    .rotation-item {
-      background: #110a18;
-      border: 1px solid #43204f;
-      border-radius: 12px;
-      padding: 15px;
-      margin-bottom: 12px;
+    .prize-mini-status {
+      color: #777;
+      font-size: 0.75rem;
     }
+
+    .probability-bar {
+      height: 6px;
+      border-radius: 99px;
+      background: #25182b;
+      overflow: hidden;
+      margin-top: 7px;
+    }
+
+    .probability-bar-fill {
+      height: 100%;
+      width: 0;
+      background:
+        linear-gradient(
+          90deg,
+          #8b00ff,
+          #00ffff
+        );
+      border-radius: inherit;
+      transition: width 0.2s ease;
+    }
+
+    .percentage-total {
+      margin-top: 15px;
+      padding: 13px;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: bold;
+      background: #100817;
+      border: 1px solid #38203f;
+    }
+
+    .percentage-ok {
+      color: #00ff99;
+      border-color: rgba(0, 255, 153, 0.3);
+    }
+
+    .percentage-error {
+      color: #ff5555;
+      border-color: rgba(255, 85, 85, 0.3);
+    }
+
+    /* ==========================================================
+       STATS
+       ========================================================== */
 
     .stats {
       display: grid;
@@ -300,10 +717,17 @@
       font-size: 2rem;
       font-weight: bold;
       color: #00ff99;
+      margin-top: 5px;
     }
+
+    /* ==========================================================
+       TABLE
+       ========================================================== */
 
     .lead-table-wrapper {
       overflow-x: auto;
+      border: 1px solid #302039;
+      border-radius: 10px;
     }
 
     table {
@@ -319,10 +743,20 @@
       text-align: left;
     }
 
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
     th {
       color: #ffcc00;
       background: #100817;
+      position: sticky;
+      top: 0;
     }
+
+    /* ==========================================================
+       MENSAJES
+       ========================================================== */
 
     .message {
       margin-top: 15px;
@@ -345,48 +779,136 @@
       color: #ff9999;
     }
 
-    .percentage-total {
-      margin-top: 12px;
-      font-size: 1.1rem;
-      font-weight: bold;
-    }
-
-    .percentage-ok {
-      color: #00ff99;
-    }
-
-    .percentage-error {
-      color: #ff5555;
-    }
-
-    .small {
-      color: #aaa;
-      font-size: 0.85rem;
-      line-height: 1.5;
-    }
-
     .empty {
-      padding: 20px;
+      padding: 25px 15px;
       text-align: center;
       color: #999;
+      background: rgba(0,0,0,0.12);
+      border-radius: 10px;
     }
 
-    @media (max-width: 600px) {
+    /* ==========================================================
+       SECCIONES
+       ========================================================== */
+
+    .admin-section {
+      scroll-margin-top: 115px;
+      margin-bottom: 20px;
+    }
+
+    .section-description {
+      color: #999;
+      font-size: 0.85rem;
+      margin-top: -5px;
+      margin-bottom: 18px;
+    }
+
+    /* ==========================================================
+       MOBILE
+       ========================================================== */
+
+    @media (max-width: 900px) {
+
+      .dashboard-grid {
+        grid-template-columns:
+          repeat(2, minmax(0, 1fr));
+      }
+
+    }
+
+    @media (max-width: 650px) {
 
       .container {
-        width: calc(100% - 20px);
+        width: calc(100% - 14px);
+        margin-top: 15px;
       }
 
       .topbar {
         padding: 10px;
+        gap: 8px;
       }
 
       .topbar h1 {
-        font-size: 1rem;
+        font-size: 0.95rem;
+      }
+
+      .online-badge {
+        display: none;
+      }
+
+      .admin-nav {
+        top: 56px;
+        padding: 7px;
+      }
+
+      .nav-btn {
+        padding: 8px 10px;
       }
 
       .card {
-        padding: 15px;
+        padding: 14px;
+        border-radius: 13px;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .dashboard-grid {
+        grid-template-columns:
+          repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .dashboard-stat {
+        padding: 14px;
+      }
+
+      .dashboard-stat-value {
+        font-size: 1.55rem;
+      }
+
+      .row {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+
+      .actions {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      .actions button {
+        width: 100%;
+      }
+
+      .section-title,
+      .rotation-top,
+      .status-box {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .prize-header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .login-box {
+        padding: 25px 18px;
+      }
+
+    }
+
+    @media (max-width: 400px) {
+
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar-left {
+        min-width: 0;
       }
 
     }
@@ -396,7 +918,9 @@
 
 <body>
 
-  <!-- LOGIN -->
+  <!-- ==========================================================
+       LOGIN
+       ========================================================== -->
 
   <div
     id="loginScreen"
@@ -407,31 +931,37 @@
 
       <img
         src="https://iili.io/KyPwhml.md.png"
-        alt="FACU CASINO"
+        alt="Rueda de Premios"
       >
 
       <h1>PANEL ADMIN</h1>
 
       <div class="field">
 
-        <label>Email</label>
+        <label for="loginEmail">
+          Email
+        </label>
 
         <input
           type="email"
           id="loginEmail"
           placeholder="admin@email.com"
+          autocomplete="email"
         >
 
       </div>
 
       <div class="field">
 
-        <label>Contraseña</label>
+        <label for="loginPassword">
+          Contraseña
+        </label>
 
         <input
           type="password"
           id="loginPassword"
           placeholder="••••••••"
+          autocomplete="current-password"
         >
 
       </div>
@@ -454,18 +984,31 @@
   </div>
 
 
-  <!-- PANEL -->
+  <!-- ==========================================================
+       PANEL
+       ========================================================== -->
 
   <div
     id="adminPanel"
     class="hidden"
   >
 
+    <!-- TOPBAR -->
+
     <div class="topbar">
 
-      <h1>
-        🎰 FACU CASINO™ — ADMIN
-      </h1>
+      <div class="topbar-left">
+
+        <h1>
+          🎯 RUEDA DE PREMIOS — ADMIN
+        </h1>
+
+        <span class="online-badge">
+          <span class="online-dot"></span>
+          CONECTADO
+        </span>
+
+      </div>
 
       <button
         class="btn-danger"
@@ -477,553 +1020,971 @@
     </div>
 
 
-    <main class="container">
+    <!-- NAVEGACIÓN -->
 
-      <!-- CONFIGURACIÓN GENERAL -->
+    <nav class="admin-nav">
 
-      <div class="card full">
-
-        <h2>
-          ⚙️ Configuración general
-        </h2>
-
-        <div class="row">
-
-          <div class="field">
-
-            <label>
-              Título de la ruleta
-            </label>
-
-            <input
-              id="siteTitle"
-              type="text"
-            >
-
-          </div>
-
-          <div class="field">
-
-            <label>
-              Nombre de contacto
-            </label>
-
-            <input
-              id="contactName"
-              type="text"
-            >
-
-          </div>
-
-          <div class="field">
-
-            <label>
-              Teléfono mostrado
-            </label>
-
-            <input
-              id="phone"
-              type="text"
-            >
-
-          </div>
-
-          <div class="field">
-
-            <label>
-              WhatsApp
-            </label>
-
-            <input
-              id="whatsapp"
-              type="text"
-              placeholder="54911..."
-            >
-
-          </div>
-
-        </div>
-
-        <div class="actions">
-
-          <button
-            class="btn-success"
-            id="saveGeneralBtn"
-          >
-            💾 GUARDAR CONFIGURACIÓN
-          </button>
-
-        </div>
-
-      </div>
-
-
-      <!-- IMÁGENES -->
-
-      <div class="grid">
-
-        <div class="card">
-
-          <h2>
-            🖼️ Logo
-          </h2>
-
-          <div class="field">
-
-            <input
-              type="file"
-              id="logoFile"
-              accept="image/png,image/jpeg,image/webp"
-            >
-
-          </div>
-
-          <img
-            id="logoPreview"
-            class="preview"
-            src=""
-            alt="Logo"
-          >
-
-          <div class="actions">
-
-            <button
-              class="btn-success"
-              id="uploadLogoBtn"
-            >
-              SUBIR LOGO
-            </button>
-
-          </div>
-
-        </div>
-
-
-        <div class="card">
-
-          <h2>
-            🌄 Background
-          </h2>
-
-          <div class="field">
-
-            <input
-              type="file"
-              id="backgroundFile"
-              accept="image/png,image/jpeg,image/webp"
-            >
-
-          </div>
-
-          <img
-            id="backgroundPreview"
-            class="preview-bg"
-            src=""
-            alt="Background"
-          >
-
-          <div class="actions">
-
-            <button
-              class="btn-success"
-              id="uploadBackgroundBtn"
-            >
-              SUBIR BACKGROUND
-            </button>
-
-          </div>
-
-        </div>
-
-
-        <div class="card">
-
-          <h2>
-            🖼️ Imagen Open Graph
-          </h2>
-
-          <div class="field">
-
-            <input
-              type="file"
-              id="ogFile"
-              accept="image/png,image/jpeg,image/webp"
-            >
-
-          </div>
-
-          <img
-            id="ogPreview"
-            class="preview"
-            src=""
-            alt="OG"
-          >
-
-          <div class="actions">
-
-            <button
-              class="btn-success"
-              id="uploadOgBtn"
-            >
-              SUBIR OG IMAGE
-            </button>
-
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <!-- TEXTOS -->
-
-      <div class="card full">
-
-        <h2>
-          📝 Textos de la página
-        </h2>
-
-        <div class="row">
-
-          <div class="field">
-
-            <label>
-              📜 Reglas
-            </label>
-
-            <textarea
-              id="rulesText"
-              placeholder="Escribí aquí las reglas..."
-            ></textarea>
-
-          </div>
-
-          <div class="field">
-
-            <label>
-              🎁 Premios
-            </label>
-
-            <textarea
-              id="prizesText"
-              placeholder="Información sobre los premios..."
-            ></textarea>
-
-          </div>
-
-          <div class="field">
-
-            <label>
-              📢 Avisos
-            </label>
-
-            <textarea
-              id="noticesText"
-              placeholder="Avisos para los jugadores..."
-            ></textarea>
-
-          </div>
-
-          <div class="field">
-
-            <label>
-              ⚖️ Aviso legal
-            </label>
-
-            <textarea
-              id="legalText"
-              placeholder="Aviso legal y condiciones..."
-            ></textarea>
-
-          </div>
-
-        </div>
+      <div class="admin-nav-inner">
 
         <button
-          class="btn-success"
-          id="saveTextsBtn"
+          class="nav-btn active"
+          data-target="dashboardSection"
         >
-          💾 GUARDAR TEXTOS
+          📊 Inicio
+        </button>
+
+        <button
+          class="nav-btn"
+          data-target="configSection"
+        >
+          ⚙️ Configuración
+        </button>
+
+        <button
+          class="nav-btn"
+          data-target="imagesSection"
+        >
+          🖼️ Imágenes
+        </button>
+
+        <button
+          class="nav-btn"
+          data-target="textsSection"
+        >
+          📝 Textos
+        </button>
+
+        <button
+          class="nav-btn"
+          data-target="rotationsSection"
+        >
+          🔄 Rotaciones
+        </button>
+
+        <button
+          class="nav-btn"
+          data-target="prizesSection"
+        >
+          🎁 Premios
+        </button>
+
+        <button
+          class="nav-btn"
+          data-target="leadsSection"
+        >
+          👥 Participantes
         </button>
 
       </div>
 
+    </nav>
 
-      <!-- ROTACIONES -->
 
-      <div class="card full">
+    <main class="container">
 
-        <h2>
-          🔄 Rotación automática
-        </h2>
 
-        <div class="row">
+      <!-- ======================================================
+           DASHBOARD
+           ====================================================== -->
 
-          <div class="field">
+      <section
+        id="dashboardSection"
+        class="admin-section"
+      >
 
-            <label>
-              Rotación automática
-            </label>
+        <div class="card welcome-card">
 
-            <div class="switch">
+          <h2>
+            Panel de control
+          </h2>
 
-              <input
-                type="checkbox"
-                id="rotationEnabled"
-              >
+          <p class="small">
+            Desde acá podés administrar la configuración,
+            premios, rotaciones e información de los
+            participantes de tu Rueda de Premios.
+          </p>
+
+        </div>
+
+        <br>
+
+
+        <div class="dashboard-grid">
+
+          <div class="dashboard-stat">
+
+            <div class="dashboard-stat-label">
+              Participantes totales
+            </div>
+
+            <div
+              class="dashboard-stat-value"
+              id="dashboardTotalLeads"
+            >
+              0
+            </div>
+
+            <div class="dashboard-stat-note">
+              Registros almacenados
+            </div>
+
+          </div>
+
+
+          <div class="dashboard-stat">
+
+            <div class="dashboard-stat-label">
+              Participantes hoy
+            </div>
+
+            <div
+              class="dashboard-stat-value"
+              id="dashboardTodayLeads"
+            >
+              0
+            </div>
+
+            <div class="dashboard-stat-note">
+              Durante el día actual
+            </div>
+
+          </div>
+
+
+          <div class="dashboard-stat">
+
+            <div class="dashboard-stat-label">
+              Rotaciones
+            </div>
+
+            <div
+              class="dashboard-stat-value"
+              id="dashboardRotations"
+            >
+              0
+            </div>
+
+            <div class="dashboard-stat-note">
+              Configuradas
+            </div>
+
+          </div>
+
+
+          <div class="dashboard-stat">
+
+            <div class="dashboard-stat-label">
+              Premios activos
+            </div>
+
+            <div
+              class="dashboard-stat-value"
+              id="dashboardPrizes"
+            >
+              0
+            </div>
+
+            <div class="dashboard-stat-note">
+              En todas las rotaciones
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="card">
+
+          <div class="section-title">
+
+            <h2>
+              Estado actual
+            </h2>
+
+          </div>
+
+          <div class="status-box">
+
+            <div class="status-main">
+
+              <span
+                id="rotationStatusLight"
+                class="status-light"
+              ></span>
+
+              <div>
+
+                <div
+                  id="rotationStatusLabel"
+                  class="status-label"
+                >
+                  Cargando...
+                </div>
+
+                <div
+                  id="rotationStatusDetail"
+                  class="small"
+                >
+                  -
+                </div>
+
+              </div>
+
+            </div>
+
+            <div
+              id="activeRotationName"
+              class="small"
+            >
+              Sin rotación
+            </div>
+
+          </div>
+
+        </div>
+
+        <br>
+
+
+        <div class="card">
+
+          <h2>
+            Accesos rápidos
+          </h2>
+
+          <div class="quick-grid">
+
+            <button
+              class="quick-btn"
+              data-target="prizesSection"
+            >
+              <strong>
+                🎁 Administrar premios
+              </strong>
 
               <span>
-                Activada
+                Editar nombres, probabilidades y estados.
               </span>
 
-            </div>
+            </button>
 
-          </div>
 
-          <div class="field">
+            <button
+              class="quick-btn"
+              data-target="rotationsSection"
+            >
+              <strong>
+                🔄 Administrar rotaciones
+              </strong>
 
-            <label>
-              Cambiar cada
-            </label>
+              <span>
+                Crear y organizar diferentes ruedas.
+              </span>
 
-            <select id="rotationInterval">
+            </button>
 
-              <option value="1">
-                1 hora
-              </option>
 
-              <option value="6">
-                6 horas
-              </option>
+            <button
+              class="quick-btn"
+              data-target="leadsSection"
+            >
+              <strong>
+                👥 Ver participantes
+              </strong>
 
-              <option value="12">
-                12 horas
-              </option>
+              <span>
+                Consultar registros y exportarlos.
+              </span>
 
-              <option value="24">
-                24 horas
-              </option>
+            </button>
 
-              <option value="48">
-                48 horas
-              </option>
 
-              <option value="72">
-                72 horas
-              </option>
+            <button
+              class="quick-btn"
+              data-target="configSection"
+            >
+              <strong>
+                ⚙️ Configuración
+              </strong>
 
-              <option value="168">
-                7 días
-              </option>
+              <span>
+                Contacto, título y datos generales.
+              </span>
 
-            </select>
+            </button>
 
           </div>
 
         </div>
 
-        <p class="small">
-          Cuando está activada, la página pública irá
-          cambiando automáticamente entre las rotaciones
-          activas según el intervalo configurado.
-        </p>
+      </section>
 
-        <div id="rotationList"></div>
 
-        <div class="actions">
+      <!-- ======================================================
+           CONFIGURACIÓN GENERAL
+           ====================================================== -->
 
-          <button
-            class="btn-primary"
-            id="addRotationBtn"
-          >
-            + AGREGAR ROTACIÓN
-          </button>
+      <section
+        id="configSection"
+        class="admin-section"
+      >
+
+        <div class="card">
+
+          <div class="section-title">
+
+            <div>
+
+              <h2>
+                ⚙️ Configuración general
+              </h2>
+
+              <div class="section-description">
+                Información general que utiliza la página pública.
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="row">
+
+            <div class="field">
+
+              <label for="siteTitle">
+                Título de la ruleta
+              </label>
+
+              <input
+                id="siteTitle"
+                type="text"
+              >
+
+            </div>
+
+
+            <div class="field">
+
+              <label for="contactName">
+                Nombre de contacto
+              </label>
+
+              <input
+                id="contactName"
+                type="text"
+              >
+
+            </div>
+
+
+            <div class="field">
+
+              <label for="phone">
+                Teléfono mostrado
+              </label>
+
+              <input
+                id="phone"
+                type="text"
+              >
+
+            </div>
+
+
+            <div class="field">
+
+              <label for="whatsapp">
+                WhatsApp
+              </label>
+
+              <input
+                id="whatsapp"
+                type="text"
+                placeholder="54911..."
+              >
+
+            </div>
+
+          </div>
+
+
+          <div class="actions">
+
+            <button
+              class="btn-success"
+              id="saveGeneralBtn"
+            >
+              💾 GUARDAR CONFIGURACIÓN
+            </button>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- ======================================================
+           IMÁGENES
+           ====================================================== -->
+
+      <section
+        id="imagesSection"
+        class="admin-section"
+      >
+
+        <div class="grid">
+
+
+          <!-- LOGO -->
+
+          <div class="card">
+
+            <h2>
+              🖼️ Logo
+            </h2>
+
+            <div class="field">
+
+              <input
+                type="file"
+                id="logoFile"
+                accept="image/png,image/jpeg,image/webp"
+              >
+
+            </div>
+
+            <img
+              id="logoPreview"
+              class="preview"
+              src=""
+              alt="Logo"
+            >
+
+            <div class="actions">
+
+              <button
+                class="btn-success"
+                id="uploadLogoBtn"
+              >
+                SUBIR LOGO
+              </button>
+
+            </div>
+
+          </div>
+
+
+          <!-- BACKGROUND -->
+
+          <div class="card">
+
+            <h2>
+              🌄 Background
+            </h2>
+
+            <div class="field">
+
+              <input
+                type="file"
+                id="backgroundFile"
+                accept="image/png,image/jpeg,image/webp"
+              >
+
+            </div>
+
+            <img
+              id="backgroundPreview"
+              class="preview-bg"
+              src=""
+              alt="Background"
+            >
+
+            <div class="actions">
+
+              <button
+                class="btn-success"
+                id="uploadBackgroundBtn"
+              >
+                SUBIR BACKGROUND
+              </button>
+
+            </div>
+
+          </div>
+
+
+          <!-- OG -->
+
+          <div class="card">
+
+            <h2>
+              🖼️ Imagen Open Graph
+            </h2>
+
+            <div class="field">
+
+              <input
+                type="file"
+                id="ogFile"
+                accept="image/png,image/jpeg,image/webp"
+              >
+
+            </div>
+
+            <img
+              id="ogPreview"
+              class="preview"
+              src=""
+              alt="OG"
+            >
+
+            <div class="actions">
+
+              <button
+                class="btn-success"
+                id="uploadOgBtn"
+              >
+                SUBIR OG IMAGE
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- ======================================================
+           TEXTOS
+           ====================================================== -->
+
+      <section
+        id="textsSection"
+        class="admin-section"
+      >
+
+        <div class="card">
+
+          <h2>
+            📝 Textos de la página
+          </h2>
+
+          <div class="section-description">
+            Modificá los textos que aparecen en la página pública
+            sin tener que tocar el código.
+          </div>
+
+          <div class="row">
+
+            <div class="field">
+
+              <label for="rulesText">
+                📜 Reglas
+              </label>
+
+              <textarea
+                id="rulesText"
+                placeholder="Escribí aquí las reglas..."
+              ></textarea>
+
+            </div>
+
+
+            <div class="field">
+
+              <label for="prizesText">
+                🎁 Premios
+              </label>
+
+              <textarea
+                id="prizesText"
+                placeholder="Información sobre los premios..."
+              ></textarea>
+
+            </div>
+
+
+            <div class="field">
+
+              <label for="noticesText">
+                📢 Avisos
+              </label>
+
+              <textarea
+                id="noticesText"
+                placeholder="Avisos para los jugadores..."
+              ></textarea>
+
+            </div>
+
+
+            <div class="field">
+
+              <label for="legalText">
+                ⚖️ Aviso legal
+              </label>
+
+              <textarea
+                id="legalText"
+                placeholder="Aviso legal y condiciones..."
+              ></textarea>
+
+            </div>
+
+          </div>
+
 
           <button
             class="btn-success"
-            id="saveRotationSettingsBtn"
+            id="saveTextsBtn"
           >
-            💾 GUARDAR ROTACIÓN
+            💾 GUARDAR TEXTOS
           </button>
 
         </div>
 
-      </div>
+      </section>
 
 
-      <!-- PREMIOS -->
+      <!-- ======================================================
+           ROTACIONES
+           ====================================================== -->
 
-      <div class="card full">
+      <section
+        id="rotationsSection"
+        class="admin-section"
+      >
 
-        <h2>
-          🎁 Premios y probabilidades
-        </h2>
+        <div class="card">
 
-        <div class="field">
+          <h2>
+            🔄 Rotación automática
+          </h2>
 
-          <label>
-            Rotación a editar
-          </label>
-
-          <select id="prizeRotationSelect"></select>
-
-        </div>
-
-        <div id="prizesList"></div>
-
-        <div
-          id="percentageTotal"
-          class="percentage-total"
-        >
-          Total: 0%
-        </div>
-
-        <div class="actions">
-
-          <button
-            class="btn-primary"
-            id="addPrizeBtn"
-          >
-            + AGREGAR PREMIO
-          </button>
-
-          <button
-            class="btn-success"
-            id="savePrizesBtn"
-          >
-            💾 GUARDAR PREMIOS
-          </button>
-
-        </div>
-
-      </div>
+          <div class="section-description">
+            Configurá cada cuánto tiempo la página pública
+            cambia entre las rotaciones activas.
+          </div>
 
 
-      <!-- LEADS -->
+          <div class="row">
 
-      <div class="card full">
+            <div class="field">
 
-        <h2>
-          👥 Leads captados
-        </h2>
+              <label>
+                Rotación automática
+              </label>
 
-        <div class="stats">
+              <div class="switch">
 
-          <div class="stat">
+                <input
+                  type="checkbox"
+                  id="rotationEnabled"
+                >
 
-            <div class="small">
-              TOTAL DE LEADS
+                <span>
+                  Activada
+                </span>
+
+              </div>
+
             </div>
 
-            <div
-              class="stat-number"
-              id="totalLeads"
-            >
-              0
+
+            <div class="field">
+
+              <label for="rotationInterval">
+                Cambiar cada
+              </label>
+
+              <select id="rotationInterval">
+
+                <option value="1">
+                  1 hora
+                </option>
+
+                <option value="6">
+                  6 horas
+                </option>
+
+                <option value="12">
+                  12 horas
+                </option>
+
+                <option value="24">
+                  24 horas
+                </option>
+
+                <option value="48">
+                  48 horas
+                </option>
+
+                <option value="72">
+                  72 horas
+                </option>
+
+                <option value="168">
+                  7 días
+                </option>
+
+              </select>
+
             </div>
 
           </div>
 
-          <div class="stat">
 
-            <div class="small">
-              LEADS DE HOY
-            </div>
+          <p class="small">
+            Cuando está activada, la página pública irá
+            cambiando automáticamente entre las rotaciones
+            activas según el intervalo configurado.
+          </p>
 
-            <div
-              class="stat-number"
-              id="todayLeads"
+
+          <div id="rotationList"></div>
+
+
+          <div class="actions">
+
+            <button
+              class="btn-primary"
+              id="addRotationBtn"
             >
-              0
-            </div>
+              + AGREGAR ROTACIÓN
+            </button>
+
+            <button
+              class="btn-success"
+              id="saveRotationSettingsBtn"
+            >
+              💾 GUARDAR ROTACIÓN
+            </button>
 
           </div>
 
         </div>
 
-        <div class="row">
+      </section>
+
+
+      <!-- ======================================================
+           PREMIOS
+           ====================================================== -->
+
+      <section
+        id="prizesSection"
+        class="admin-section"
+      >
+
+        <div class="card">
+
+          <h2>
+            🎁 Premios y probabilidades
+          </h2>
+
+          <div class="section-description">
+            Los premios activos deben sumar exactamente
+            100% de probabilidad.
+          </div>
+
 
           <div class="field">
 
-            <label>
-              Buscar
+            <label for="prizeRotationSelect">
+              Rotación a editar
             </label>
 
-            <input
-              id="leadSearch"
-              type="text"
-              placeholder="Nombre o WhatsApp..."
-            >
+            <select id="prizeRotationSelect"></select>
 
           </div>
 
-          <div class="field">
 
-            <label>
-              Premio
-            </label>
+          <div id="prizesList"></div>
 
-            <input
-              id="leadPrizeFilter"
-              type="text"
-              placeholder="Ej: 15% extra"
+
+          <div
+            id="percentageTotal"
+            class="percentage-total"
+          >
+            Total de probabilidades activas: 0.00%
+          </div>
+
+
+          <div class="actions">
+
+            <button
+              class="btn-primary"
+              id="addPrizeBtn"
             >
+              + AGREGAR PREMIO
+            </button>
+
+            <button
+              class="btn-success"
+              id="savePrizesBtn"
+            >
+              💾 GUARDAR PREMIOS
+            </button>
 
           </div>
 
         </div>
 
-        <div class="actions">
+      </section>
 
-          <button
-            class="btn-blue"
-            id="loadLeadsBtn"
-          >
-            🔄 ACTUALIZAR LEADS
-          </button>
 
-          <button
-            class="btn-success"
-            id="exportLeadsBtn"
+      <!-- ======================================================
+           LEADS
+           ====================================================== -->
+
+      <section
+        id="leadsSection"
+        class="admin-section"
+      >
+
+        <div class="card">
+
+          <h2>
+            👥 Participantes
+          </h2>
+
+          <div class="section-description">
+            Personas que completaron sus datos después de girar
+            la rueda.
+          </div>
+
+
+          <div class="stats">
+
+            <div class="stat">
+
+              <div class="small">
+                TOTAL DE PARTICIPANTES
+              </div>
+
+              <div
+                class="stat-number"
+                id="totalLeads"
+              >
+                0
+              </div>
+
+            </div>
+
+
+            <div class="stat">
+
+              <div class="small">
+                PARTICIPANTES DE HOY
+              </div>
+
+              <div
+                class="stat-number"
+                id="todayLeads"
+              >
+                0
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="row">
+
+            <div class="field">
+
+              <label for="leadSearch">
+                Buscar
+              </label>
+
+              <input
+                id="leadSearch"
+                type="text"
+                placeholder="Nombre o WhatsApp..."
+              >
+
+            </div>
+
+
+            <div class="field">
+
+              <label for="leadPrizeFilter">
+                Premio
+              </label>
+
+              <input
+                id="leadPrizeFilter"
+                type="text"
+                placeholder="Ej: 15% extra"
+              >
+
+            </div>
+
+          </div>
+
+
+          <div class="actions">
+
+            <button
+              class="btn-blue"
+              id="loadLeadsBtn"
+            >
+              🔄 ACTUALIZAR PARTICIPANTES
+            </button>
+
+            <button
+              class="btn-success"
+              id="exportLeadsBtn"
+            >
+              📥 EXPORTAR CSV
+            </button>
+
+          </div>
+
+
+          <div
+            class="lead-table-wrapper"
+            style="margin-top:20px;"
           >
-            📥 EXPORTAR CSV
-          </button>
+
+            <table>
+
+              <thead>
+
+                <tr>
+
+                  <th>Fecha</th>
+                  <th>Nombre</th>
+                  <th>WhatsApp</th>
+                  <th>Premio</th>
+
+                </tr>
+
+              </thead>
+
+              <tbody id="leadsTable"></tbody>
+
+            </table>
+
+          </div>
 
         </div>
 
-        <div
-          class="lead-table-wrapper"
-          style="margin-top:20px;"
-        >
+      </section>
 
-          <table>
 
-            <thead>
-
-              <tr>
-
-                <th>Fecha</th>
-                <th>Nombre</th>
-                <th>WhatsApp</th>
-                <th>Premio</th>
-
-              </tr>
-
-            </thead>
-
-            <tbody id="leadsTable"></tbody>
-
-          </table>
-
-        </div>
-
-      </div>
-
+      <!-- MENSAJE GENERAL -->
 
       <div
         id="adminMessage"
         class="message"
       ></div>
+
 
     </main>
 
@@ -1040,7 +2001,7 @@
   <script>
 
     /* ==========================================================
-       🔑 SUPABASE
+       SUPABASE
        ========================================================== */
 
     const SUPABASE_URL =
@@ -1134,6 +2095,101 @@
 
 
     /* ==========================================================
+       NAVEGACIÓN
+       ========================================================== */
+
+    function irASeccion(id) {
+
+      const section =
+        document.getElementById(id);
+
+      if (!section) {
+        return;
+      }
+
+      section.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+
+    }
+
+
+    document
+      .querySelectorAll(
+        ".nav-btn, .quick-btn"
+      )
+      .forEach(
+        button => {
+
+          button.addEventListener(
+            "click",
+            () => {
+
+              const target =
+                button.dataset.target;
+
+              irASeccion(target);
+
+            }
+          );
+
+        }
+      );
+
+
+    const navButtons =
+      document.querySelectorAll(
+        ".nav-btn"
+      );
+
+
+    const sections =
+      document.querySelectorAll(
+        ".admin-section"
+      );
+
+
+    window.addEventListener(
+      "scroll",
+      () => {
+
+        let current =
+          "dashboardSection";
+
+
+        sections.forEach(
+          section => {
+
+            const top =
+              section.getBoundingClientRect()
+                .top;
+
+            if (top <= 150) {
+              current =
+                section.id;
+            }
+
+          }
+        );
+
+
+        navButtons.forEach(
+          button => {
+
+            button.classList.toggle(
+              "active",
+              button.dataset.target === current
+            );
+
+          }
+        );
+
+      }
+    );
+
+
+    /* ==========================================================
        LOGIN
        ========================================================== */
 
@@ -1142,6 +2198,42 @@
       .addEventListener(
         "click",
         login
+      );
+
+
+    document
+      .getElementById("loginPassword")
+      .addEventListener(
+        "keydown",
+        event => {
+
+          if (
+            event.key === "Enter"
+          ) {
+
+            login();
+
+          }
+
+        }
+      );
+
+
+    document
+      .getElementById("loginEmail")
+      .addEventListener(
+        "keydown",
+        event => {
+
+          if (
+            event.key === "Enter"
+          ) {
+
+            login();
+
+          }
+
+        }
       );
 
 
@@ -1388,6 +2480,9 @@
         )
         .src =
         settings.og_image_url || "";
+
+
+      actualizarEstadoDashboard();
 
     }
 
@@ -1681,13 +2776,17 @@
       }
 
 
+      const previewId =
+        tipo === "logo"
+          ? "logoPreview"
+          : tipo === "background"
+            ? "backgroundPreview"
+            : "ogPreview";
+
+
       document
         .getElementById(
-          tipo === "logo"
-            ? "logoPreview"
-            : tipo === "background"
-              ? "backgroundPreview"
-              : "ogPreview"
+          previewId
         )
         .src =
         url;
@@ -1778,6 +2877,8 @@
 
       llenarSelectRotaciones();
 
+      actualizarDashboardRotaciones();
+
     }
 
 
@@ -1811,6 +2912,30 @@
                 data-id="${rotation.id}"
               >
 
+                <div class="rotation-top">
+
+                  <strong>
+                    ${escapeHtml(
+                      rotation.name || "Sin nombre"
+                    )}
+                  </strong>
+
+                  <span
+                    class="rotation-badge ${
+                      rotation.active
+                        ? ""
+                        : "off"
+                    }"
+                  >
+                    ${
+                      rotation.active
+                        ? "ACTIVA"
+                        : "INACTIVA"
+                    }
+                  </span>
+
+                </div>
+
                 <div class="row">
 
                   <div class="field">
@@ -1821,7 +2946,9 @@
 
                     <input
                       class="rotation-name"
-                      value="${escapeHtml(rotation.name || "")}"
+                      value="${escapeHtml(
+                        rotation.name || ""
+                      )}"
                     >
 
                   </div>
@@ -1892,6 +3019,11 @@
           );
 
 
+        if (!item) {
+          return;
+        }
+
+
         const name =
           item
             .querySelector(
@@ -1917,6 +3049,17 @@
               ".rotation-active"
             )
             .checked;
+
+
+        if (!name) {
+
+          alert(
+            "La rotación necesita un nombre."
+          );
+
+          return;
+
+        }
 
 
         const {
@@ -2005,6 +3148,12 @@
 
         await cargarPremios();
 
+        showMessage(
+          adminMessage,
+          "Rotación eliminada.",
+          "success"
+        );
+
       };
 
 
@@ -2050,6 +3199,12 @@
 
           await cargarRotaciones();
 
+          showMessage(
+            adminMessage,
+            "Nueva rotación creada.",
+            "success"
+          );
+
         }
       );
 
@@ -2062,12 +3217,16 @@
         );
 
 
+      const currentValue =
+        select.value;
+
+
       select.innerHTML =
         rotations
           .map(
             r =>
               `<option value="${r.id}">
-                ${escapeHtml(r.name)}
+                ${escapeHtml(r.name || "Sin nombre")}
               </option>`
           )
           .join("");
@@ -2077,7 +3236,29 @@
         rotations.length
       ) {
 
+        const exists =
+          rotations.some(
+            r =>
+              String(r.id) ===
+              String(currentValue)
+          );
+
+
+        if (exists) {
+
+          select.value =
+            currentValue;
+
+        }
+
+
         cargarPremios();
+
+      } else {
+
+        currentPrizes = [];
+
+        renderPremios();
 
       }
 
@@ -2148,6 +3329,18 @@
             return;
 
           }
+
+
+          settings = {
+            ...settings,
+            rotation_enabled:
+              enabled,
+            rotation_interval_hours:
+              interval
+          };
+
+
+          actualizarEstadoDashboard();
 
 
           showMessage(
@@ -2233,6 +3426,8 @@
 
       renderPremios();
 
+      actualizarDashboardPremios();
+
     }
 
 
@@ -2264,24 +3459,52 @@
             (prize, index) => `
 
               <div
-                class="prize-item"
+                class="prize-item ${
+                  prize.active
+                    ? ""
+                    : "inactive"
+                }"
                 data-id="${prize.id}"
               >
 
                 <div class="prize-header">
 
-                  <span class="prize-number">
-                    PREMIO #${index + 1}
-                  </span>
+                  <div>
 
-                  <button
-                    class="btn-danger"
-                    onclick="eliminarPremio('${prize.id}')"
-                  >
-                    ELIMINAR
-                  </button>
+                    <span class="prize-number">
+                      PREMIO #${index + 1}
+                    </span>
+
+                    <div class="prize-mini-status">
+                      ${
+                        prize.active
+                          ? "Premio activo"
+                          : "Premio desactivado"
+                      }
+                    </div>
+
+                  </div>
+
+                  <div class="actions" style="margin-top:0;">
+
+                    <button
+                      class="btn-secondary"
+                      onclick="duplicarPremio('${prize.id}')"
+                    >
+                      DUPLICAR
+                    </button>
+
+                    <button
+                      class="btn-danger"
+                      onclick="eliminarPremio('${prize.id}')"
+                    >
+                      ELIMINAR
+                    </button>
+
+                  </div>
 
                 </div>
+
 
                 <div class="row">
 
@@ -2293,10 +3516,13 @@
 
                     <input
                       class="prize-name"
-                      value="${escapeHtml(prize.name || "")}"
+                      value="${escapeHtml(
+                        prize.name || ""
+                      )}"
                     >
 
                   </div>
+
 
                   <div class="field">
 
@@ -2306,10 +3532,13 @@
 
                     <input
                       class="prize-description"
-                      value="${escapeHtml(prize.description || "")}"
+                      value="${escapeHtml(
+                        prize.description || ""
+                      )}"
                     >
 
                   </div>
+
 
                   <div class="field">
 
@@ -2323,11 +3552,31 @@
                       max="100"
                       step="0.01"
                       class="prize-probability"
-                      value="${Number(prize.probability || 0)}"
-                      oninput="calcularTotal()"
+                      value="${Number(
+                        prize.probability || 0
+                      )}"
+                      oninput="calcularTotal(); actualizarBarraPremio(this);"
                     >
 
+                    <div class="probability-bar">
+
+                      <div
+                        class="probability-bar-fill"
+                        style="width:${Math.min(
+                          100,
+                          Math.max(
+                            0,
+                            Number(
+                              prize.probability || 0
+                            )
+                          )
+                        )}%"
+                      ></div>
+
+                    </div>
+
                   </div>
+
 
                   <div class="field">
 
@@ -2345,13 +3594,14 @@
 
                 </div>
 
+
                 <div class="switch">
 
                   <input
                     type="checkbox"
                     class="prize-active"
                     ${prize.active ? "checked" : ""}
-                    onchange="calcularTotal()"
+                    onchange="calcularTotal(); actualizarEstadoPremio(this)"
                   >
 
                   <span>
@@ -2370,6 +3620,84 @@
       calcularTotal();
 
     }
+
+
+    window.actualizarBarraPremio =
+      function(input) {
+
+        const value =
+          Number(input.value) || 0;
+
+
+        const item =
+          input.closest(
+            ".prize-item"
+          );
+
+
+        if (!item) {
+          return;
+        }
+
+
+        const bar =
+          item.querySelector(
+            ".probability-bar-fill"
+          );
+
+
+        if (bar) {
+
+          bar.style.width =
+            `${Math.min(
+              100,
+              Math.max(
+                0,
+                value
+              )
+            )}%`;
+
+        }
+
+      };
+
+
+    window.actualizarEstadoPremio =
+      function(input) {
+
+        const item =
+          input.closest(
+            ".prize-item"
+          );
+
+
+        if (!item) {
+          return;
+        }
+
+
+        item.classList.toggle(
+          "inactive",
+          !input.checked
+        );
+
+
+        const label =
+          item.querySelector(
+            ".prize-mini-status"
+          );
+
+
+        if (label) {
+
+          label.innerText =
+            input.checked
+              ? "Premio activo"
+              : "Premio desactivado";
+
+        }
+
+      };
 
 
     window.calcularTotal =
@@ -2512,8 +3840,83 @@
 
           await cargarPremios();
 
+          showMessage(
+            adminMessage,
+            "Nuevo premio agregado.",
+            "success"
+          );
+
         }
       );
+
+
+    window.duplicarPremio =
+      async function(id) {
+
+        const original =
+          currentPrizes.find(
+            prize =>
+              String(prize.id) ===
+              String(id)
+          );
+
+
+        if (!original) {
+          return;
+        }
+
+
+        const {
+          error
+        } =
+          await supabaseClient
+            .from("prizes")
+            .insert({
+
+              rotation_id:
+                original.rotation_id,
+
+              name:
+                `${original.name || "Premio"} - copia`,
+
+              description:
+                original.description || "",
+
+              probability:
+                0,
+
+              active:
+                false,
+
+              sort_order:
+                currentPrizes.length + 1
+
+            });
+
+
+        if (error) {
+
+          showMessage(
+            adminMessage,
+            error.message,
+            "error"
+          );
+
+          return;
+
+        }
+
+
+        await cargarPremios();
+
+
+        showMessage(
+          adminMessage,
+          "Premio duplicado como inactivo con 0% para que puedas configurarlo.",
+          "success"
+        );
+
+      };
 
 
     window.eliminarPremio =
@@ -2554,6 +3957,12 @@
 
 
         await cargarPremios();
+
+        showMessage(
+          adminMessage,
+          "Premio eliminado.",
+          "success"
+        );
 
       };
 
@@ -2728,6 +4137,8 @@
 
           await cargarPremios();
 
+          actualizarDashboardPremios();
+
 
           showMessage(
             adminMessage,
@@ -2788,6 +4199,8 @@
 
 
       renderLeads();
+
+      actualizarDashboardLeads();
 
     }
 
@@ -2867,7 +4280,7 @@
         table.innerHTML =
           `<tr>
              <td colspan="4" class="empty">
-               No hay leads.
+               No hay participantes.
              </td>
            </tr>`;
 
@@ -2988,7 +4401,7 @@
           if (!leads.length) {
 
             alert(
-              "No hay leads para exportar."
+              "No hay participantes para exportar."
             );
 
             return;
@@ -3076,7 +4489,7 @@
             url;
 
           a.download =
-            `leads-ruleta-${new Date()
+            `participantes-rueda-${new Date()
               .toISOString()
               .slice(
                 0,
@@ -3084,15 +4497,258 @@
               )}.csv`;
 
 
+          document.body.appendChild(a);
+
           a.click();
 
+          a.remove();
 
-          URL.revokeObjectURL(
-            url
+
+          setTimeout(
+            () => {
+              URL.revokeObjectURL(
+                url
+              );
+            },
+            100
           );
 
         }
       );
+
+
+    /* ==========================================================
+       DASHBOARD
+       ========================================================== */
+
+    function actualizarDashboardLeads() {
+
+      document
+        .getElementById(
+          "dashboardTotalLeads"
+        )
+        .innerText =
+        leads.length;
+
+
+      const hoy =
+        new Date()
+          .toISOString()
+          .slice(
+            0,
+            10
+          );
+
+
+      const today =
+        leads.filter(
+          lead =>
+            String(
+              lead.created_at
+            )
+            .slice(
+              0,
+              10
+            ) === hoy
+        ).length;
+
+
+      document
+        .getElementById(
+          "dashboardTodayLeads"
+        )
+        .innerText =
+        today;
+
+    }
+
+
+    function actualizarDashboardRotaciones() {
+
+      document
+        .getElementById(
+          "dashboardRotations"
+        )
+        .innerText =
+        rotations.length;
+
+
+      const active =
+        rotations.find(
+          rotation =>
+            rotation.active
+        );
+
+
+      document
+        .getElementById(
+          "activeRotationName"
+        )
+        .innerText =
+        active
+          ? active.name
+          : "No hay rotaciones activas";
+
+    }
+
+
+    async function actualizarDashboardPremios() {
+
+      if (!rotations.length) {
+
+        document
+          .getElementById(
+            "dashboardPrizes"
+          )
+          .innerText =
+          "0";
+
+        return;
+
+      }
+
+
+      let total =
+        0;
+
+
+      for (
+        const rotation
+        of rotations
+      ) {
+
+        const {
+          count,
+          error
+        } =
+          await supabaseClient
+            .from("prizes")
+            .select(
+              "id",
+              {
+                count: "exact",
+                head: true
+              }
+            )
+            .eq(
+              "rotation_id",
+              rotation.id
+            )
+            .eq(
+              "active",
+              true
+            );
+
+
+        if (!error) {
+
+          total +=
+            count || 0;
+
+        }
+
+      }
+
+
+      document
+        .getElementById(
+          "dashboardPrizes"
+        )
+        .innerText =
+        total;
+
+    }
+
+
+    function actualizarEstadoDashboard() {
+
+      if (!settings) {
+        return;
+      }
+
+
+      const enabled =
+        !!settings.rotation_enabled;
+
+
+      const light =
+        document.getElementById(
+          "rotationStatusLight"
+        );
+
+
+      const label =
+        document.getElementById(
+          "rotationStatusLabel"
+        );
+
+
+      const detail =
+        document.getElementById(
+          "rotationStatusDetail"
+        );
+
+
+      light.classList.toggle(
+        "off",
+        !enabled
+      );
+
+
+      label.innerText =
+        enabled
+          ? "Rotación automática activa"
+          : "Rotación automática desactivada";
+
+
+      detail.innerText =
+        enabled
+          ? `Cambio configurado cada ${settings.rotation_interval_hours || 24} hora(s).`
+          : "La rotación automática está desactivada.";
+
+    }
+
+
+    function actualizarDashboardRotaciones() {
+
+      document
+        .getElementById(
+          "dashboardRotations"
+        )
+        .innerText =
+        rotations.length;
+
+
+      const active =
+        rotations.find(
+          rotation =>
+            rotation.active
+        );
+
+
+      document
+        .getElementById(
+          "activeRotationName"
+        )
+        .innerText =
+        active
+          ? active.name
+          : "No hay rotaciones activas";
+
+    }
+
+
+    function actualizarDashboard() {
+
+      actualizarDashboardLeads();
+
+      actualizarDashboardRotaciones();
+
+      actualizarDashboardPremios();
+
+      actualizarEstadoDashboard();
+
+    }
 
 
     /* ==========================================================
@@ -3162,6 +4818,10 @@
 
         await cargarLeads();
 
+        await actualizarDashboardPremios();
+
+        actualizarDashboard();
+
       } catch (error) {
 
         console.error(
@@ -3179,6 +4839,10 @@
 
     }
 
+
+    /* ==========================================================
+       INICIO
+       ========================================================== */
 
     comprobarSesion();
 
