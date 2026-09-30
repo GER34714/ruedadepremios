@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -378,6 +379,7 @@
   <div class="wheel-container">
     <div class="rgb-ring"></div>
     <div class="indicator"></div>
+
     <canvas
       id="wheelCanvas"
       width="300"
@@ -475,7 +477,6 @@
 
   </div>
 
-
   <div id="siteSections">
 
     <section
@@ -491,7 +492,6 @@
       ></div>
     </section>
 
-
     <section
       class="page-section"
       id="prizesSection"
@@ -505,7 +505,6 @@
       ></div>
     </section>
 
-
     <section
       class="page-section"
       id="noticesSection"
@@ -518,7 +517,6 @@
         id="noticesText"
       ></div>
     </section>
-
 
     <section
       class="page-section"
@@ -535,11 +533,11 @@
 
   </div>
 
-
+  <!-- SUPABASE -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+  <!-- CONFETTI -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-
 
   <script>
 
@@ -551,7 +549,23 @@
       "https://qqeibunzugtfgwwayaxj.supabase.co";
 
     const SUPABASE_ANON_KEY =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFxZWlidW56dWd0Zmd3d2F5YXhqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA3MzkxMzgsImV4cCI6MjEwNjMxNTEzOH0.Qv-aPJiWe5z7bHBeP1gtWbmlRmitxfAPkovI2pOTF7g";
+      "sb_publishable_1S0XRJIOq1bEnj9S_z4LXQ_AllfS_JC";
+
+    /*
+     * Comprobamos que la librería haya cargado correctamente.
+     */
+
+    if (!window.supabase) {
+
+      throw new Error(
+        "No se pudo cargar la librería de Supabase."
+      );
+
+    }
+
+    /*
+     * Cliente Supabase.
+     */
 
     const supabaseClient =
       window.supabase.createClient(
@@ -695,11 +709,9 @@
           .eq("id", 1)
           .maybeSingle();
 
-
         if (error) {
           throw error;
         }
-
 
         if (data) {
 
@@ -709,7 +721,6 @@
           };
 
         }
-
 
       } catch (error) {
 
@@ -722,7 +733,6 @@
           { ...CONFIG_DEFAULT };
 
       }
-
 
       aplicarConfiguracion();
 
@@ -741,10 +751,8 @@
         CONFIG.logo ||
         CONFIG_DEFAULT.logo;
 
-
       document.body.style.backgroundImage =
         `url('${CONFIG.background_url || CONFIG.fondo || CONFIG_DEFAULT.fondo}')`;
-
 
       document
         .getElementById("tituloPrincipal")
@@ -752,32 +760,29 @@
         CONFIG.title ||
         CONFIG.titulo;
 
-
       document
         .getElementById("contactoFacu")
         .innerText =
         `📞 Contacto: ${CONFIG.phone || CONFIG.telefono} (${CONFIG.contact_name || CONFIG.nombreContacto})`;
-
 
       const ogImage =
         CONFIG.og_image_url ||
         CONFIG.ogImage ||
         CONFIG_DEFAULT.ogImage;
 
-
       const og =
         document.querySelector(
           'meta[property="og:image"]'
         );
 
-
       if (og) {
+
         og.setAttribute(
           "content",
           ogImage
         );
-      }
 
+      }
 
       cargarSeccion(
         "rulesSection",
@@ -785,20 +790,17 @@
         CONFIG.rules_text
       );
 
-
       cargarSeccion(
         "prizesSection",
         "prizesText",
         CONFIG.prizes_text
       );
 
-
       cargarSeccion(
         "noticesSection",
         "noticesText",
         CONFIG.notices_text
       );
-
 
       cargarSeccion(
         "legalSection",
@@ -824,7 +826,6 @@
         document.getElementById(
           textId
         );
-
 
       if (
         texto &&
@@ -864,11 +865,9 @@
           ascending: true
         });
 
-
       if (error) {
         throw error;
       }
-
 
       if (!data || data.length === 0) {
 
@@ -878,7 +877,6 @@
         return;
 
       }
-
 
       if (
         !CONFIG.rotation_enabled
@@ -895,14 +893,12 @@
 
       }
 
-
       const startedAt =
         CONFIG.rotation_started_at
           ? new Date(
               CONFIG.rotation_started_at
             ).getTime()
           : Date.now();
-
 
       const interval =
         (
@@ -914,7 +910,6 @@
         60 *
         1000;
 
-
       const elapsed =
         Math.max(
           0,
@@ -922,13 +917,11 @@
           startedAt
         );
 
-
       const rotationIndex =
         Math.floor(
           elapsed / interval
         ) %
         data.length;
-
 
       currentRotation =
         data[rotationIndex];
@@ -950,7 +943,6 @@
 
       }
 
-
       const {
         data,
         error
@@ -966,11 +958,9 @@
           ascending: true
         });
 
-
       if (error) {
         throw error;
       }
-
 
       premios =
         data || [];
@@ -991,11 +981,9 @@
         canvas.height
       );
 
-
       if (!premios.length) {
         return;
       }
-
 
       const colors = [
         "#ff0000",
@@ -1008,13 +996,11 @@
         "#ff00aa"
       ];
 
-
       const anglePerSegment =
         (
           2 * Math.PI
         ) /
         premios.length;
-
 
       for (
         let i = 0;
@@ -1049,9 +1035,6 @@
 
         ctx.stroke();
 
-
-        /* Texto del premio */
-
         ctx.save();
 
         ctx.translate(
@@ -1080,11 +1063,13 @@
         if (
           texto.length > 22
         ) {
+
           texto =
             texto.substring(
               0,
               22
             ) + "...";
+
         }
 
         ctx.fillText(
@@ -1110,13 +1095,11 @@
         return 0;
       }
 
-
       const diff =
         Date.now() -
         parseInt(
           lastSpinTime
         );
-
 
       return (
         24 *
@@ -1138,21 +1121,13 @@
         return null;
       }
 
-
       let disponibles =
         [...premios];
-
-
-      /*
-       * Evita repetir inmediatamente
-       * si existen otros premios.
-       */
 
       const ultimo =
         localStorage.getItem(
           "ultimoPremioId"
         );
-
 
       if (
         ultimo &&
@@ -1165,16 +1140,16 @@
               p.id !== ultimo
           );
 
-
         if (
           sinUltimo.length
         ) {
+
           disponibles =
             sinUltimo;
+
         }
 
       }
-
 
       const total =
         disponibles.reduce(
@@ -1189,16 +1164,13 @@
           0
         );
 
-
       if (total <= 0) {
         return disponibles[0];
       }
 
-
       let random =
         Math.random() *
         total;
-
 
       for (
         const premio
@@ -1210,15 +1182,11 @@
             premio.probability
           );
 
-
         if (random <= 0) {
-
           return premio;
-
         }
 
       }
-
 
       return disponibles[
         disponibles.length - 1
@@ -1250,12 +1218,10 @@
 
       }
 
-
       premioTexto.innerText =
         countdownText
           ? countdownText
           : `FELICIDADES 🎉 Ganaste: ${premio.name}`;
-
 
       extraTexto.innerText =
         countdownText
@@ -1265,10 +1231,8 @@
               "¡Felicitaciones!"
             );
 
-
       popup.style.display =
         "flex";
-
 
       if (
         countdownText
@@ -1284,17 +1248,14 @@
 
       }
 
-
       successArea.style.display =
         "none";
-
 
       nombreLead.value =
         "";
 
       whatsappLead.value =
         "";
-
 
       btnWhatsapp.onclick =
         () => {
@@ -1303,10 +1264,8 @@
             CONFIG.whatsapp ||
             CONFIG.whatsapp_number;
 
-
           const url =
             `https://wa.me/${numero}`;
-
 
           window.open(
             url,
@@ -1314,7 +1273,6 @@
           );
 
         };
-
 
       solicitarBtn.onclick =
         async () => {
@@ -1339,10 +1297,8 @@
       const nombre =
         nombreLead.value.trim();
 
-
       const whatsapp =
         whatsappLead.value.trim();
-
 
       if (!nombre) {
 
@@ -1355,7 +1311,6 @@
         return;
 
       }
-
 
       if (
         whatsapp.length < 6
@@ -1371,13 +1326,11 @@
 
       }
 
-
       solicitarBtn.disabled =
         true;
 
       solicitarBtn.innerText =
         "REGISTRANDO...";
-
 
       try {
 
@@ -1409,37 +1362,25 @@
 
           });
 
-
         if (error) {
           throw error;
         }
 
-
         successArea.style.display =
           "block";
 
-
         leadArea.style.display =
           "none";
-
-
-        /*
-         * Abrimos WhatsApp automáticamente
-         * con el premio ganado.
-         */
 
         const numero =
           CONFIG.whatsapp ||
           CONFIG.whatsapp_number;
 
-
         const mensaje =
           `Hola, ${CONFIG.contact_name || CONFIG.nombreContacto}. Gané en la rueda de premios: ${premio.name}. Mi nombre es ${nombre} y mi WhatsApp es ${whatsapp}.`;
 
-
         const url =
           `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
-
 
         setTimeout(
           () => {
@@ -1453,7 +1394,6 @@
           500
         );
 
-
       } catch (error) {
 
         console.error(
@@ -1463,7 +1403,6 @@
         alert(
           "No pudimos registrar tus datos. Intentá nuevamente."
         );
-
 
         solicitarBtn.disabled =
           false;
@@ -1485,7 +1424,6 @@
       const remaining =
         getRemainingTime();
 
-
       if (
         remaining > 0
       ) {
@@ -1499,7 +1437,6 @@
               60
             )
           );
-
 
         const mins =
           Math.floor(
@@ -1517,17 +1454,14 @@
             )
           );
 
-
         showPopup(
           null,
           `⏳ Podrás volver a girar en ${horas}h ${mins}m`
         );
 
-
         return;
 
       }
-
 
       if (!premios.length) {
 
@@ -1539,44 +1473,34 @@
 
       }
 
-
       const premioElegido =
         seleccionarPremio();
-
 
       if (!premioElegido) {
         return;
       }
 
-
       spinButton.disabled =
         true;
-
 
       sonidoGiro.currentTime =
         0;
 
-
       sonidoGiro.play()
         .catch(() => {});
-
 
       const spinTime =
         4000;
 
-
       const startAngle =
         currentAngle;
-
 
       const numSegments =
         premios.length;
 
-
       const segmentDeg =
         360 /
         numSegments;
-
 
       const indexElegido =
         premios.findIndex(
@@ -1584,7 +1508,6 @@
             p.id ===
             premioElegido.id
         );
-
 
       const centerDeg =
         (
@@ -1596,7 +1519,6 @@
           2
         );
 
-
       const jitter =
         (
           Math.random() -
@@ -1607,11 +1529,9 @@
           0.6
         );
 
-
       const desiredDeg =
         centerDeg +
         jitter;
-
 
       const startMod =
         (
@@ -1623,7 +1543,6 @@
         ) %
         360;
 
-
       const delta =
         (
           desiredDeg -
@@ -1632,13 +1551,11 @@
         ) %
         360;
 
-
       const extraSpins =
         5 +
         Math.floor(
           Math.random() * 3
         );
-
 
       const spinAngle =
         (
@@ -1647,15 +1564,12 @@
         ) +
         delta;
 
-
       const targetAngle =
         startAngle +
         spinAngle;
 
-
       const startTime =
         performance.now();
-
 
       function animate(
         time
@@ -1665,7 +1579,6 @@
           time -
           startTime;
 
-
         if (
           elapsed <
           spinTime
@@ -1674,7 +1587,6 @@
           const progress =
             elapsed /
             spinTime;
-
 
           currentAngle =
             startAngle +
@@ -1689,11 +1601,9 @@
               )
             );
 
-
           drawRotatedWheel(
             currentAngle
           );
-
 
           requestAnimationFrame(
             animate
@@ -1706,40 +1616,32 @@
           sonidoGiro.currentTime =
             0;
 
-
           sonidoDing.play()
             .catch(() => {});
 
-
           currentAngle =
             targetAngle;
-
 
           drawRotatedWheel(
             currentAngle
           );
 
-
           lastSpinTime =
             Date.now();
-
 
           localStorage.setItem(
             "lastSpinTime",
             lastSpinTime
           );
 
-
           localStorage.setItem(
             "ultimoPremioId",
             premioElegido.id
           );
 
-
           showPopup(
             premioElegido
           );
-
 
           spinButton.disabled =
             false;
@@ -1747,7 +1649,6 @@
         }
 
       }
-
 
       requestAnimationFrame(
         animate
@@ -1771,15 +1672,12 @@
         canvas.height
       );
 
-
       ctx.save();
-
 
       ctx.translate(
         150,
         150
       );
-
 
       ctx.rotate(
         angle *
@@ -1787,15 +1685,12 @@
         180
       );
 
-
       ctx.translate(
         -150,
         -150
       );
 
-
       drawWheel();
-
 
       ctx.restore();
 
@@ -1816,13 +1711,10 @@
 
         await cargarPremios();
 
-
         drawWheel();
-
 
         loading.style.display =
           "none";
-
 
         if (
           premios.length
@@ -1838,14 +1730,12 @@
 
         }
 
-
       } catch (error) {
 
         console.error(
           "Error iniciando ruleta:",
           error
         );
-
 
         loading.innerText =
           "No se pudo cargar la configuración.";
@@ -1878,3 +1768,4 @@
 
 </body>
 </html>
+```
