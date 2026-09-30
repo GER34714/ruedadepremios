@@ -4,20 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Ruleta de Premios | FACU CASINO™</title>
+  <title>Premios | Participá y descubrí tu premio</title>
 
-  <meta property="og:title" content="🎰 Ruleta de Premios | FACU CASINO™">
-  <meta property="og:description" content="Girá la rueda y descubrí tu premio.">
+  <meta property="og:title" content="🎉 Participá y descubrí tu premio">
+  <meta property="og:description" content="Participá y descubrí tu premio.">
   <meta property="og:image" content="">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://facucasino.onrender.com">
+  <meta property="og:url" content="">
 
   <style>
     body {
       margin: 0;
       padding: 0;
       font-family: Arial, sans-serif;
-      background: url('https://iili.io/KyL5Hba.md.jpg') no-repeat center center fixed;
+      background: linear-gradient(135deg, #000000, #17002b, #000000);
+      background-attachment: fixed;
       background-size: cover;
       color: #fff;
       text-align: center;
@@ -27,7 +28,7 @@
     #logoPrincipal {
       width: 260px;
       margin: 20px auto 15px auto;
-      display: block;
+      display: none;
       filter: drop-shadow(0 0 12px #ff00ff);
     }
 
@@ -222,6 +223,56 @@
       margin-top: 12px !important;
     }
 
+    /* ==========================================================
+       AVISO LEGAL COMPACTO
+       ========================================================== */
+
+    #legalConsentBox {
+      margin-top: 12px;
+      max-height: 95px;
+      overflow-y: auto;
+      padding: 9px 10px;
+      box-sizing: border-box;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 204, 0, 0.35);
+      background: rgba(0, 0, 0, 0.55);
+      color: #eee;
+      font-size: 0.76rem;
+      line-height: 1.35;
+    }
+
+    #legalConsentBox .legal-title {
+      color: #ffcc00;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    #legalConsentBox .legal-disclaimer {
+      color: #888;
+      font-size: 0.68rem;
+      margin-top: 7px;
+    }
+
+    #consentRow {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-top: 10px;
+      color: #ddd;
+      font-size: 0.78rem;
+      line-height: 1.35;
+      cursor: pointer;
+    }
+
+    #consentCheckbox {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 18px;
+      margin: 1px 0 0 0;
+      cursor: pointer;
+      accent-color: #00ccff;
+    }
+
     #solicitarBtn {
       margin-top: 15px;
       width: 100%;
@@ -238,6 +289,7 @@
     #solicitarBtn:disabled {
       opacity: 0.6;
       cursor: not-allowed;
+      box-shadow: none;
     }
 
     #closePopup {
@@ -269,14 +321,56 @@
       cursor: pointer;
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 8px;
       box-shadow: 0 0 12px #25D366;
     }
 
-    #btnWhatsapp img {
-      width: 22px;
-      height: 22px;
+    #btnWhatsappIcon {
+      font-size: 1.25rem;
     }
+
+    /* ==========================================================
+       POPUP DE PARTICIPACIÓN DIARIA
+       ========================================================== */
+
+    #cooldownArea {
+      display: none;
+    }
+
+    #cooldownArea h2 {
+      color: #ffcc00;
+    }
+
+    #cooldownMessage {
+      color: #eee;
+      line-height: 1.5;
+    }
+
+    #countdownLabel {
+      color: #aaa;
+      font-size: 0.95rem;
+      margin-bottom: 5px;
+    }
+
+    #countdownValue {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #00ffff;
+      text-shadow: 0 0 10px #00ffff;
+      letter-spacing: 2px;
+      margin: 5px 0 15px;
+    }
+
+    #cooldownContact {
+      color: #00ffea;
+      font-weight: bold;
+      margin-top: 15px;
+    }
+
+    /* ==========================================================
+       SECCIONES
+       ========================================================== */
 
     .page-section {
       width: min(900px, calc(100% - 30px));
@@ -303,7 +397,94 @@
     }
 
     #siteSections {
-      padding-bottom: 40px;
+      padding-bottom: 20px;
+    }
+
+    /* ==========================================================
+       FOOTER LEGAL DESPLEGABLE
+       ========================================================== */
+
+    #legalFooter {
+      width: min(900px, calc(100% - 30px));
+      margin: 15px auto 30px;
+      box-sizing: border-box;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      color: #999;
+    }
+
+    #legalToggle {
+      width: 100%;
+      border: none;
+      background: transparent;
+      color: #aaa;
+      padding: 15px 10px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      text-align: center;
+    }
+
+    #legalArrow {
+      display: inline-block;
+      margin-left: 5px;
+      transition: transform 0.3s ease;
+    }
+
+    #legalFooter.open #legalArrow {
+      transform: rotate(180deg);
+    }
+
+    #legalDetails {
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition:
+        max-height 0.45s ease,
+        opacity 0.35s ease,
+        padding 0.35s ease;
+      padding: 0 15px;
+      box-sizing: border-box;
+      font-size: 0.75rem;
+      line-height: 1.55;
+      text-align: left;
+    }
+
+    #legalFooter.open #legalDetails {
+      max-height: 650px;
+      opacity: 1;
+      padding: 5px 15px 20px;
+    }
+
+    #legalDetails p {
+      margin: 8px 0;
+    }
+
+    #adultBadge {
+      display: inline-block;
+      margin: 12px auto;
+      padding: 7px 12px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: rgba(0, 0, 0, 0.35);
+      color: #ddd;
+      font-size: 0.75rem;
+      text-align: center;
+    }
+
+    #developerCredit {
+      text-align: center;
+      color: #777;
+      margin-top: 12px;
+      font-size: 0.72rem;
+    }
+
+    #developerCredit a {
+      color: #aaa;
+      text-decoration: none;
+    }
+
+    #developerCredit a:hover {
+      color: #00ffff;
+      text-decoration: underline;
     }
 
     @media (max-width: 480px) {
@@ -355,6 +536,10 @@
         font-size: 1rem;
         padding: 10px 18px;
       }
+
+      #countdownValue {
+        font-size: 1.65rem;
+      }
     }
   </style>
 </head>
@@ -363,16 +548,16 @@
 
   <img
     id="logoPrincipal"
-    src="https://iili.io/KyPwhml.md.png"
+    src=""
     alt="Logo"
   >
 
   <h1 id="tituloPrincipal">
-    🎉 Girá la rueda y descubrí tu premio 🎁
+    🎉 Participá y descubrí tu premio 🎁
   </h1>
 
   <div id="loading">
-    Cargando ruleta...
+    Cargando...
   </div>
 
   <div class="wheel-container">
@@ -387,58 +572,145 @@
   </div>
 
   <button id="spinButton" disabled>
-    GIRAR
+    PARTICIPAR
   </button>
 
   <div id="popup">
 
     <div id="popupContent">
 
-      <h2>¡GANASTE! 🎉</h2>
+      <!-- ======================================================
+           ÁREA DE PREMIO
+           ====================================================== -->
 
-      <p id="premioTexto"></p>
+      <div id="winnerArea">
 
-      <p id="extraTexto"></p>
+        <h2>¡GANASTE! 🎉</h2>
 
-      <div id="leadArea">
+        <p id="premioTexto"></p>
 
-        <div class="lead-form">
+        <p id="extraTexto"></p>
 
-          <label for="nombreLead">
-            Nombre
-          </label>
+        <div id="leadArea">
 
-          <input
-            type="text"
-            id="nombreLead"
-            placeholder="Tu nombre"
-            autocomplete="name"
-          >
+          <div class="lead-form">
 
-          <label for="whatsappLead">
-            WhatsApp
-          </label>
+            <label for="nombreLead">
+              Nombre
+            </label>
 
-          <input
-            type="tel"
-            id="whatsappLead"
-            placeholder="Tu número de WhatsApp"
-            autocomplete="tel"
-          >
+            <input
+              type="text"
+              id="nombreLead"
+              placeholder="Tu nombre"
+              autocomplete="name"
+            >
 
-          <p class="privacy-text">
-            Al enviar tus datos aceptás que sean utilizados
-            para gestionar la entrega del premio y contactarte
-            en relación con el mismo.
-          </p>
+            <label for="whatsappLead">
+              WhatsApp
+            </label>
 
-          <button id="solicitarBtn">
-            SOLICITAR MI PREMIO
-          </button>
+            <input
+              type="tel"
+              id="whatsappLead"
+              placeholder="Tu número de WhatsApp"
+              autocomplete="tel"
+            >
+
+            <p class="privacy-text">
+              Al enviar tus datos aceptás que sean utilizados
+              para gestionar la entrega del premio y contactarte
+              en relación con el mismo.
+            </p>
+
+            <!-- AVISO LEGAL COMPACTO -->
+
+            <div id="legalConsentBox">
+
+              <div class="legal-title">
+                ⚠️ Al enviar tus datos dejás constancia de que:
+              </div>
+
+              <div>
+                ✓ Aceptás las reglas del sistema.<br>
+                ✓ Autorizás el uso de tu nombre y WhatsApp para ser contactado/a.<br>
+                ✓ Declarás ser mayor de 18 años.<br>
+                ✓ Entendés que este es un sistema de captación de potenciales clientes.
+              </div>
+
+              <div class="legal-disclaimer">
+                Este sistema fue desarrollado como herramienta de captación
+                de contactos. El desarrollador no tiene relación con las
+                actividades comerciales, legales o de cualquier otra índole
+                que realice el organizador, quien es el único y exclusivo
+                responsable por el uso que le dé a los datos obtenidos.
+              </div>
+
+            </div>
+
+            <!-- CHECKBOX OBLIGATORIO -->
+
+            <label
+              id="consentRow"
+              for="consentCheckbox"
+            >
+
+              <input
+                type="checkbox"
+                id="consentCheckbox"
+              >
+
+              <span>
+                Acepto los términos, las reglas y autorizo el uso de mis datos.
+                Confirmo ser mayor de 18 años.
+              </span>
+
+            </label>
+
+            <button
+              id="solicitarBtn"
+              disabled
+            >
+              SOLICITAR MI PREMIO
+            </button>
+
+          </div>
 
         </div>
 
       </div>
+
+      <!-- ======================================================
+           ÁREA DE PARTICIPACIÓN DIARIA
+           ====================================================== -->
+
+      <div id="cooldownArea">
+
+        <h2>
+          ⏳ Ya participaste hoy
+        </h2>
+
+        <p id="cooldownMessage">
+          Ya usaste tu participación de hoy.
+        </p>
+
+        <div id="countdownLabel">
+          Podrás volver a participar en
+        </div>
+
+        <div id="countdownValue">
+          24:00:00
+        </div>
+
+        <div id="cooldownContact">
+          Mientras tanto, podés contactarnos:
+        </div>
+
+      </div>
+
+      <!-- ======================================================
+           ÉXITO
+           ====================================================== -->
 
       <div id="successArea" style="display:none;">
 
@@ -457,16 +729,14 @@
         Cerrar
       </button>
 
-      <p id="contactoFacu">
-        📞 Contacto: 1125127839 (Facu)
-      </p>
+      <p id="contactoFacu" style="display:none;"></p>
 
-      <button id="btnWhatsapp">
+      <button
+        id="btnWhatsapp"
+        style="display:none;"
+      >
 
-        <img
-          src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
-          alt="WhatsApp"
-        >
+        <span id="btnWhatsappIcon">💬</span>
 
         Contactar por WhatsApp
 
@@ -532,6 +802,69 @@
 
   </div>
 
+  <!-- ==========================================================
+       FOOTER LEGAL
+       ========================================================== -->
+
+  <footer id="legalFooter">
+
+    <button
+      id="legalToggle"
+      type="button"
+      aria-expanded="false"
+    >
+      ⚖️ Información legal y descargo de responsabilidad
+      <span id="legalArrow">▼</span>
+    </button>
+
+    <div id="legalDetails">
+
+      <p>
+        Este sitio funciona como un sistema de captación de
+        potenciales clientes. No constituye una actividad de
+        apuestas ni una actividad regulada de esa naturaleza.
+      </p>
+
+      <p>
+        El ORGANIZADOR es el único y exclusivo responsable por
+        las actividades que realice, los premios que ofrezca,
+        el uso de los datos obtenidos y el cumplimiento de las
+        normativas vigentes que resulten aplicables.
+      </p>
+
+      <p>
+        El DESARROLLADOR del sistema no tiene relación alguna
+        con las actividades comerciales, legales o de cualquier
+        otra índole que realice el organizador, y no se
+        responsabiliza por el mal uso que terceros puedan hacer
+        de la herramienta.
+      </p>
+
+      <p>
+        Al participar, el usuario declara ser mayor de 18 años,
+        acepta los términos aplicables y autoriza el uso de sus
+        datos exclusivamente para los fines de esta campaña.
+      </p>
+
+      <div id="adultBadge">
+        🔞 Solo para mayores de 18 años
+      </div>
+
+      <div id="developerCredit">
+        Sistema desarrollado por
+        <a
+          href="https://ciborg347.onrender.com"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          CIBORG 347
+        </a>
+      </div>
+
+    </div>
+
+  </footer>
+
   <!-- SUPABASE -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -541,7 +874,7 @@
   <script>
 
     /* ==========================================================
-       🔑 SUPABASE
+       SUPABASE
        ========================================================== */
 
     const SUPABASE_URL =
@@ -566,42 +899,63 @@
 
 
     /* ==========================================================
-       CONFIGURACIÓN ORIGINAL DE RESPALDO
+       CONFIGURACIÓN DE RESPALDO
        ========================================================== */
 
     const CONFIG_DEFAULT = {
 
-      logo:
-        "https://iili.io/KyPwhml.md.png",
+      logo_url:
+        "",
 
-      fondo:
-        "https://iili.io/KyL5Hba.md.jpg",
+      background_url:
+        "",
 
-      ogImage:
-        "https://iili.io/f60i4Rf.md.jpg",
+      og_image_url:
+        "",
 
-      titulo:
-        "🎉 Girá la rueda y descubrí tu premio 🎁",
+      title:
+        "🎉 Participá y descubrí tu premio 🎁",
 
-      telefono:
-        "1125127839",
+      phone:
+        "",
 
-      nombreContacto:
-        "Facu",
+      contact_name:
+        "",
 
       whatsapp:
-        "541125127839",
-
-      rulesText:
         "",
 
-      prizesText:
+      whatsapp_number:
         "",
 
-      noticesText:
+      rules_text:
         "",
 
-      legalText:
+      prizes_text:
+        "",
+
+      notices_text:
+        "",
+
+      legal_text:
+        "",
+
+      rotation_enabled:
+        true,
+
+      active_rotation_id:
+        null,
+
+      rotation_started_at:
+        null,
+
+      rotation_interval_hours:
+        24,
+
+      roulette_paused:
+        false,
+
+      roulette_paused_message:
         ""
 
     };
@@ -615,22 +969,33 @@
 
     let currentRotation = null;
 
-    /*
-     * Ángulo actual de la rueda en grados.
-     *
-     * Importante:
-     * La rueda se dibuja originalmente desde 0°,
-     * que corresponde al lado derecho del canvas.
-     *
-     * El indicador está arriba (-90°).
-     *
-     * Por eso, al calcular dónde debe terminar un premio,
-     * tenemos que compensar esos 90°.
-     */
     let currentAngle = 0;
 
     let lastSpinTime =
       localStorage.getItem("lastSpinTime");
+
+    let cooldownInterval =
+      null;
+
+
+    /* ==========================================================
+       ORIGEN Y CAMPAÑA
+       ========================================================== */
+
+    const urlParams =
+      new URLSearchParams(
+        window.location.search
+      );
+
+    const source =
+      urlParams.get("origen") ||
+      urlParams.get("source") ||
+      "";
+
+    const campaign =
+      urlParams.get("campaign") ||
+      urlParams.get("campaña") ||
+      "";
 
 
     /* ==========================================================
@@ -679,6 +1044,33 @@
     const loading =
       document.getElementById("loading");
 
+    const consentCheckbox =
+      document.getElementById("consentCheckbox");
+
+    const winnerArea =
+      document.getElementById("winnerArea");
+
+    const cooldownArea =
+      document.getElementById("cooldownArea");
+
+    const cooldownMessage =
+      document.getElementById("cooldownMessage");
+
+    const countdownValue =
+      document.getElementById("countdownValue");
+
+    const cooldownContact =
+      document.getElementById("cooldownContact");
+
+    const contactoFacu =
+      document.getElementById("contactoFacu");
+
+    const legalFooter =
+      document.getElementById("legalFooter");
+
+    const legalToggle =
+      document.getElementById("legalToggle");
+
 
     /* ==========================================================
        SONIDOS
@@ -693,6 +1085,87 @@
       new Audio(
         "https://cdn.pixabay.com/download/audio/2022/03/15/audio_5646dd24c8.mp3?filename=ding-126626.mp3"
       );
+
+
+    /* ==========================================================
+       CACHE-BUSTING
+       ========================================================== */
+
+    function cacheBust(url) {
+
+      if (
+        !url ||
+        typeof url !== "string"
+      ) {
+
+        return "";
+
+      }
+
+      const separator =
+        url.includes("?")
+          ? "&"
+          : "?";
+
+      return `${url}${separator}v=${Date.now()}`;
+
+    }
+
+
+    /* ==========================================================
+       REGISTRO DE EVENTOS
+       ========================================================== */
+
+    async function registrarEvento(
+      type
+    ) {
+
+      try {
+
+        const {
+          error
+        } = await supabaseClient
+          .from("events")
+          .insert({
+
+            type:
+              type,
+
+            source:
+              source || null,
+
+            campaign:
+              campaign || null,
+
+            rotation_id:
+              currentRotation
+                ? currentRotation.id
+                : null,
+
+            user_agent:
+              navigator.userAgent
+
+          });
+
+        if (error) {
+
+          console.error(
+            "Error registrando evento:",
+            error
+          );
+
+        }
+
+      } catch (error) {
+
+        console.error(
+          "Error registrando evento:",
+          error
+        );
+
+      }
+
+    }
 
 
     /* ==========================================================
@@ -737,6 +1210,18 @@
 
       }
 
+      /* --------------------------------------------------------
+         Normalizar booleanos que puedan venir como string
+         -------------------------------------------------------- */
+
+      CONFIG.rotation_enabled =
+        CONFIG.rotation_enabled === true ||
+        CONFIG.rotation_enabled === "true";
+
+      CONFIG.roulette_paused =
+        CONFIG.roulette_paused === true ||
+        CONFIG.roulette_paused === "true";
+
       aplicarConfiguracion();
 
     }
@@ -748,30 +1233,92 @@
 
     function aplicarConfiguracion() {
 
-      document
-        .getElementById("logoPrincipal")
-        .src =
-        CONFIG.logo ||
-        CONFIG_DEFAULT.logo;
+      const logo =
+        CONFIG.logo_url;
 
-      document.body.style.backgroundImage =
-        `url('${CONFIG.background_url || CONFIG.fondo || CONFIG_DEFAULT.fondo}')`;
+      const logoElement =
+        document.getElementById(
+          "logoPrincipal"
+        );
+
+      if (logo) {
+
+        logoElement.src =
+          cacheBust(logo);
+
+        logoElement.style.display =
+          "block";
+
+      } else {
+
+        logoElement.removeAttribute(
+          "src"
+        );
+
+        logoElement.style.display =
+          "none";
+
+      }
+
+
+      /* --------------------------------------------------------
+         Fondo
+         -------------------------------------------------------- */
+
+      const background =
+        CONFIG.background_url;
+
+      if (background) {
+
+        document.body.style.backgroundImage =
+          `url("${cacheBust(background)}")`;
+
+        document.body.style.backgroundRepeat =
+          "no-repeat";
+
+        document.body.style.backgroundPosition =
+          "center center";
+
+        document.body.style.backgroundAttachment =
+          "fixed";
+
+        document.body.style.backgroundSize =
+          "cover";
+
+      } else {
+
+        document.body.style.backgroundImage =
+          "linear-gradient(135deg, #000000, #17002b, #000000)";
+
+        document.body.style.backgroundRepeat =
+          "";
+
+        document.body.style.backgroundPosition =
+          "";
+
+        document.body.style.backgroundAttachment =
+          "fixed";
+
+        document.body.style.backgroundSize =
+          "cover";
+
+      }
+
+
+      /* --------------------------------------------------------
+         Título
+         -------------------------------------------------------- */
 
       document
         .getElementById("tituloPrincipal")
         .innerText =
         CONFIG.title ||
-        CONFIG.titulo;
+        CONFIG_DEFAULT.title;
 
-      document
-        .getElementById("contactoFacu")
-        .innerText =
-        `📞 Contacto: ${CONFIG.phone || CONFIG.telefono} (${CONFIG.contact_name || CONFIG.nombreContacto})`;
 
-      const ogImage =
-        CONFIG.og_image_url ||
-        CONFIG.ogImage ||
-        CONFIG_DEFAULT.ogImage;
+      /* --------------------------------------------------------
+         Open Graph
+         -------------------------------------------------------- */
 
       const og =
         document.querySelector(
@@ -780,12 +1327,71 @@
 
       if (og) {
 
-        og.setAttribute(
+        if (CONFIG.og_image_url) {
+
+          og.setAttribute(
+            "content",
+            cacheBust(
+              CONFIG.og_image_url
+            )
+          );
+
+        } else {
+
+          og.setAttribute(
+            "content",
+            ""
+          );
+
+        }
+
+      }
+
+      const ogUrl =
+        document.querySelector(
+          'meta[property="og:url"]'
+        );
+
+      if (ogUrl) {
+
+        ogUrl.setAttribute(
           "content",
-          ogImage
+          window.location.href
         );
 
       }
+
+
+      /* --------------------------------------------------------
+         Contacto
+         -------------------------------------------------------- */
+
+      const contactName =
+        CONFIG.contact_name ||
+        "";
+
+      const contactPhone =
+        CONFIG.phone ||
+        "";
+
+      if (
+        contactName ||
+        contactPhone
+      ) {
+
+        contactoFacu.innerText =
+          `📞 Contacto: ${contactPhone}${contactName ? ` (${contactName})` : ""}`;
+
+        contactoFacu.style.display =
+          "block";
+
+      } else {
+
+        contactoFacu.style.display =
+          "none";
+
+      }
+
 
       cargarSeccion(
         "rulesSection",
@@ -811,6 +1417,9 @@
         CONFIG.legal_text
       );
 
+
+      aplicarEstadoPausa();
+
     }
 
 
@@ -832,7 +1441,7 @@
 
       if (
         texto &&
-        texto.trim() !== ""
+        String(texto).trim() !== ""
       ) {
 
         element.innerText =
@@ -852,7 +1461,40 @@
 
 
     /* ==========================================================
-       🔄 DETERMINAR ROTACIÓN ACTIVA
+       ESTADO DE PAUSA
+       ========================================================== */
+
+    function aplicarEstadoPausa() {
+
+      if (
+        CONFIG.roulette_paused === true ||
+        CONFIG.roulette_paused === "true"
+      ) {
+
+        spinButton.disabled =
+          true;
+
+        spinButton.innerText =
+          "PAUSADO";
+
+        loading.innerText =
+          CONFIG.roulette_paused_message ||
+          "La participación se encuentra temporalmente pausada.";
+
+        loading.style.display =
+          "block";
+
+        return true;
+
+      }
+
+      return false;
+
+    }
+
+
+    /* ==========================================================
+       DETERMINAR ROTACIÓN ACTIVA
        ========================================================== */
 
     async function cargarRotaciones() {
@@ -872,7 +1514,10 @@
         throw error;
       }
 
-      if (!data || data.length === 0) {
+      if (
+        !data ||
+        data.length === 0
+      ) {
 
         currentRotation =
           null;
@@ -889,7 +1534,9 @@
           data.find(
             r =>
               String(r.id) ===
-              String(CONFIG.active_rotation_id)
+              String(
+                CONFIG.active_rotation_id
+              )
           ) || data[0];
 
         return;
@@ -922,7 +1569,8 @@
 
       const rotationIndex =
         Math.floor(
-          elapsed / interval
+          elapsed /
+          interval
         ) %
         data.length;
 
@@ -933,7 +1581,7 @@
 
 
     /* ==========================================================
-       🎁 CARGAR PREMIOS DESDE SUPABASE
+       CARGAR PREMIOS DESDE SUPABASE
        ========================================================== */
 
     async function cargarPremios() {
@@ -965,22 +1613,6 @@
         throw error;
       }
 
-      /*
-       * IMPORTANTE:
-       *
-       * Esta lista es la única fuente de verdad
-       * de la ruleta.
-       *
-       * Lo que devuelve Supabase:
-       *
-       * prizes
-       *
-       * es exactamente lo que se dibuja,
-       * exactamente lo que participa del sorteo
-       * y exactamente lo que después se guarda
-       * en leads.
-       */
-
       premios =
         Array.isArray(data)
           ? data
@@ -995,10 +1627,19 @@
 
 
     /* ==========================================================
-       🎨 DIBUJAR RULETA
+       DIBUJAR RUEDA
        ========================================================== */
 
     function drawWheel() {
+
+      const cx =
+        canvas.width / 2;
+
+      const cy =
+        canvas.height / 2;
+
+      const radius =
+        Math.min(cx, cy);
 
       ctx.clearRect(
         0,
@@ -1037,14 +1678,14 @@
         ctx.beginPath();
 
         ctx.moveTo(
-          150,
-          150
+          cx,
+          cy
         );
 
         ctx.arc(
-          150,
-          150,
-          150,
+          cx,
+          cy,
+          radius,
           i *
             anglePerSegment,
           (i + 1) *
@@ -1064,8 +1705,8 @@
         ctx.save();
 
         ctx.translate(
-          150,
-          150
+          cx,
+          cy
         );
 
         ctx.rotate(
@@ -1102,7 +1743,7 @@
 
         ctx.fillText(
           texto,
-          135,
+          radius - 15,
           5
         );
 
@@ -1114,7 +1755,7 @@
 
 
     /* ==========================================================
-       ⏱️ TIEMPO 24 HORAS
+       TIEMPO 24 HORAS
        ========================================================== */
 
     function getRemainingTime() {
@@ -1139,8 +1780,44 @@
     }
 
 
+    function formatCountdown(
+      milliseconds
+    ) {
+
+      const totalSeconds =
+        Math.max(
+          0,
+          Math.floor(
+            milliseconds / 1000
+          )
+        );
+
+      const hours =
+        Math.floor(
+          totalSeconds / 3600
+        );
+
+      const minutes =
+        Math.floor(
+          (
+            totalSeconds % 3600
+          ) / 60
+        );
+
+      const seconds =
+        totalSeconds % 60;
+
+      return [
+        String(hours).padStart(2, "0"),
+        String(minutes).padStart(2, "0"),
+        String(seconds).padStart(2, "0")
+      ].join(":");
+
+    }
+
+
     /* ==========================================================
-       🎯 SELECCIONAR PREMIO POR PROBABILIDAD
+       SELECCIONAR PREMIO POR PROBABILIDAD
        ========================================================== */
 
     function seleccionarPremio() {
@@ -1156,15 +1833,6 @@
         localStorage.getItem(
           "ultimoPremioId"
         );
-
-      /*
-       * localStorage siempre devuelve texto.
-       * Supabase puede devolver el ID como número.
-       *
-       * Comparamos ambos como String para evitar
-       * que el mismo premio sea considerado diferente
-       * por una diferencia de tipo.
-       */
 
       if (
         ultimo &&
@@ -1228,7 +1896,9 @@
             ) || 0
           );
 
-        if (random <= 0) {
+        if (
+          random <= 0
+        ) {
 
           return premio;
 
@@ -1244,7 +1914,7 @@
 
 
     /* ==========================================================
-       🎯 CALCULAR ÁNGULO EXACTO DEL PREMIO
+       CALCULAR ÁNGULO EXACTO DEL PREMIO
        ========================================================== */
 
     function calcularAnguloPremio(
@@ -1270,26 +1940,6 @@
         360 /
         premios.length;
 
-      /*
-       * Cada premio ocupa:
-       *
-       * index * segmentDeg
-       * hasta
-       * (index + 1) * segmentDeg
-       *
-       * El indicador está arriba.
-       *
-       * En canvas:
-       * 0° = derecha
-       * 90° = abajo
-       * 180° = izquierda
-       * 270° = arriba
-       *
-       * Por lo tanto, para colocar el centro del
-       * segmento seleccionado debajo del indicador,
-       * compensamos 270°.
-       */
-
       const segmentStart =
         index *
         segmentDeg;
@@ -1299,12 +1949,6 @@
           index + 1
         ) *
         segmentDeg;
-
-      /*
-       * No usamos exactamente el borde.
-       * Dejamos margen para que el indicador quede
-       * claramente dentro del segmento ganador.
-       */
 
       const margin =
         segmentDeg *
@@ -1327,21 +1971,9 @@
           safeStart
         );
 
-      /*
-       * El punto elegido del segmento está en
-       * randomInside grados desde la derecha.
-       *
-       * Queremos que ese punto quede en 270°
-       * (arriba).
-       */
-
       let desiredRotation =
         270 -
         randomInside;
-
-      /*
-       * Normalizamos para que sea positivo.
-       */
 
       desiredRotation =
         (
@@ -1357,57 +1989,89 @@
 
 
     /* ==========================================================
-       🎉 POPUP
+       CONFIGURAR CONTACTO / WHATSAPP
        ========================================================== */
 
-    function showPopup(
-      premio,
-      countdownText = null
-    ) {
+    function configurarWhatsapp() {
 
-      if (
-        !countdownText
-      ) {
+      const numero =
+        CONFIG.whatsapp ||
+        CONFIG.whatsapp_number ||
+        "";
 
-        confetti({
-          particleCount: 200,
-          spread: 80,
-          origin: {
-            y: 0.6
-          }
-        });
+      const nombre =
+        CONFIG.contact_name ||
+        "";
+
+      if (!numero) {
+
+        btnWhatsapp.style.display =
+          "none";
+
+        return;
 
       }
 
+      btnWhatsapp.style.display =
+        "inline-flex";
+
+      btnWhatsapp.onclick =
+        () => {
+
+          const mensaje =
+            nombre
+              ? `Hola ${nombre}, quiero realizar una consulta.`
+              : "Hola, quiero realizar una consulta.";
+
+          const url =
+            `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
+
+          window.open(
+            url,
+            "_blank"
+          );
+
+        };
+
+    }
+
+
+    /* ==========================================================
+       POPUP DE PREMIO
+       ========================================================== */
+
+    function showPopup(
+      premio
+    ) {
+
+      detenerCountdown();
+
+      confetti({
+        particleCount: 200,
+        spread: 80,
+        origin: {
+          y: 0.6
+        }
+      });
+
+      winnerArea.style.display =
+        "block";
+
+      cooldownArea.style.display =
+        "none";
+
       premioTexto.innerText =
-        countdownText
-          ? countdownText
-          : `FELICIDADES 🎉 Ganaste: ${premio.name}`;
+        `FELICIDADES 🎉 Ganaste: ${premio.name}`;
 
       extraTexto.innerText =
-        countdownText
-          ? ""
-          : (
-              premio.description ||
-              "¡Felicitaciones!"
-            );
+        premio.description ||
+        "¡Felicitaciones!";
 
       popup.style.display =
         "flex";
 
-      if (
-        countdownText
-      ) {
-
-        leadArea.style.display =
-          "none";
-
-      } else {
-
-        leadArea.style.display =
-          "block";
-
-      }
+      leadArea.style.display =
+        "block";
 
       successArea.style.display =
         "none";
@@ -1418,22 +2082,16 @@
       whatsappLead.value =
         "";
 
-      btnWhatsapp.onclick =
-        () => {
+      consentCheckbox.checked =
+        false;
 
-          const numero =
-            CONFIG.whatsapp ||
-            CONFIG.whatsapp_number;
+      solicitarBtn.disabled =
+        true;
 
-          const url =
-            `https://wa.me/${numero}`;
+      solicitarBtn.innerText =
+        "SOLICITAR MI PREMIO";
 
-          window.open(
-            url,
-            "_blank"
-          );
-
-        };
+      configurarWhatsapp();
 
       solicitarBtn.onclick =
         async () => {
@@ -1448,12 +2106,147 @@
 
 
     /* ==========================================================
-       👤 REGISTRAR LEAD
+       POPUP YA PARTICIPÓ HOY
+       ========================================================== */
+
+    function showCooldownPopup() {
+
+      winnerArea.style.display =
+        "none";
+
+      cooldownArea.style.display =
+        "block";
+
+      leadArea.style.display =
+        "none";
+
+      successArea.style.display =
+        "none";
+
+      popup.style.display =
+        "flex";
+
+      actualizarCooldown();
+
+      detenerCountdown();
+
+      cooldownInterval =
+        setInterval(
+          actualizarCooldown,
+          1000
+        );
+
+      configurarWhatsapp();
+
+    }
+
+
+    function actualizarCooldown() {
+
+      const remaining =
+        getRemainingTime();
+
+      if (
+        remaining <= 0
+      ) {
+
+        detenerCountdown();
+
+        popup.style.display =
+          "none";
+
+        lastSpinTime =
+          null;
+
+        localStorage.removeItem(
+          "lastSpinTime"
+        );
+
+        if (
+          !aplicarEstadoPausa() &&
+          premios.length
+        ) {
+
+          spinButton.disabled =
+            false;
+
+          spinButton.innerText =
+            "PARTICIPAR";
+
+        }
+
+        return;
+
+      }
+
+      countdownValue.innerText =
+        formatCountdown(
+          remaining
+        );
+
+      const contactName =
+        CONFIG.contact_name ||
+        "";
+
+      const contactPhone =
+        CONFIG.phone ||
+        "";
+
+      if (
+        contactName ||
+        contactPhone
+      ) {
+
+        cooldownContact.innerText =
+          `Mientras tanto, podés contactarnos: ${contactName}${contactPhone ? ` · ${contactPhone}` : ""}`;
+
+      } else {
+
+        cooldownContact.innerText =
+          "Mientras tanto, podés contactarnos:";
+
+      }
+
+    }
+
+
+    function detenerCountdown() {
+
+      if (
+        cooldownInterval
+      ) {
+
+        clearInterval(
+          cooldownInterval
+        );
+
+        cooldownInterval =
+          null;
+
+      }
+
+    }
+
+
+    /* ==========================================================
+       REGISTRAR LEAD
        ========================================================== */
 
     async function registrarLead(
       premio
     ) {
+
+      if (
+        !consentCheckbox.checked
+      ) {
+
+        alert(
+          "Tenés que aceptar los términos para continuar."
+        );
+
+        return;
+
+      }
 
       const nombre =
         nombreLead.value.trim();
@@ -1519,7 +2312,16 @@
             rotation_id:
               currentRotation
                 ? currentRotation.id
-                : null
+                : null,
+
+            source:
+              source || null,
+
+            campaign:
+              campaign || null,
+
+            status:
+              "nuevo"
 
           });
 
@@ -1527,33 +2329,57 @@
           throw error;
         }
 
+
+        /* ------------------------------------------------------
+           Evento LEAD
+           ------------------------------------------------------ */
+
+        await registrarEvento(
+          "lead"
+        );
+
+
         successArea.style.display =
           "block";
 
         leadArea.style.display =
           "none";
 
+
+        /* ------------------------------------------------------
+           WhatsApp organizador
+           ------------------------------------------------------ */
+
         const numero =
           CONFIG.whatsapp ||
-          CONFIG.whatsapp_number;
+          CONFIG.whatsapp_number ||
+          "";
 
-        const mensaje =
-          `Hola, ${CONFIG.contact_name || CONFIG.nombreContacto}. Gané en la rueda de premios: ${premio.name}. Mi nombre es ${nombre} y mi WhatsApp es ${whatsapp}.`;
+        if (numero) {
 
-        const url =
-          `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
+          const nombreContacto =
+            CONFIG.contact_name ||
+            "";
 
-        setTimeout(
-          () => {
+          const mensaje =
+            `Hola${nombreContacto ? ` ${nombreContacto}` : ""}, gané en el sistema de premios: ${premio.name}. Mi nombre es ${nombre} y mi WhatsApp es ${whatsapp}.`;
 
-            window.open(
-              url,
-              "_blank"
-            );
+          const url =
+            `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
 
-          },
-          500
-        );
+          setTimeout(
+            () => {
+
+              window.open(
+                url,
+                "_blank"
+              );
+
+            },
+            500
+          );
+
+        }
 
       } catch (error) {
 
@@ -1577,10 +2403,21 @@
 
 
     /* ==========================================================
-       🎡 GIRAR RULETA
+       PARTICIPAR
        ========================================================== */
 
     function spinWheel() {
+
+      if (
+        CONFIG.roulette_paused === true ||
+        CONFIG.roulette_paused === "true"
+      ) {
+
+        aplicarEstadoPausa();
+
+        return;
+
+      }
 
       const remaining =
         getRemainingTime();
@@ -1589,36 +2426,7 @@
         remaining > 0
       ) {
 
-        const horas =
-          Math.floor(
-            remaining /
-            (
-              1000 *
-              60 *
-              60
-            )
-          );
-
-        const mins =
-          Math.floor(
-            (
-              remaining %
-              (
-                1000 *
-                60 *
-                60
-              )
-            ) /
-            (
-              1000 *
-              60
-            )
-          );
-
-        showPopup(
-          null,
-          `⏳ Podrás volver a girar en ${horas}h ${mins}m`
-        );
+        showCooldownPopup();
 
         return;
 
@@ -1627,20 +2435,16 @@
       if (!premios.length) {
 
         alert(
-          "La ruleta no tiene premios activos."
+          "No hay premios activos configurados."
         );
 
         return;
 
       }
 
+
       /*
-       * 1. Primero seleccionamos el premio.
-       *
-       * Este objeto es la fuente de verdad.
-       *
-       * No volvemos a seleccionar otro premio
-       * durante la animación.
+       * Primero seleccionamos el premio.
        */
 
       const premioElegido =
@@ -1650,10 +2454,9 @@
         return;
       }
 
+
       /*
-       * Verificación de seguridad:
-       * el premio seleccionado tiene que existir
-       * realmente dentro de la lista que se dibujó.
+       * Verificación de seguridad.
        */
 
       const indexElegido =
@@ -1673,12 +2476,22 @@
         );
 
         alert(
-          "No se pudo determinar el premio en la ruleta."
+          "No se pudo determinar el premio seleccionado."
         );
 
         return;
 
       }
+
+
+      /* --------------------------------------------------------
+         Evento SPIN (solo si el premio es válido)
+         -------------------------------------------------------- */
+
+      registrarEvento(
+        "spin"
+      );
+
 
       spinButton.disabled =
         true;
@@ -1710,14 +2523,6 @@
 
       }
 
-      /*
-       * currentAngle puede ser cualquier número después
-       * de varios giros.
-       *
-       * Calculamos cuánto falta desde la posición actual
-       * hasta la posición exacta del premio elegido.
-       */
-
       const startAngle =
         currentAngle;
 
@@ -1742,11 +2547,6 @@
 
       }
 
-      /*
-       * Entre 5 y 7 vueltas completas antes de llegar
-       * al premio.
-       */
-
       const extraSpins =
         5 +
         Math.floor(
@@ -1766,7 +2566,7 @@
 
 
       /* ========================================================
-         ANIMACIÓN
+         ANIMACIÓN DE 4 SEGUNDOS
          ======================================================== */
 
       const spinTime =
@@ -1791,14 +2591,6 @@
           const progress =
             elapsed /
             spinTime;
-
-          /*
-           * Ease-out cúbico.
-           *
-           * La rueda acelera y después desacelera
-           * suavemente hasta quedar exactamente
-           * sobre el premio seleccionado.
-           */
 
           const easedProgress =
             1 -
@@ -1832,14 +2624,6 @@
           sonidoDing.play()
             .catch(() => {});
 
-          /*
-           * IMPORTANTE:
-           *
-           * Forzamos el ángulo final exacto.
-           * De esta forma no queda ninguna diferencia
-           * entre el cálculo matemático y lo que se ve.
-           */
-
           currentAngle =
             targetAngle;
 
@@ -1847,10 +2631,10 @@
             currentAngle
           );
 
-          /*
-           * Guardamos exactamente el premio que fue
-           * seleccionado antes de comenzar la animación.
-           */
+
+          /* ----------------------------------------------------
+             GUARDAR PARTICIPACIÓN
+             ---------------------------------------------------- */
 
           lastSpinTime =
             Date.now();
@@ -1867,17 +2651,23 @@
             )
           );
 
+
           /*
-           * El popup utiliza EL MISMO OBJETO que determinó
-           * el segmento visual.
+           * Se utiliza exactamente el mismo premio
+           * seleccionado antes de comenzar la animación.
            */
 
           showPopup(
             premioElegido
           );
 
+          /*
+           * El botón queda deshabilitado hasta que
+           * termine el cooldown o se cierre el popup.
+           */
+
           spinButton.disabled =
-            false;
+            true;
 
         }
 
@@ -1891,12 +2681,18 @@
 
 
     /* ==========================================================
-       🔄 DIBUJAR RULETA ROTADA
+       DIBUJAR RUEDA ROTADA
        ========================================================== */
 
     function drawRotatedWheel(
       angle
     ) {
+
+      const cx =
+        canvas.width / 2;
+
+      const cy =
+        canvas.height / 2;
 
       ctx.clearRect(
         0,
@@ -1908,8 +2704,8 @@
       ctx.save();
 
       ctx.translate(
-        150,
-        150
+        cx,
+        cy
       );
 
       ctx.rotate(
@@ -1919,8 +2715,8 @@
       );
 
       ctx.translate(
-        -150,
-        -150
+        -cx,
+        -cy
       );
 
       drawWheel();
@@ -1931,58 +2727,47 @@
 
 
     /* ==========================================================
-       🚀 INICIALIZACIÓN
+       FOOTER DESPLEGABLE
        ========================================================== */
 
-    async function iniciar() {
+    legalToggle.addEventListener(
+      "click",
+      () => {
 
-      try {
+        const abierto =
+          legalFooter.classList.toggle(
+            "open"
+          );
 
-        await cargarConfiguracion();
-
-        await cargarRotaciones();
-
-        await cargarPremios();
-
-        drawWheel();
-
-        loading.style.display =
-          "none";
-
-        if (
-          premios.length
-        ) {
-
-          spinButton.disabled =
-            false;
-
-        } else {
-
-          loading.innerText =
-            "No hay premios activos configurados.";
-
-        }
-
-      } catch (error) {
-
-        console.error(
-          "Error iniciando ruleta:",
-          error
+        legalToggle.setAttribute(
+          "aria-expanded",
+          abierto
+            ? "true"
+            : "false"
         );
 
-        loading.innerText =
-          "No se pudo cargar la configuración.";
-
       }
-
-    }
-
-
-    spinButton.addEventListener(
-      "click",
-      spinWheel
     );
 
+
+    /* ==========================================================
+       CHECKBOX LEGAL
+       ========================================================== */
+
+    consentCheckbox.addEventListener(
+      "change",
+      () => {
+
+        solicitarBtn.disabled =
+          !consentCheckbox.checked;
+
+      }
+    );
+
+
+    /* ==========================================================
+       CERRAR POPUP
+       ========================================================== */
 
     closePopup.addEventListener(
       "click",
@@ -1991,9 +2776,167 @@
         popup.style.display =
           "none";
 
+        detenerCountdown();
+
       }
     );
 
+
+    /* ==========================================================
+       CERRAR POPUP AL TOCAR FUERA
+       ========================================================== */
+
+    popup.addEventListener(
+      "click",
+      event => {
+
+        if (
+          event.target === popup
+        ) {
+
+          popup.style.display =
+            "none";
+
+          detenerCountdown();
+
+        }
+
+      }
+    );
+
+
+    /* ==========================================================
+       INICIALIZACIÓN
+       ========================================================== */
+
+    async function iniciar() {
+
+      try {
+
+        /*
+         * Configuración del sitio.
+         */
+
+        await cargarConfiguracion();
+
+
+        /*
+         * Rotación activa.
+         */
+
+        await cargarRotaciones();
+
+
+        /*
+         * Premios de la rotación.
+         */
+
+        await cargarPremios();
+
+
+        /*
+         * Dibujar estado inicial.
+         */
+
+        drawWheel();
+
+
+        /*
+         * Registrar visita después de conocer
+         * la rotación activa.
+         */
+
+        await registrarEvento(
+          "visit"
+        );
+
+
+        /*
+         * Ocultar carga.
+         */
+
+        loading.style.display =
+          "none";
+
+
+        /*
+         * Estado de pausa tiene prioridad.
+         */
+
+        if (
+          aplicarEstadoPausa()
+        ) {
+
+          return;
+
+        }
+
+
+        /*
+         * Si todavía está dentro de las 24 horas,
+         * dejamos el botón habilitado para que pueda
+         * tocarlo y recibir el contador.
+         */
+
+        if (
+          getRemainingTime() > 0
+        ) {
+
+          spinButton.disabled =
+            false;
+
+          spinButton.innerText =
+            "PARTICIPAR";
+
+          return;
+
+        }
+
+
+        if (
+          premios.length
+        ) {
+
+          spinButton.disabled =
+            false;
+
+          spinButton.innerText =
+            "PARTICIPAR";
+
+        } else {
+
+          loading.innerText =
+            "No hay premios activos configurados.";
+
+          loading.style.display =
+            "block";
+
+          spinButton.disabled =
+            true;
+
+        }
+
+      } catch (error) {
+
+        console.error(
+          "Error iniciando:",
+          error
+        );
+
+        loading.innerText =
+          "No se pudo cargar la configuración.";
+
+        loading.style.display =
+          "block";
+
+      }
+
+    }
+
+
+    /* ==========================================================
+       INICIAR
+       ========================================================== */
 
     iniciar();
 
