@@ -4,20 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Ruleta de Premios | FACU CASINO™</title>
+  <title>Página de Premios</title>
 
-  <meta property="og:title" content="🎰 Ruleta de Premios | FACU CASINO™">
+  <meta property="og:title" content="Página de Premios">
   <meta property="og:description" content="Girá la rueda y descubrí tu premio.">
   <meta property="og:image" content="">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://facucasino.onrender.com">
+  <meta property="og:url" content="">
 
   <style>
     body {
       margin: 0;
       padding: 0;
       font-family: Arial, sans-serif;
-      background: url('https://iili.io/KyL5Hba.md.jpg') no-repeat center center fixed;
+      background: #111 no-repeat center center fixed;
       background-size: cover;
       color: #fff;
       text-align: center;
@@ -250,7 +250,7 @@
       cursor: pointer;
     }
 
-    #contactoFacu {
+    #contactoPrincipal {
       margin-top: 15px;
       font-size: 1.1rem;
       color: #00ffea;
@@ -363,7 +363,7 @@
 
   <img
     id="logoPrincipal"
-    src="https://iili.io/KyPwhml.md.png"
+    src=""
     alt="Logo"
   >
 
@@ -372,11 +372,13 @@
   </h1>
 
   <div id="loading">
-    Cargando ruleta...
+    Cargando contenido...
   </div>
 
   <div class="wheel-container">
+
     <div class="rgb-ring"></div>
+
     <div class="indicator"></div>
 
     <canvas
@@ -384,6 +386,7 @@
       width="300"
       height="300"
     ></canvas>
+
   </div>
 
   <button id="spinButton" disabled>
@@ -428,7 +431,7 @@
 
           <p class="privacy-text">
             Al enviar tus datos aceptás que sean utilizados
-            para gestionar la entrega del premio y contactarte
+            para gestionar la entrega del beneficio y contactarte
             en relación con el mismo.
           </p>
 
@@ -457,9 +460,7 @@
         Cerrar
       </button>
 
-      <p id="contactoFacu">
-        📞 Contacto: 1125127839 (Facu)
-      </p>
+      <p id="contactoPrincipal"></p>
 
       <button id="btnWhatsapp">
 
@@ -483,12 +484,14 @@
       id="rulesSection"
       style="display:none;"
     >
+
       <h2>📜 Reglas</h2>
 
       <div
         class="page-section-content"
         id="rulesText"
       ></div>
+
     </section>
 
     <section
@@ -496,12 +499,14 @@
       id="prizesSection"
       style="display:none;"
     >
+
       <h2>🎁 Premios</h2>
 
       <div
         class="page-section-content"
         id="prizesText"
       ></div>
+
     </section>
 
     <section
@@ -509,12 +514,14 @@
       id="noticesSection"
       style="display:none;"
     >
+
       <h2>📢 Avisos</h2>
 
       <div
         class="page-section-content"
         id="noticesText"
       ></div>
+
     </section>
 
     <section
@@ -522,27 +529,27 @@
       id="legalSection"
       style="display:none;"
     >
+
       <h2>⚖️ Aviso legal</h2>
 
       <div
         class="page-section-content"
         id="legalText"
       ></div>
+
     </section>
 
   </div>
 
-  <!-- SUPABASE -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <!-- CONFETTI -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <script>
 
     /* ==========================================================
-       🔑 SUPABASE
-       ========================================================== */
+       SUPABASE
+    ========================================================== */
 
     const SUPABASE_URL =
       "https://qqeibunzugtfgwwayaxj.supabase.co";
@@ -550,21 +557,11 @@
     const SUPABASE_ANON_KEY =
       "sb_publishable_1S0XRJIOq1bEnj9S_z4LXQ_AllfS_JC";
 
-    /*
-     * Comprobamos que la librería haya cargado correctamente.
-     */
-
     if (!window.supabase) {
-
       throw new Error(
         "No se pudo cargar la librería de Supabase."
       );
-
     }
-
-    /*
-     * Cliente Supabase.
-     */
 
     const supabaseClient =
       window.supabase.createClient(
@@ -574,43 +571,54 @@
 
 
     /* ==========================================================
-       CONFIGURACIÓN ORIGINAL DE RESPALDO
-       ========================================================== */
+       CONFIGURACIÓN DE RESPALDO
+       Solo se utiliza si todavía no existe configuración
+       disponible en el panel.
+    ========================================================== */
 
     const CONFIG_DEFAULT = {
 
-      logo:
-        "https://iili.io/KyPwhml.md.png",
-
-      fondo:
-        "https://iili.io/KyL5Hba.md.jpg",
-
-      ogImage:
-        "https://iili.io/f60i4Rf.md.jpg",
-
-      titulo:
+      title:
         "🎉 Girá la rueda y descubrí tu premio 🎁",
 
-      telefono:
-        "1125127839",
+      phone:
+        "",
 
-      nombreContacto:
-        "Facu",
+      contact_name:
+        "",
 
       whatsapp:
-        "541125127839",
-
-      rulesText:
         "",
 
-      prizesText:
+      logo_url:
         "",
 
-      noticesText:
+      background_url:
         "",
 
-      legalText:
-        ""
+      og_image_url:
+        "",
+
+      rules_text:
+        "",
+
+      prizes_text:
+        "",
+
+      notices_text:
+        "",
+
+      legal_text:
+        "",
+
+      rotation_enabled:
+        false,
+
+      rotation_interval_hours:
+        24,
+
+      rotation_started_at:
+        null
 
     };
 
@@ -621,64 +629,94 @@
 
     let premios = [];
 
-    let currentRotation = null;
+    let currentRotation =
+      null;
 
-    let currentAngle = 0;
+    let currentAngle =
+      0;
 
     let lastSpinTime =
-      localStorage.getItem("lastSpinTime");
+      localStorage.getItem(
+        "lastSpinTime"
+      );
 
 
     /* ==========================================================
        ELEMENTOS
-       ========================================================== */
+    ========================================================== */
 
     const canvas =
-      document.getElementById("wheelCanvas");
+      document.getElementById(
+        "wheelCanvas"
+      );
 
     const ctx =
       canvas.getContext("2d");
 
     const spinButton =
-      document.getElementById("spinButton");
+      document.getElementById(
+        "spinButton"
+      );
 
     const popup =
-      document.getElementById("popup");
+      document.getElementById(
+        "popup"
+      );
 
     const premioTexto =
-      document.getElementById("premioTexto");
+      document.getElementById(
+        "premioTexto"
+      );
 
     const extraTexto =
-      document.getElementById("extraTexto");
+      document.getElementById(
+        "extraTexto"
+      );
 
     const solicitarBtn =
-      document.getElementById("solicitarBtn");
+      document.getElementById(
+        "solicitarBtn"
+      );
 
     const closePopup =
-      document.getElementById("closePopup");
+      document.getElementById(
+        "closePopup"
+      );
 
     const btnWhatsapp =
-      document.getElementById("btnWhatsapp");
+      document.getElementById(
+        "btnWhatsapp"
+      );
 
     const nombreLead =
-      document.getElementById("nombreLead");
+      document.getElementById(
+        "nombreLead"
+      );
 
     const whatsappLead =
-      document.getElementById("whatsappLead");
+      document.getElementById(
+        "whatsappLead"
+      );
 
     const leadArea =
-      document.getElementById("leadArea");
+      document.getElementById(
+        "leadArea"
+      );
 
     const successArea =
-      document.getElementById("successArea");
+      document.getElementById(
+        "successArea"
+      );
 
     const loading =
-      document.getElementById("loading");
+      document.getElementById(
+        "loading"
+      );
 
 
     /* ==========================================================
        SONIDOS
-       ========================================================== */
+    ========================================================== */
 
     const sonidoGiro =
       new Audio(
@@ -692,37 +730,21 @@
 
 
     /* ==========================================================
-       CARGAR CONFIGURACIÓN
-       ========================================================== */
+       CARGAR CONFIGURACIÓN DEL PANEL
+    ========================================================== */
 
     async function cargarConfiguracion() {
 
-      try {
+      const {
+        data,
+        error
+      } = await supabaseClient
+        .from("site_settings")
+        .select("*")
+        .eq("id", 1)
+        .maybeSingle();
 
-        const {
-          data,
-          error
-        } = await supabaseClient
-          .from("site_settings")
-          .select("*")
-          .eq("id", 1)
-          .maybeSingle();
-
-        if (error) {
-          throw error;
-        }
-
-        if (data) {
-
-          CONFIG = {
-            ...CONFIG_DEFAULT,
-            ...data
-          };
-
-        }
-
-      } catch (error) {
-
+      if (error) {
         console.error(
           "Error cargando configuración:",
           error
@@ -730,6 +752,13 @@
 
         CONFIG =
           { ...CONFIG_DEFAULT };
+
+      } else if (data) {
+
+        CONFIG = {
+          ...CONFIG_DEFAULT,
+          ...data
+        };
 
       }
 
@@ -740,41 +769,109 @@
 
     /* ==========================================================
        APLICAR CONFIGURACIÓN
-       ========================================================== */
+    ========================================================== */
 
     function aplicarConfiguracion() {
 
-      document
-        .getElementById("logoPrincipal")
-        .src =
-        CONFIG.logo ||
-        CONFIG_DEFAULT.logo;
+      const logo =
+        CONFIG.logo_url ||
+        CONFIG.logo;
 
-      document.body.style.backgroundImage =
-        `url('${CONFIG.background_url || CONFIG.fondo || CONFIG_DEFAULT.fondo}')`;
+      if (logo) {
 
-      document
-        .getElementById("tituloPrincipal")
-        .innerText =
+        document
+          .getElementById(
+            "logoPrincipal"
+          )
+          .src = logo;
+
+      } else {
+
+        document
+          .getElementById(
+            "logoPrincipal"
+          )
+          .style.display = "none";
+
+      }
+
+
+      const fondo =
+        CONFIG.background_url ||
+        CONFIG.fondo;
+
+      if (fondo) {
+
+        document.body.style.backgroundImage =
+          `url('${fondo}')`;
+
+      }
+
+
+      const titulo =
         CONFIG.title ||
-        CONFIG.titulo;
+        CONFIG.titulo ||
+        CONFIG_DEFAULT.title;
 
       document
-        .getElementById("contactoFacu")
-        .innerText =
-        `📞 Contacto: ${CONFIG.phone || CONFIG.telefono} (${CONFIG.contact_name || CONFIG.nombreContacto})`;
+        .getElementById(
+          "tituloPrincipal"
+        )
+        .innerText = titulo;
+
+
+      const telefono =
+        CONFIG.phone ||
+        CONFIG.telefono ||
+        "";
+
+      const nombre =
+        CONFIG.contact_name ||
+        CONFIG.nombreContacto ||
+        "";
+
+      const contacto =
+        document.getElementById(
+          "contactoPrincipal"
+        );
+
+      if (telefono || nombre) {
+
+        contacto.innerText =
+          `📞 Contacto: ${telefono}${nombre ? ` (${nombre})` : ""}`;
+
+      } else {
+
+        contacto.style.display =
+          "none";
+
+      }
+
+
+      const numeroWhatsapp =
+        CONFIG.whatsapp ||
+        CONFIG.whatsapp_number ||
+        "";
+
+      if (!numeroWhatsapp) {
+
+        btnWhatsapp.style.display =
+          "none";
+
+      }
+
 
       const ogImage =
         CONFIG.og_image_url ||
         CONFIG.ogImage ||
-        CONFIG_DEFAULT.ogImage;
+        "";
 
       const og =
         document.querySelector(
           'meta[property="og:image"]'
         );
 
-      if (og) {
+      if (og && ogImage) {
 
         og.setAttribute(
           "content",
@@ -782,6 +879,26 @@
         );
 
       }
+
+
+      const ogTitle =
+        CONFIG.title ||
+        "Página de Premios";
+
+      const ogTitleElement =
+        document.querySelector(
+          'meta[property="og:title"]'
+        );
+
+      if (ogTitleElement) {
+
+        ogTitleElement.setAttribute(
+          "content",
+          ogTitle
+        );
+
+      }
+
 
       cargarSeccion(
         "rulesSection",
@@ -848,8 +965,8 @@
 
 
     /* ==========================================================
-       🔄 DETERMINAR ROTACIÓN ACTIVA
-       ========================================================== */
+       DETERMINAR ROTACIÓN
+    ========================================================== */
 
     async function cargarRotaciones() {
 
@@ -860,15 +977,19 @@
         .from("rotations")
         .select("*")
         .eq("active", true)
-        .order("sort_order", {
-          ascending: true
-        });
+        .order(
+          "sort_order",
+          {
+            ascending: true
+          }
+        );
 
       if (error) {
         throw error;
       }
 
-      if (!data || data.length === 0) {
+
+      if (!data || !data.length) {
 
         currentRotation =
           null;
@@ -877,20 +998,29 @@
 
       }
 
-      if (
-        !CONFIG.rotation_enabled
-      ) {
+
+      /*
+       * Si la rotación automática está
+       * desactivada, utilizamos la primera
+       * rotación activa disponible.
+       *
+       * Si el panel dispone de active_rotation_id,
+       * se respeta.
+       */
+
+      if (!CONFIG.rotation_enabled) {
 
         currentRotation =
           data.find(
             r =>
-              r.id ===
-              CONFIG.active_rotation_id
+              String(r.id) ===
+              String(CONFIG.active_rotation_id)
           ) || data[0];
 
         return;
 
       }
+
 
       const startedAt =
         CONFIG.rotation_started_at
@@ -898,6 +1028,7 @@
               CONFIG.rotation_started_at
             ).getTime()
           : Date.now();
+
 
       const interval =
         (
@@ -909,6 +1040,7 @@
         60 *
         1000;
 
+
       const elapsed =
         Math.max(
           0,
@@ -916,11 +1048,14 @@
           startedAt
         );
 
+
       const rotationIndex =
         Math.floor(
-          elapsed / interval
+          elapsed /
+          interval
         ) %
         data.length;
+
 
       currentRotation =
         data[rotationIndex];
@@ -929,8 +1064,8 @@
 
 
     /* ==========================================================
-       🎁 CARGAR PREMIOS
-       ========================================================== */
+       CARGAR PREMIOS DEL PANEL
+    ========================================================== */
 
     async function cargarPremios() {
 
@@ -942,6 +1077,7 @@
 
       }
 
+
       const {
         data,
         error
@@ -952,14 +1088,24 @@
           "rotation_id",
           currentRotation.id
         )
-        .eq("active", true)
-        .order("sort_order", {
-          ascending: true
-        });
+        .eq(
+          "active",
+          true
+        )
+        .order(
+          "sort_order",
+          {
+            ascending: true
+          }
+        );
+
 
       if (error) {
+
         throw error;
+
       }
+
 
       premios =
         data || [];
@@ -968,8 +1114,8 @@
 
 
     /* ==========================================================
-       🎨 DIBUJAR RULETA
-       ========================================================== */
+       DIBUJAR RUEDA
+    ========================================================== */
 
     function drawWheel() {
 
@@ -980,11 +1126,16 @@
         canvas.height
       );
 
+
       if (!premios.length) {
+
         return;
+
       }
 
+
       const colors = [
+
         "#ff0000",
         "#ff9900",
         "#ffff00",
@@ -993,13 +1144,16 @@
         "#0066ff",
         "#9900ff",
         "#ff00aa"
+
       ];
+
 
       const anglePerSegment =
         (
           2 * Math.PI
         ) /
         premios.length;
+
 
       for (
         let i = 0;
@@ -1024,6 +1178,7 @@
             anglePerSegment
         );
 
+
         ctx.fillStyle =
           colors[
             i %
@@ -1033,6 +1188,7 @@
         ctx.fill();
 
         ctx.stroke();
+
 
         ctx.save();
 
@@ -1044,8 +1200,10 @@
         ctx.rotate(
           i *
             anglePerSegment +
-          anglePerSegment / 2
+          anglePerSegment /
+            2
         );
+
 
         ctx.textAlign =
           "right";
@@ -1056,8 +1214,11 @@
         ctx.font =
           "bold 12px Arial";
 
+
         let texto =
-          premios[i].name;
+          premios[i].name ||
+          "Premio";
+
 
         if (
           texto.length > 22
@@ -1067,15 +1228,18 @@
             texto.substring(
               0,
               22
-            ) + "...";
+            ) +
+            "...";
 
         }
+
 
         ctx.fillText(
           texto,
           135,
           5
         );
+
 
         ctx.restore();
 
@@ -1085,14 +1249,17 @@
 
 
     /* ==========================================================
-       ⏱️ TIEMPO 24 HORAS
-       ========================================================== */
+       TIEMPO ENTRE GIROS
+    ========================================================== */
 
     function getRemainingTime() {
 
       if (!lastSpinTime) {
+
         return 0;
+
       }
+
 
       const diff =
         Date.now() -
@@ -1100,55 +1267,34 @@
           lastSpinTime
         );
 
+
       return (
         24 *
         60 *
         60 *
         1000
-      ) - diff;
+      ) -
+      diff;
 
     }
 
 
     /* ==========================================================
-       🎯 SELECCIONAR PREMIO POR PROBABILIDAD
-       ========================================================== */
+       SELECCIONAR PREMIO SEGÚN PROBABILIDAD DEL PANEL
+    ========================================================== */
 
     function seleccionarPremio() {
 
       if (!premios.length) {
+
         return null;
+
       }
 
-      let disponibles =
+
+      const disponibles =
         [...premios];
 
-      const ultimo =
-        localStorage.getItem(
-          "ultimoPremioId"
-        );
-
-      if (
-        ultimo &&
-        disponibles.length > 1
-      ) {
-
-        const sinUltimo =
-          disponibles.filter(
-            p =>
-              p.id !== ultimo
-          );
-
-        if (
-          sinUltimo.length
-        ) {
-
-          disponibles =
-            sinUltimo;
-
-        }
-
-      }
 
       const total =
         disponibles.reduce(
@@ -1163,13 +1309,18 @@
           0
         );
 
+
       if (total <= 0) {
+
         return disponibles[0];
+
       }
+
 
       let random =
         Math.random() *
         total;
+
 
       for (
         const premio
@@ -1181,11 +1332,17 @@
             premio.probability
           );
 
-        if (random <= 0) {
+
+        if (
+          random <= 0
+        ) {
+
           return premio;
+
         }
 
       }
+
 
       return disponibles[
         disponibles.length - 1
@@ -1195,8 +1352,8 @@
 
 
     /* ==========================================================
-       🎉 POPUP
-       ========================================================== */
+       MOSTRAR RESULTADO
+    ========================================================== */
 
     function showPopup(
       premio,
@@ -1207,20 +1364,29 @@
         !countdownText
       ) {
 
-        confetti({
-          particleCount: 200,
-          spread: 80,
-          origin: {
-            y: 0.6
-          }
-        });
+        if (
+          typeof confetti ===
+          "function"
+        ) {
+
+          confetti({
+            particleCount: 200,
+            spread: 80,
+            origin: {
+              y: 0.6
+            }
+          });
+
+        }
 
       }
+
 
       premioTexto.innerText =
         countdownText
           ? countdownText
           : `FELICIDADES 🎉 Ganaste: ${premio.name}`;
+
 
       extraTexto.innerText =
         countdownText
@@ -1230,8 +1396,10 @@
               "¡Felicitaciones!"
             );
 
+
       popup.style.display =
         "flex";
+
 
       if (
         countdownText
@@ -1247,14 +1415,17 @@
 
       }
 
+
       successArea.style.display =
         "none";
+
 
       nombreLead.value =
         "";
 
       whatsappLead.value =
         "";
+
 
       btnWhatsapp.onclick =
         () => {
@@ -1263,8 +1434,15 @@
             CONFIG.whatsapp ||
             CONFIG.whatsapp_number;
 
+
+          if (!numero) {
+            return;
+          }
+
+
           const url =
             `https://wa.me/${numero}`;
+
 
           window.open(
             url,
@@ -1272,6 +1450,7 @@
           );
 
         };
+
 
       solicitarBtn.onclick =
         async () => {
@@ -1286,8 +1465,8 @@
 
 
     /* ==========================================================
-       👤 REGISTRAR LEAD
-       ========================================================== */
+       REGISTRAR CONTACTO
+    ========================================================== */
 
     async function registrarLead(
       premio
@@ -1296,8 +1475,10 @@
       const nombre =
         nombreLead.value.trim();
 
+
       const whatsapp =
         whatsappLead.value.trim();
+
 
       if (!nombre) {
 
@@ -1310,6 +1491,7 @@
         return;
 
       }
+
 
       if (
         whatsapp.length < 6
@@ -1325,11 +1507,14 @@
 
       }
 
+
       solicitarBtn.disabled =
         true;
 
+
       solicitarBtn.innerText =
         "REGISTRANDO...";
+
 
       try {
 
@@ -1352,7 +1537,8 @@
               premio.name,
 
             prize_description:
-              premio.description || "",
+              premio.description ||
+              "",
 
             rotation_id:
               currentRotation
@@ -1361,37 +1547,51 @@
 
           });
 
+
         if (error) {
+
           throw error;
+
         }
+
 
         successArea.style.display =
           "block";
 
+
         leadArea.style.display =
           "none";
+
 
         const numero =
           CONFIG.whatsapp ||
           CONFIG.whatsapp_number;
 
-        const mensaje =
-          `Hola, ${CONFIG.contact_name || CONFIG.nombreContacto}. Gané en la rueda de premios: ${premio.name}. Mi nombre es ${nombre} y mi WhatsApp es ${whatsapp}.`;
 
-        const url =
-          `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
+        if (numero) {
 
-        setTimeout(
-          () => {
+          const mensaje =
+            `Hola, ${CONFIG.contact_name || ""}. Gané un premio: ${premio.name}. Mi nombre es ${nombre} y mi WhatsApp es ${whatsapp}.`;
 
-            window.open(
-              url,
-              "_blank"
-            );
 
-          },
-          500
-        );
+          const url =
+            `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
+
+
+          setTimeout(
+            () => {
+
+              window.open(
+                url,
+                "_blank"
+              );
+
+            },
+            500
+          );
+
+        }
+
 
       } catch (error) {
 
@@ -1399,12 +1599,15 @@
           error
         );
 
+
         alert(
           "No pudimos registrar tus datos. Intentá nuevamente."
         );
 
+
         solicitarBtn.disabled =
           false;
+
 
         solicitarBtn.innerText =
           "SOLICITAR MI PREMIO";
@@ -1415,13 +1618,14 @@
 
 
     /* ==========================================================
-       🎡 GIRAR
-       ========================================================== */
+       GIRAR
+    ========================================================== */
 
     function spinWheel() {
 
       const remaining =
         getRemainingTime();
+
 
       if (
         remaining > 0
@@ -1436,6 +1640,7 @@
               60
             )
           );
+
 
         const mins =
           Math.floor(
@@ -1453,53 +1658,70 @@
             )
           );
 
+
         showPopup(
           null,
           `⏳ Podrás volver a girar en ${horas}h ${mins}m`
         );
 
+
         return;
 
       }
 
+
       if (!premios.length) {
 
         alert(
-          "La ruleta no tiene premios activos."
+          "No hay beneficios activos configurados."
         );
 
         return;
 
       }
 
+
       const premioElegido =
         seleccionarPremio();
 
+
       if (!premioElegido) {
+
         return;
+
       }
+
 
       spinButton.disabled =
         true;
 
+
       sonidoGiro.currentTime =
         0;
 
+
       sonidoGiro.play()
-        .catch(() => {});
+        .catch(
+          () => {}
+        );
+
 
       const spinTime =
         4000;
 
+
       const startAngle =
         currentAngle;
+
 
       const numSegments =
         premios.length;
 
+
       const segmentDeg =
         360 /
         numSegments;
+
 
       const indexElegido =
         premios.findIndex(
@@ -1507,6 +1729,7 @@
             p.id ===
             premioElegido.id
         );
+
 
       const centerDeg =
         (
@@ -1518,6 +1741,7 @@
           2
         );
 
+
       const jitter =
         (
           Math.random() -
@@ -1528,9 +1752,11 @@
           0.6
         );
 
+
       const desiredDeg =
         centerDeg +
         jitter;
+
 
       const startMod =
         (
@@ -1542,6 +1768,7 @@
         ) %
         360;
 
+
       const delta =
         (
           desiredDeg -
@@ -1550,11 +1777,14 @@
         ) %
         360;
 
+
       const extraSpins =
         5 +
         Math.floor(
-          Math.random() * 3
+          Math.random() *
+          3
         );
+
 
       const spinAngle =
         (
@@ -1563,12 +1793,15 @@
         ) +
         delta;
 
+
       const targetAngle =
         startAngle +
         spinAngle;
 
+
       const startTime =
         performance.now();
+
 
       function animate(
         time
@@ -1578,6 +1811,7 @@
           time -
           startTime;
 
+
         if (
           elapsed <
           spinTime
@@ -1586,6 +1820,7 @@
           const progress =
             elapsed /
             spinTime;
+
 
           currentAngle =
             startAngle +
@@ -1600,13 +1835,16 @@
               )
             );
 
+
           drawRotatedWheel(
             currentAngle
           );
 
+
           requestAnimationFrame(
             animate
           );
+
 
         } else {
 
@@ -1615,32 +1853,42 @@
           sonidoGiro.currentTime =
             0;
 
+
           sonidoDing.play()
-            .catch(() => {});
+            .catch(
+              () => {}
+            );
+
 
           currentAngle =
             targetAngle;
+
 
           drawRotatedWheel(
             currentAngle
           );
 
+
           lastSpinTime =
             Date.now();
+
 
           localStorage.setItem(
             "lastSpinTime",
             lastSpinTime
           );
 
+
           localStorage.setItem(
             "ultimoPremioId",
             premioElegido.id
           );
 
+
           showPopup(
             premioElegido
           );
+
 
           spinButton.disabled =
             false;
@@ -1648,6 +1896,7 @@
         }
 
       }
+
 
       requestAnimationFrame(
         animate
@@ -1657,8 +1906,8 @@
 
 
     /* ==========================================================
-       🔄 DIBUJAR RULETA ROTADA
-       ========================================================== */
+       DIBUJAR RUEDA ROTADA
+    ========================================================== */
 
     function drawRotatedWheel(
       angle
@@ -1671,12 +1920,15 @@
         canvas.height
       );
 
+
       ctx.save();
+
 
       ctx.translate(
         150,
         150
       );
+
 
       ctx.rotate(
         angle *
@@ -1684,12 +1936,15 @@
         180
       );
 
+
       ctx.translate(
         -150,
         -150
       );
 
+
       drawWheel();
+
 
       ctx.restore();
 
@@ -1697,23 +1952,32 @@
 
 
     /* ==========================================================
-       🚀 INICIALIZACIÓN
-       ========================================================== */
+       INICIALIZACIÓN
+    ========================================================== */
 
     async function iniciar() {
 
       try {
 
+        loading.innerText =
+          "Cargando contenido...";
+
+
         await cargarConfiguracion();
+
 
         await cargarRotaciones();
 
+
         await cargarPremios();
+
 
         drawWheel();
 
+
         loading.style.display =
           "none";
+
 
         if (
           premios.length
@@ -1724,17 +1988,22 @@
 
         } else {
 
+          loading.style.display =
+            "block";
+
           loading.innerText =
-            "No hay premios activos configurados.";
+            "No hay beneficios activos configurados.";
 
         }
+
 
       } catch (error) {
 
         console.error(
-          "Error iniciando ruleta:",
+          "Error iniciando:",
           error
         );
+
 
         loading.innerText =
           "No se pudo cargar la configuración.";
