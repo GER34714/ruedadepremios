@@ -572,8 +572,6 @@
 
     /* ==========================================================
        CONFIGURACIÓN DE RESPALDO
-       Solo se utiliza si todavía no existe configuración
-       disponible en el panel.
     ========================================================== */
 
     const CONFIG_DEFAULT = {
@@ -626,7 +624,14 @@
     let CONFIG =
       { ...CONFIG_DEFAULT };
 
-
+    /*
+     * IMPORTANTE:
+     * premios contiene exactamente los mismos objetos
+     * que se representan en la rueda.
+     *
+     * No se crea una lista diferente para mostrar.
+     * La rueda y la selección utilizan este mismo array.
+     */
     let premios = [];
 
     let currentRotation =
@@ -745,6 +750,7 @@
         .maybeSingle();
 
       if (error) {
+
         console.error(
           "Error cargando configuración:",
           error
@@ -999,15 +1005,6 @@
       }
 
 
-      /*
-       * Si la rotación automática está
-       * desactivada, utilizamos la primera
-       * rotación activa disponible.
-       *
-       * Si el panel dispone de active_rotation_id,
-       * se respeta.
-       */
-
       if (!CONFIG.rotation_enabled) {
 
         currentRotation =
@@ -1107,8 +1104,45 @@
       }
 
 
+      /*
+       * IMPORTANTE:
+       *
+       * Se conserva exactamente el registro
+       * devuelto por Supabase.
+       *
+       * Ese mismo objeto será:
+       *
+       * 1. Mostrado en la rueda.
+       * 2. Seleccionado al girar.
+       * 3. Mostrado como resultado.
+       * 4. Guardado en leads.
+       */
       premios =
-        data || [];
+        Array.isArray(data)
+          ? data
+          : [];
+
+    }
+
+
+    /* ==========================================================
+       OBTENER TEXTO DEL PREMIO
+       Usa siempre el mismo campo "name"
+       proveniente del panel.
+    ========================================================== */
+
+    function obtenerNombrePremio(
+      premio
+    ) {
+
+      if (!premio) {
+        return "Premio";
+      }
+
+      return String(
+        premio.name ||
+        "Premio"
+      ).trim();
 
     }
 
@@ -1155,11 +1189,21 @@
         premios.length;
 
 
+      /*
+       * Cada posición "i" de la rueda corresponde
+       * directamente a premios[i].
+       *
+       * No se genera ningún nombre alternativo.
+       */
+
       for (
         let i = 0;
         i < premios.length;
         i++
       ) {
+
+        const premio =
+          premios[i];
 
         ctx.beginPath();
 
@@ -1177,6 +1221,8 @@
           (i + 1) *
             anglePerSegment
         );
+
+        ctx.closePath();
 
 
         ctx.fillStyle =
@@ -1215,9 +1261,15 @@
           "bold 12px Arial";
 
 
+        /*
+         * El texto mostrado es exactamente
+         * premio.name del panel.
+         */
+
         let texto =
-          premios[i].name ||
-          "Premio";
+          obtenerNombrePremio(
+            premio
+          );
 
 
         if (
@@ -1292,8 +1344,27 @@
       }
 
 
+      /*
+       * Se selecciona directamente uno de los
+       * objetos existentes en "premios".
+       *
+       * Por lo tanto el objeto elegido es exactamente
+       * el mismo que fue dibujado en la rueda.
+       */
+
       const disponibles =
-        [...premios];
+        premios.filter(
+          premio =>
+            premio &&
+            premio.active !== false
+        );
+
+
+      if (!disponibles.length) {
+
+        return null;
+
+      }
 
 
       const total =
@@ -1303,8 +1374,11 @@
             premio
           ) =>
             suma +
-            Number(
-              premio.probability
+            Math.max(
+              0,
+              Number(
+                premio.probability
+              ) || 0
             ),
           0
         );
@@ -1328,8 +1402,11 @@
       ) {
 
         random -=
-          Number(
-            premio.probability
+          Math.max(
+            0,
+            Number(
+              premio.probability
+            ) || 0
           );
 
 
@@ -1382,10 +1459,15 @@
       }
 
 
+      /*
+       * El popup recibe directamente el mismo objeto
+       * que fue seleccionado para la rueda.
+       */
+
       premioTexto.innerText =
         countdownText
           ? countdownText
-          : `FELICIDADES 🎉 Ganaste: ${premio.name}`;
+          : `FELICIDADES 🎉 Ganaste: ${obtenerNombrePremio(premio)}`;
 
 
       extraTexto.innerText =
@@ -1452,8 +1534,17 @@
         };
 
 
+      /*
+       * También se conserva exactamente el mismo objeto
+       * premio para registrar el lead.
+       */
+
       solicitarBtn.onclick =
         async () => {
+
+          if (!premio) {
+            return;
+          }
 
           await registrarLead(
             premio
@@ -1518,6 +1609,11 @@
 
       try {
 
+        /*
+         * Estos datos salen directamente del mismo
+         * objeto premio que apareció en el popup.
+         */
+
         const {
           error
         } = await supabaseClient
@@ -1534,7 +1630,9 @@
               premio.id,
 
             prize_name:
-              premio.name,
+              obtenerNombrePremio(
+                premio
+              ),
 
             prize_description:
               premio.description ||
@@ -1571,7 +1669,7 @@
         if (numero) {
 
           const mensaje =
-            `Hola, ${CONFIG.contact_name || ""}. Gané un premio: ${premio.name}. Mi nombre es ${nombre} y mi WhatsApp es ${whatsapp}.`;
+            `Hola, ${CONFIG.contact_name || ""}. Gané un premio: ${obtenerNombrePremio(premio)}. Mi nombre es ${nombre} y mi WhatsApp es ${whatsapp}.`;
 
 
           const url =
@@ -1681,6 +1779,14 @@
       }
 
 
+      /*
+       * ESTE ES EL PREMIO REAL.
+       *
+       * El objeto devuelto pertenece directamente
+       * al mismo array que se utilizó para dibujar
+       * la rueda.
+       */
+
       const premioElegido =
         seleccionarPremio();
 
@@ -1723,12 +1829,37 @@
         numSegments;
 
 
+      /*
+       * Buscamos la posición EXACTA del mismo
+       * objeto/ID que fue seleccionado.
+       *
+       * Esto hace que el indicador termine
+       * apuntando al premio que realmente ganó.
+       */
+
       const indexElegido =
         premios.findIndex(
-          p =>
-            p.id ===
-            premioElegido.id
+          premio =>
+            String(premio.id) ===
+            String(premioElegido.id)
         );
+
+
+      if (
+        indexElegido < 0
+      ) {
+
+        console.error(
+          "No se encontró el premio seleccionado en la rueda.",
+          premioElegido
+        );
+
+        spinButton.disabled =
+          false;
+
+        return;
+
+      }
 
 
       const centerDeg =
@@ -1879,11 +2010,22 @@
           );
 
 
+          /*
+           * Guardamos el ID del mismo premio
+           * que acabamos de mostrar.
+           */
+
           localStorage.setItem(
             "ultimoPremioId",
             premioElegido.id
           );
 
+
+          /*
+           * MUY IMPORTANTE:
+           * aquí se pasa el mismo premio elegido.
+           * No se vuelve a seleccionar otro.
+           */
 
           showPopup(
             premioElegido
@@ -1972,6 +2114,12 @@
         await cargarPremios();
 
 
+        /*
+         * La rueda se dibuja únicamente después
+         * de haber cargado los premios reales
+         * desde el panel.
+         */
+
         drawWheel();
 
 
@@ -1989,7 +2137,7 @@
         } else {
 
           loading.style.display =
-            "block";
+          "block";
 
           loading.innerText =
             "No hay beneficios activos configurados.";
