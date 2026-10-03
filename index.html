@@ -69,13 +69,8 @@
     }
 
     @keyframes rgbSpin {
-      0% {
-        transform: rotate(0deg);
-      }
-
-      100% {
-        transform: rotate(360deg);
-      }
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
 
     #wheelCanvas {
@@ -119,13 +114,8 @@
     }
 
     @keyframes neonPulse {
-      from {
-        box-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
-      }
-
-      to {
-        box-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff;
-      }
+      from { box-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff; }
+      to { box-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff; }
     }
 
     #loading {
@@ -164,15 +154,8 @@
     }
 
     @keyframes popupIn {
-      from {
-        transform: scale(0.5);
-        opacity: 0;
-      }
-
-      to {
-        transform: scale(1);
-        opacity: 1;
-      }
+      from { transform: scale(0.5); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
     }
 
     #popupContent h2 {
@@ -307,7 +290,6 @@
     }
 
     @media (max-width: 480px) {
-
       #logoPrincipal {
         width: 200px;
         margin-top: 15px;
@@ -361,73 +343,35 @@
 
 <body>
 
-  <img
-    id="logoPrincipal"
-    src=""
-    alt="Logo"
-  >
+  <img id="logoPrincipal" src="" alt="Logo">
 
   <h1 id="tituloPrincipal">
     🎉 Girá la rueda y descubrí tu premio 🎁
   </h1>
 
-  <div id="loading">
-    Cargando contenido...
-  </div>
+  <div id="loading">Cargando contenido...</div>
 
   <div class="wheel-container">
-
     <div class="rgb-ring"></div>
-
     <div class="indicator"></div>
-
-    <canvas
-      id="wheelCanvas"
-      width="300"
-      height="300"
-    ></canvas>
-
+    <canvas id="wheelCanvas" width="300" height="300"></canvas>
   </div>
 
-  <button id="spinButton" disabled>
-    GIRAR
-  </button>
+  <button id="spinButton" disabled>GIRAR</button>
 
   <div id="popup">
-
     <div id="popupContent">
-
       <h2>¡GANASTE! 🎉</h2>
-
       <p id="premioTexto"></p>
-
       <p id="extraTexto"></p>
 
       <div id="leadArea">
-
         <div class="lead-form">
+          <label for="nombreLead">Nombre</label>
+          <input type="text" id="nombreLead" placeholder="Tu nombre" autocomplete="name">
 
-          <label for="nombreLead">
-            Nombre
-          </label>
-
-          <input
-            type="text"
-            id="nombreLead"
-            placeholder="Tu nombre"
-            autocomplete="name"
-          >
-
-          <label for="whatsappLead">
-            WhatsApp
-          </label>
-
-          <input
-            type="tel"
-            id="whatsappLead"
-            placeholder="Tu número de WhatsApp"
-            autocomplete="tel"
-          >
+          <label for="whatsappLead">WhatsApp</label>
+          <input type="tel" id="whatsappLead" placeholder="Tu número de WhatsApp" autocomplete="tel">
 
           <p class="privacy-text">
             Al enviar tus datos aceptás que sean utilizados
@@ -435,1748 +379,575 @@
             en relación con el mismo.
           </p>
 
-          <button id="solicitarBtn">
-            SOLICITAR MI PREMIO
-          </button>
-
+          <button id="solicitarBtn">SOLICITAR MI PREMIO</button>
         </div>
-
       </div>
 
       <div id="successArea" style="display:none;">
-
-        <p style="color:#00ff99;">
-          ✅ Tus datos fueron registrados correctamente.
-        </p>
-
-        <p>
-          En breve nos pondremos en contacto para entregarte
-          tu premio.
-        </p>
-
+        <p style="color:#00ff99;">✅ Tus datos fueron registrados correctamente.</p>
+        <p>En breve nos pondremos en contacto para entregarte tu premio.</p>
       </div>
 
-      <button id="closePopup">
-        Cerrar
-      </button>
+      <button id="closePopup">Cerrar</button>
 
       <p id="contactoPrincipal"></p>
 
       <button id="btnWhatsapp">
-
-        <img
-          src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
-          alt="WhatsApp"
-        >
-
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
         Contactar por WhatsApp
-
       </button>
-
     </div>
-
   </div>
 
   <div id="siteSections">
-
-    <section
-      class="page-section"
-      id="rulesSection"
-      style="display:none;"
-    >
-
+    <section class="page-section" id="rulesSection" style="display:none;">
       <h2>📜 Reglas</h2>
-
-      <div
-        class="page-section-content"
-        id="rulesText"
-      ></div>
-
+      <div class="page-section-content" id="rulesText"></div>
     </section>
 
-    <section
-      class="page-section"
-      id="prizesSection"
-      style="display:none;"
-    >
-
+    <section class="page-section" id="prizesSection" style="display:none;">
       <h2>🎁 Premios</h2>
-
-      <div
-        class="page-section-content"
-        id="prizesText"
-      ></div>
-
+      <div class="page-section-content" id="prizesText"></div>
     </section>
 
-    <section
-      class="page-section"
-      id="noticesSection"
-      style="display:none;"
-    >
-
+    <section class="page-section" id="noticesSection" style="display:none;">
       <h2>📢 Avisos</h2>
-
-      <div
-        class="page-section-content"
-        id="noticesText"
-      ></div>
-
+      <div class="page-section-content" id="noticesText"></div>
     </section>
 
-    <section
-      class="page-section"
-      id="legalSection"
-      style="display:none;"
-    >
-
+    <section class="page-section" id="legalSection" style="display:none;">
       <h2>⚖️ Aviso legal</h2>
-
-      <div
-        class="page-section-content"
-        id="legalText"
-      ></div>
-
+      <div class="page-section-content" id="legalText"></div>
     </section>
-
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <script>
 
-    /* ==========================================================
-       SUPABASE
-    ========================================================== */
-
-    const SUPABASE_URL =
-      "https://qqeibunzugtfgwwayaxj.supabase.co";
-
-    const SUPABASE_ANON_KEY =
-      "sb_publishable_1S0XRJIOq1bEnj9S_z4LXQ_AllfS_JC";
+    const SUPABASE_URL = "https://qqeibunzugtfgwwayaxj.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_1S0XRJIOq1bEnj9S_z4LXQ_AllfS_JC";
 
     if (!window.supabase) {
-      throw new Error(
-        "No se pudo cargar la librería de Supabase."
-      );
+      throw new Error("No se pudo cargar la librería de Supabase.");
     }
 
-    const supabaseClient =
-      window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_ANON_KEY
-      );
-
-
-    /* ==========================================================
-       CONFIGURACIÓN DE RESPALDO
-    ========================================================== */
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     const CONFIG_DEFAULT = {
-
-      title:
-        "🎉 Girá la rueda y descubrí tu premio 🎁",
-
-      phone:
-        "",
-
-      contact_name:
-        "",
-
-      whatsapp:
-        "",
-
-      logo_url:
-        "",
-
-      background_url:
-        "",
-
-      og_image_url:
-        "",
-
-      rules_text:
-        "",
-
-      prizes_text:
-        "",
-
-      notices_text:
-        "",
-
-      legal_text:
-        "",
-
-      rotation_enabled:
-        false,
-
-      rotation_interval_hours:
-        24,
-
-      rotation_started_at:
-        null
-
+      title: "🎉 Girá la rueda y descubrí tu premio 🎁",
+      phone: "",
+      contact_name: "",
+      whatsapp: "",
+      logo_url: "",
+      background_url: "",
+      og_image_url: "",
+      rules_text: "",
+      prizes_text: "",
+      notices_text: "",
+      legal_text: "",
+      rotation_enabled: false,
+      rotation_interval_hours: 24,
+      rotation_started_at: null
     };
 
-
-    let CONFIG =
-      { ...CONFIG_DEFAULT };
-
-    /*
-     * IMPORTANTE:
-     * premios contiene exactamente los mismos objetos
-     * que se representan en la rueda.
-     *
-     * No se crea una lista diferente para mostrar.
-     * La rueda y la selección utilizan este mismo array.
-     */
+    let CONFIG = { ...CONFIG_DEFAULT };
     let premios = [];
+    let currentRotation = null;
+    let currentAngle = 0;
+    let lastSpinTime = localStorage.getItem("lastSpinTime");
 
-    let currentRotation =
-      null;
+    const canvas = document.getElementById("wheelCanvas");
+    const ctx = canvas.getContext("2d");
+    const spinButton = document.getElementById("spinButton");
+    const popup = document.getElementById("popup");
+    const premioTexto = document.getElementById("premioTexto");
+    const extraTexto = document.getElementById("extraTexto");
+    const solicitarBtn = document.getElementById("solicitarBtn");
+    const closePopup = document.getElementById("closePopup");
+    const btnWhatsapp = document.getElementById("btnWhatsapp");
+    const nombreLead = document.getElementById("nombreLead");
+    const whatsappLead = document.getElementById("whatsappLead");
+    const leadArea = document.getElementById("leadArea");
+    const successArea = document.getElementById("successArea");
+    const loading = document.getElementById("loading");
 
-    let currentAngle =
-      0;
+    const sonidoGiro = new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_15b88e99ff.mp3?filename=wheel-spin-1-110166.mp3");
+    const sonidoDing = new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_5646dd24c8.mp3?filename=ding-126626.mp3");
 
-    let lastSpinTime =
-      localStorage.getItem(
-        "lastSpinTime"
-      );
-
-
-    /* ==========================================================
-       ELEMENTOS
-    ========================================================== */
-
-    const canvas =
-      document.getElementById(
-        "wheelCanvas"
-      );
-
-    const ctx =
-      canvas.getContext("2d");
-
-    const spinButton =
-      document.getElementById(
-        "spinButton"
-      );
-
-    const popup =
-      document.getElementById(
-        "popup"
-      );
-
-    const premioTexto =
-      document.getElementById(
-        "premioTexto"
-      );
-
-    const extraTexto =
-      document.getElementById(
-        "extraTexto"
-      );
-
-    const solicitarBtn =
-      document.getElementById(
-        "solicitarBtn"
-      );
-
-    const closePopup =
-      document.getElementById(
-        "closePopup"
-      );
-
-    const btnWhatsapp =
-      document.getElementById(
-        "btnWhatsapp"
-      );
-
-    const nombreLead =
-      document.getElementById(
-        "nombreLead"
-      );
-
-    const whatsappLead =
-      document.getElementById(
-        "whatsappLead"
-      );
-
-    const leadArea =
-      document.getElementById(
-        "leadArea"
-      );
-
-    const successArea =
-      document.getElementById(
-        "successArea"
-      );
-
-    const loading =
-      document.getElementById(
-        "loading"
-      );
-
-
-    /* ==========================================================
-       SONIDOS
-    ========================================================== */
-
-    const sonidoGiro =
-      new Audio(
-        "https://cdn.pixabay.com/download/audio/2022/03/15/audio_15b88e99ff.mp3?filename=wheel-spin-1-110166.mp3"
-      );
-
-    const sonidoDing =
-      new Audio(
-        "https://cdn.pixabay.com/download/audio/2022/03/15/audio_5646dd24c8.mp3?filename=ding-126626.mp3"
-      );
-
-
-    /* ==========================================================
-       CARGAR CONFIGURACIÓN DEL PANEL
-    ========================================================== */
 
     async function cargarConfiguracion() {
-
-      const {
-        data,
-        error
-      } = await supabaseClient
+      const { data, error } = await supabaseClient
         .from("site_settings")
         .select("*")
         .eq("id", 1)
         .maybeSingle();
 
       if (error) {
-
-        console.error(
-          "Error cargando configuración:",
-          error
-        );
-
-        CONFIG =
-          { ...CONFIG_DEFAULT };
-
+        console.error("Error cargando configuración:", error);
+        CONFIG = { ...CONFIG_DEFAULT };
       } else if (data) {
-
-        CONFIG = {
-          ...CONFIG_DEFAULT,
-          ...data
-        };
-
+        CONFIG = { ...CONFIG_DEFAULT, ...data };
       }
 
       aplicarConfiguracion();
-
     }
 
-
-    /* ==========================================================
-       APLICAR CONFIGURACIÓN
-    ========================================================== */
 
     function aplicarConfiguracion() {
-
-      const logo =
-        CONFIG.logo_url ||
-        CONFIG.logo;
-
+      const logo = CONFIG.logo_url || CONFIG.logo;
       if (logo) {
-
-        document
-          .getElementById(
-            "logoPrincipal"
-          )
-          .src = logo;
-
+        document.getElementById("logoPrincipal").src = logo;
       } else {
-
-        document
-          .getElementById(
-            "logoPrincipal"
-          )
-          .style.display = "none";
-
+        document.getElementById("logoPrincipal").style.display = "none";
       }
 
-
-      const fondo =
-        CONFIG.background_url ||
-        CONFIG.fondo;
-
+      const fondo = CONFIG.background_url || CONFIG.fondo;
       if (fondo) {
-
-        document.body.style.backgroundImage =
-          `url('${fondo}')`;
-
+        document.body.style.backgroundImage = `url('${fondo}')`;
       }
 
+      const titulo = CONFIG.title || CONFIG.titulo || CONFIG_DEFAULT.title;
+      document.getElementById("tituloPrincipal").innerText = titulo;
 
-      const titulo =
-        CONFIG.title ||
-        CONFIG.titulo ||
-        CONFIG_DEFAULT.title;
-
-      document
-        .getElementById(
-          "tituloPrincipal"
-        )
-        .innerText = titulo;
-
-
-      const telefono =
-        CONFIG.phone ||
-        CONFIG.telefono ||
-        "";
-
-      const nombre =
-        CONFIG.contact_name ||
-        CONFIG.nombreContacto ||
-        "";
-
-      const contacto =
-        document.getElementById(
-          "contactoPrincipal"
-        );
+      const telefono = CONFIG.phone || CONFIG.telefono || "";
+      const nombre = CONFIG.contact_name || CONFIG.nombreContacto || "";
+      const contacto = document.getElementById("contactoPrincipal");
 
       if (telefono || nombre) {
-
-        contacto.innerText =
-          `📞 Contacto: ${telefono}${nombre ? ` (${nombre})` : ""}`;
-
+        contacto.innerText = `📞 Contacto: ${telefono}${nombre ? ` (${nombre})` : ""}`;
       } else {
-
-        contacto.style.display =
-          "none";
-
+        contacto.style.display = "none";
       }
 
-
-      const numeroWhatsapp =
-        CONFIG.whatsapp ||
-        CONFIG.whatsapp_number ||
-        "";
-
+      const numeroWhatsapp = CONFIG.whatsapp || CONFIG.whatsapp_number || "";
       if (!numeroWhatsapp) {
-
-        btnWhatsapp.style.display =
-          "none";
-
+        btnWhatsapp.style.display = "none";
       }
 
-
-      const ogImage =
-        CONFIG.og_image_url ||
-        CONFIG.ogImage ||
-        "";
-
-      const og =
-        document.querySelector(
-          'meta[property="og:image"]'
-        );
-
+      const ogImage = CONFIG.og_image_url || CONFIG.ogImage || "";
+      const og = document.querySelector('meta[property="og:image"]');
       if (og && ogImage) {
-
-        og.setAttribute(
-          "content",
-          ogImage
-        );
-
+        og.setAttribute("content", ogImage);
       }
 
-
-      const ogTitle =
-        CONFIG.title ||
-        "Página de Premios";
-
-      const ogTitleElement =
-        document.querySelector(
-          'meta[property="og:title"]'
-        );
-
+      const ogTitle = CONFIG.title || "Página de Premios";
+      const ogTitleElement = document.querySelector('meta[property="og:title"]');
       if (ogTitleElement) {
-
-        ogTitleElement.setAttribute(
-          "content",
-          ogTitle
-        );
-
+        ogTitleElement.setAttribute("content", ogTitle);
       }
 
-
-      cargarSeccion(
-        "rulesSection",
-        "rulesText",
-        CONFIG.rules_text
-      );
-
-      cargarSeccion(
-        "prizesSection",
-        "prizesText",
-        CONFIG.prizes_text
-      );
-
-      cargarSeccion(
-        "noticesSection",
-        "noticesText",
-        CONFIG.notices_text
-      );
-
-      cargarSeccion(
-        "legalSection",
-        "legalText",
-        CONFIG.legal_text
-      );
-
+      cargarSeccion("rulesSection", "rulesText", CONFIG.rules_text);
+      cargarSeccion("prizesSection", "prizesText", CONFIG.prizes_text);
+      cargarSeccion("noticesSection", "noticesText", CONFIG.notices_text);
+      cargarSeccion("legalSection", "legalText", CONFIG.legal_text);
     }
 
 
-    function cargarSeccion(
-      sectionId,
-      textId,
-      texto
-    ) {
+    function cargarSeccion(sectionId, textId, texto) {
+      const section = document.getElementById(sectionId);
+      const element = document.getElementById(textId);
 
-      const section =
-        document.getElementById(
-          sectionId
-        );
-
-      const element =
-        document.getElementById(
-          textId
-        );
-
-      if (
-        texto &&
-        texto.trim() !== ""
-      ) {
-
-        element.innerText =
-          texto;
-
-        section.style.display =
-          "block";
-
+      if (texto && texto.trim() !== "") {
+        element.innerText = texto;
+        section.style.display = "block";
       } else {
-
-        section.style.display =
-          "none";
-
+        section.style.display = "none";
       }
-
     }
 
-
-    /* ==========================================================
-       DETERMINAR ROTACIÓN
-    ========================================================== */
 
     async function cargarRotaciones() {
-
-      const {
-        data,
-        error
-      } = await supabaseClient
+      const { data, error } = await supabaseClient
         .from("rotations")
         .select("*")
         .eq("active", true)
-        .order(
-          "sort_order",
-          {
-            ascending: true
-          }
-        );
+        .order("sort_order", { ascending: true });
 
-      if (error) {
-        throw error;
-      }
-
+      if (error) throw error;
 
       if (!data || !data.length) {
-
-        currentRotation =
-          null;
-
+        currentRotation = null;
         return;
-
       }
-
 
       if (!CONFIG.rotation_enabled) {
-
         currentRotation =
-          data.find(
-            r =>
-              String(r.id) ===
-              String(CONFIG.active_rotation_id)
-          ) || data[0];
-
+          data.find(r => String(r.id) === String(CONFIG.active_rotation_id)) || data[0];
         return;
-
       }
 
+      const startedAt = CONFIG.rotation_started_at
+        ? new Date(CONFIG.rotation_started_at).getTime()
+        : Date.now();
 
-      const startedAt =
-        CONFIG.rotation_started_at
-          ? new Date(
-              CONFIG.rotation_started_at
-            ).getTime()
-          : Date.now();
+      const interval = (Number(CONFIG.rotation_interval_hours) || 24) * 60 * 60 * 1000;
+      const elapsed = Math.max(0, Date.now() - startedAt);
+      const rotationIndex = Math.floor(elapsed / interval) % data.length;
 
-
-      const interval =
-        (
-          Number(
-            CONFIG.rotation_interval_hours
-          ) || 24
-        ) *
-        60 *
-        60 *
-        1000;
-
-
-      const elapsed =
-        Math.max(
-          0,
-          Date.now() -
-          startedAt
-        );
-
-
-      const rotationIndex =
-        Math.floor(
-          elapsed /
-          interval
-        ) %
-        data.length;
-
-
-      currentRotation =
-        data[rotationIndex];
-
+      currentRotation = data[rotationIndex];
     }
 
-
-    /* ==========================================================
-       CARGAR PREMIOS DEL PANEL
-    ========================================================== */
 
     async function cargarPremios() {
-
       if (!currentRotation) {
-
         premios = [];
-
         return;
-
       }
 
-
-      const {
-        data,
-        error
-      } = await supabaseClient
+      const { data, error } = await supabaseClient
         .from("prizes")
         .select("*")
-        .eq(
-          "rotation_id",
-          currentRotation.id
-        )
-        .eq(
-          "active",
-          true
-        )
-        .order(
-          "sort_order",
-          {
-            ascending: true
-          }
-        );
+        .eq("rotation_id", currentRotation.id)
+        .eq("active", true)
+        .order("sort_order", { ascending: true });
 
+      if (error) throw error;
 
-      if (error) {
-
-        throw error;
-
-      }
-
-
-      /*
-       * IMPORTANTE:
-       *
-       * Se conserva exactamente el registro
-       * devuelto por Supabase.
-       *
-       * Ese mismo objeto será:
-       *
-       * 1. Mostrado en la rueda.
-       * 2. Seleccionado al girar.
-       * 3. Mostrado como resultado.
-       * 4. Guardado en leads.
-       */
-      premios =
-        Array.isArray(data)
-          ? data
-          : [];
-
+      premios = Array.isArray(data) ? data : [];
     }
 
 
-    /* ==========================================================
-       OBTENER TEXTO DEL PREMIO
-       Usa siempre el mismo campo "name"
-       proveniente del panel.
-    ========================================================== */
-
-    function obtenerNombrePremio(
-      premio
-    ) {
-
-      if (!premio) {
-        return "Premio";
-      }
-
-      return String(
-        premio.name ||
-        "Premio"
-      ).trim();
-
+    function obtenerNombrePremio(premio) {
+      if (!premio) return "Premio";
+      return String(premio.name || "Premio").trim();
     }
 
-
-    /* ==========================================================
-       DIBUJAR RUEDA
-    ========================================================== */
 
     function drawWheel() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      ctx.clearRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-      );
-
-
-      if (!premios.length) {
-
-        return;
-
-      }
-
+      if (!premios.length) return;
 
       const colors = [
-
-        "#ff0000",
-        "#ff9900",
-        "#ffff00",
-        "#00ff00",
-        "#00ccff",
-        "#0066ff",
-        "#9900ff",
-        "#ff00aa"
-
+        "#ff0000", "#ff9900", "#ffff00", "#00ff00",
+        "#00ccff", "#0066ff", "#9900ff", "#ff00aa"
       ];
 
+      const anglePerSegment = (2 * Math.PI) / premios.length;
 
-      const anglePerSegment =
-        (
-          2 * Math.PI
-        ) /
-        premios.length;
-
-
-      /*
-       * Cada posición "i" de la rueda corresponde
-       * directamente a premios[i].
-       *
-       * No se genera ningún nombre alternativo.
-       */
-
-      for (
-        let i = 0;
-        i < premios.length;
-        i++
-      ) {
-
-        const premio =
-          premios[i];
+      for (let i = 0; i < premios.length; i++) {
+        const premio = premios[i];
 
         ctx.beginPath();
-
-        ctx.moveTo(
-          150,
-          150
-        );
-
-        ctx.arc(
-          150,
-          150,
-          150,
-          i *
-            anglePerSegment,
-          (i + 1) *
-            anglePerSegment
-        );
-
+        ctx.moveTo(150, 150);
+        ctx.arc(150, 150, 150, i * anglePerSegment, (i + 1) * anglePerSegment);
         ctx.closePath();
 
-
-        ctx.fillStyle =
-          colors[
-            i %
-            colors.length
-          ];
-
+        ctx.fillStyle = colors[i % colors.length];
         ctx.fill();
-
         ctx.stroke();
 
-
         ctx.save();
+        ctx.translate(150, 150);
+        ctx.rotate(i * anglePerSegment + anglePerSegment / 2);
 
-        ctx.translate(
-          150,
-          150
-        );
+        ctx.textAlign = "right";
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 12px Arial";
 
-        ctx.rotate(
-          i *
-            anglePerSegment +
-          anglePerSegment /
-            2
-        );
-
-
-        ctx.textAlign =
-          "right";
-
-        ctx.fillStyle =
-          "#ffffff";
-
-        ctx.font =
-          "bold 12px Arial";
-
-
-        /*
-         * El texto mostrado es exactamente
-         * premio.name del panel.
-         */
-
-        let texto =
-          obtenerNombrePremio(
-            premio
-          );
-
-
-        if (
-          texto.length > 22
-        ) {
-
-          texto =
-            texto.substring(
-              0,
-              22
-            ) +
-            "...";
-
+        let texto = obtenerNombrePremio(premio);
+        if (texto.length > 22) {
+          texto = texto.substring(0, 22) + "...";
         }
 
-
-        ctx.fillText(
-          texto,
-          135,
-          5
-        );
-
-
+        ctx.fillText(texto, 135, 5);
         ctx.restore();
-
       }
-
     }
 
-
-    /* ==========================================================
-       TIEMPO ENTRE GIROS
-    ========================================================== */
 
     function getRemainingTime() {
+      if (!lastSpinTime) return 0;
 
-      if (!lastSpinTime) {
-
-        return 0;
-
-      }
-
-
-      const diff =
-        Date.now() -
-        parseInt(
-          lastSpinTime
-        );
-
-
-      return (
-        24 *
-        60 *
-        60 *
-        1000
-      ) -
-      diff;
-
+      const diff = Date.now() - parseInt(lastSpinTime);
+      return (24 * 60 * 60 * 1000) - diff;
     }
 
-
-    /* ==========================================================
-       SELECCIONAR PREMIO SEGÚN PROBABILIDAD DEL PANEL
-    ========================================================== */
 
     function seleccionarPremio() {
+      if (!premios.length) return null;
 
-      if (!premios.length) {
+      const disponibles = premios.filter(p => p && p.active !== false);
+      if (!disponibles.length) return null;
 
-        return null;
+      const total = disponibles.reduce(
+        (suma, p) => suma + Math.max(0, Number(p.probability) || 0),
+        0
+      );
 
+      if (total <= 0) return disponibles[0];
+
+      let random = Math.random() * total;
+
+      for (const premio of disponibles) {
+        random -= Math.max(0, Number(premio.probability) || 0);
+        if (random <= 0) return premio;
       }
 
-
-      /*
-       * Se selecciona directamente uno de los
-       * objetos existentes en "premios".
-       *
-       * Por lo tanto el objeto elegido es exactamente
-       * el mismo que fue dibujado en la rueda.
-       */
-
-      const disponibles =
-        premios.filter(
-          premio =>
-            premio &&
-            premio.active !== false
-        );
-
-
-      if (!disponibles.length) {
-
-        return null;
-
-      }
-
-
-      const total =
-        disponibles.reduce(
-          (
-            suma,
-            premio
-          ) =>
-            suma +
-            Math.max(
-              0,
-              Number(
-                premio.probability
-              ) || 0
-            ),
-          0
-        );
-
-
-      if (total <= 0) {
-
-        return disponibles[0];
-
-      }
-
-
-      let random =
-        Math.random() *
-        total;
-
-
-      for (
-        const premio
-        of disponibles
-      ) {
-
-        random -=
-          Math.max(
-            0,
-            Number(
-              premio.probability
-            ) || 0
-          );
-
-
-        if (
-          random <= 0
-        ) {
-
-          return premio;
-
-        }
-
-      }
-
-
-      return disponibles[
-        disponibles.length - 1
-      ];
-
+      return disponibles[disponibles.length - 1];
     }
 
 
-    /* ==========================================================
-       MOSTRAR RESULTADO
-    ========================================================== */
-
-    function showPopup(
-      premio,
-      countdownText = null
-    ) {
-
-      if (
-        !countdownText
-      ) {
-
-        if (
-          typeof confetti ===
-          "function"
-        ) {
-
-          confetti({
-            particleCount: 200,
-            spread: 80,
-            origin: {
-              y: 0.6
-            }
-          });
-
-        }
-
+    function showPopup(premio, countdownText = null) {
+      if (!countdownText && typeof confetti === "function") {
+        confetti({
+          particleCount: 200,
+          spread: 80,
+          origin: { y: 0.6 }
+        });
       }
 
+      premioTexto.innerText = countdownText
+        ? countdownText
+        : `FELICIDADES 🎉 Ganaste: ${obtenerNombrePremio(premio)}`;
 
-      /*
-       * El popup recibe directamente el mismo objeto
-       * que fue seleccionado para la rueda.
-       */
+      extraTexto.innerText = countdownText
+        ? ""
+        : (premio.description || "¡Felicitaciones!");
 
-      premioTexto.innerText =
-        countdownText
-          ? countdownText
-          : `FELICIDADES 🎉 Ganaste: ${obtenerNombrePremio(premio)}`;
+      popup.style.display = "flex";
 
+      leadArea.style.display = countdownText ? "none" : "block";
+      successArea.style.display = "none";
 
-      extraTexto.innerText =
-        countdownText
-          ? ""
-          : (
-              premio.description ||
-              "¡Felicitaciones!"
-            );
+      nombreLead.value = "";
+      whatsappLead.value = "";
 
+      btnWhatsapp.onclick = () => {
+        const numero = CONFIG.whatsapp || CONFIG.whatsapp_number;
+        if (!numero) return;
+        window.open(`https://wa.me/${numero}`, "_blank");
+      };
 
-      popup.style.display =
-        "flex";
-
-
-      if (
-        countdownText
-      ) {
-
-        leadArea.style.display =
-          "none";
-
-      } else {
-
-        leadArea.style.display =
-          "block";
-
-      }
-
-
-      successArea.style.display =
-        "none";
-
-
-      nombreLead.value =
-        "";
-
-      whatsappLead.value =
-        "";
-
-
-      btnWhatsapp.onclick =
-        () => {
-
-          const numero =
-            CONFIG.whatsapp ||
-            CONFIG.whatsapp_number;
-
-
-          if (!numero) {
-            return;
-          }
-
-
-          const url =
-            `https://wa.me/${numero}`;
-
-
-          window.open(
-            url,
-            "_blank"
-          );
-
-        };
-
-
-      /*
-       * También se conserva exactamente el mismo objeto
-       * premio para registrar el lead.
-       */
-
-      solicitarBtn.onclick =
-        async () => {
-
-          if (!premio) {
-            return;
-          }
-
-          await registrarLead(
-            premio
-          );
-
-        };
-
+      solicitarBtn.onclick = async () => {
+        if (!premio) return;
+        await registrarLead(premio);
+      };
     }
 
 
-    /* ==========================================================
-       REGISTRAR CONTACTO
-    ========================================================== */
-
-    async function registrarLead(
-      premio
-    ) {
-
-      const nombre =
-        nombreLead.value.trim();
-
-
-      const whatsapp =
-        whatsappLead.value.trim();
-
+    async function registrarLead(premio) {
+      const nombre = nombreLead.value.trim();
+      const whatsapp = whatsappLead.value.trim();
 
       if (!nombre) {
-
-        alert(
-          "Ingresá tu nombre."
-        );
-
+        alert("Ingresá tu nombre.");
         nombreLead.focus();
-
         return;
-
       }
 
-
-      if (
-        whatsapp.length < 6
-      ) {
-
-        alert(
-          "Ingresá un número de WhatsApp válido."
-        );
-
+      if (whatsapp.length < 6) {
+        alert("Ingresá un número de WhatsApp válido.");
         whatsappLead.focus();
-
         return;
-
       }
 
-
-      solicitarBtn.disabled =
-        true;
-
-
-      solicitarBtn.innerText =
-        "REGISTRANDO...";
-
+      solicitarBtn.disabled = true;
+      solicitarBtn.innerText = "REGISTRANDO...";
 
       try {
-
-        /*
-         * Estos datos salen directamente del mismo
-         * objeto premio que apareció en el popup.
-         */
-
-        const {
-          error
-        } = await supabaseClient
+        const { error } = await supabaseClient
           .from("leads")
           .insert({
-
-            name:
-              nombre,
-
-            whatsapp:
-              whatsapp,
-
-            prize_id:
-              premio.id,
-
-            prize_name:
-              obtenerNombrePremio(
-                premio
-              ),
-
-            prize_description:
-              premio.description ||
-              "",
-
-            rotation_id:
-              currentRotation
-                ? currentRotation.id
-                : null
-
+            name: nombre,
+            whatsapp: whatsapp,
+            prize_id: premio.id,
+            prize_name: obtenerNombrePremio(premio),
+            prize_description: premio.description || "",
+            rotation_id: currentRotation ? currentRotation.id : null
           });
 
+        if (error) throw error;
 
-        if (error) {
+        successArea.style.display = "block";
+        leadArea.style.display = "none";
 
-          throw error;
-
-        }
-
-
-        successArea.style.display =
-          "block";
-
-
-        leadArea.style.display =
-          "none";
-
-
-        const numero =
-          CONFIG.whatsapp ||
-          CONFIG.whatsapp_number;
-
+        const numero = CONFIG.whatsapp || CONFIG.whatsapp_number;
 
         if (numero) {
+          const mensaje = `Hola, ${CONFIG.contact_name || ""}. Gané un premio: ${obtenerNombrePremio(premio)}. Mi nombre es ${nombre} y mi WhatsApp es ${whatsapp}.`;
+          const url = `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
 
-          const mensaje =
-            `Hola, ${CONFIG.contact_name || ""}. Gané un premio: ${obtenerNombrePremio(premio)}. Mi nombre es ${nombre} y mi WhatsApp es ${whatsapp}.`;
-
-
-          const url =
-            `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
-
-
-          setTimeout(
-            () => {
-
-              window.open(
-                url,
-                "_blank"
-              );
-
-            },
-            500
-          );
-
+          setTimeout(() => {
+            window.open(url, "_blank");
+          }, 500);
         }
-
 
       } catch (error) {
-
-        console.error(
-          error
-        );
-
-
-        alert(
-          "No pudimos registrar tus datos. Intentá nuevamente."
-        );
-
-
-        solicitarBtn.disabled =
-          false;
-
-
-        solicitarBtn.innerText =
-          "SOLICITAR MI PREMIO";
-
+        console.error(error);
+        alert("No pudimos registrar tus datos. Intentá nuevamente.");
+        solicitarBtn.disabled = false;
+        solicitarBtn.innerText = "SOLICITAR MI PREMIO";
       }
-
     }
 
-
-    /* ==========================================================
-       GIRAR
-    ========================================================== */
 
     function spinWheel() {
+      const remaining = getRemainingTime();
 
-      const remaining =
-        getRemainingTime();
+      if (remaining > 0) {
+        const horas = Math.floor(remaining / (1000 * 60 * 60));
+        const mins = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
 
-
-      if (
-        remaining > 0
-      ) {
-
-        const horas =
-          Math.floor(
-            remaining /
-            (
-              1000 *
-              60 *
-              60
-            )
-          );
-
-
-        const mins =
-          Math.floor(
-            (
-              remaining %
-              (
-                1000 *
-                60 *
-                60
-              )
-            ) /
-            (
-              1000 *
-              60
-            )
-          );
-
-
-        showPopup(
-          null,
-          `⏳ Podrás volver a girar en ${horas}h ${mins}m`
-        );
-
-
+        showPopup(null, `⏳ Podrás volver a girar en ${horas}h ${mins}m`);
         return;
-
       }
-
 
       if (!premios.length) {
-
-        alert(
-          "No hay beneficios activos configurados."
-        );
-
+        alert("No hay beneficios activos configurados.");
         return;
-
       }
 
+      const premioElegido = seleccionarPremio();
+      if (!premioElegido) return;
 
-      /*
-       * ESTE ES EL PREMIO REAL.
-       *
-       * El objeto devuelto pertenece directamente
-       * al mismo array que se utilizó para dibujar
-       * la rueda.
-       */
+      spinButton.disabled = true;
 
-      const premioElegido =
-        seleccionarPremio();
+      sonidoGiro.currentTime = 0;
+      sonidoGiro.play().catch(() => {});
 
+      const spinTime = 4000;
+      const startAngle = currentAngle;
+      const numSegments = premios.length;
+      const segmentDeg = 360 / numSegments;
 
-      if (!premioElegido) {
-
-        return;
-
-      }
-
-
-      spinButton.disabled =
-        true;
-
-
-      sonidoGiro.currentTime =
-        0;
-
-
-      sonidoGiro.play()
-        .catch(
-          () => {}
-        );
-
-
-      const spinTime =
-        4000;
-
-
-      const startAngle =
-        currentAngle;
-
-
-      const numSegments =
-        premios.length;
-
-
-      const segmentDeg =
-        360 /
-        numSegments;
-
-
-      /*
-       * Buscamos la posición EXACTA del mismo
-       * objeto/ID que fue seleccionado.
-       *
-       * Esto hace que el indicador termine
-       * apuntando al premio que realmente ganó.
-       */
-
-      const indexElegido =
-        premios.findIndex(
-          premio =>
-            String(premio.id) ===
-            String(premioElegido.id)
-        );
-
-
-      if (
-        indexElegido < 0
-      ) {
-
-        console.error(
-          "No se encontró el premio seleccionado en la rueda.",
-          premioElegido
-        );
-
-        spinButton.disabled =
-          false;
-
-        return;
-
-      }
-
-
-      const centerDeg =
-        (
-          indexElegido *
-          segmentDeg
-        ) +
-        (
-          segmentDeg /
-          2
-        );
-
-
-      const jitter =
-        (
-          Math.random() -
-          0.5
-        ) *
-        (
-          segmentDeg *
-          0.6
-        );
-
-
-      const desiredDeg =
-        centerDeg +
-        jitter;
-
-
-      const startMod =
-        (
-          (
-            startAngle %
-            360
-          ) +
-          360
-        ) %
-        360;
-
-
-      const delta =
-        (
-          desiredDeg -
-          startMod +
-          360
-        ) %
-        360;
-
-
-      const extraSpins =
-        5 +
-        Math.floor(
-          Math.random() *
-          3
-        );
-
-
-      const spinAngle =
-        (
-          extraSpins *
-          360
-        ) +
-        delta;
-
-
-      const targetAngle =
-        startAngle +
-        spinAngle;
-
-
-      const startTime =
-        performance.now();
-
-
-      function animate(
-        time
-      ) {
-
-        const elapsed =
-          time -
-          startTime;
-
-
-        if (
-          elapsed <
-          spinTime
-        ) {
-
-          const progress =
-            elapsed /
-            spinTime;
-
-
-          currentAngle =
-            startAngle +
-            (
-              spinAngle *
-              (
-                1 -
-                Math.pow(
-                  1 - progress,
-                  3
-                )
-              )
-            );
-
-
-          drawRotatedWheel(
-            currentAngle
-          );
-
-
-          requestAnimationFrame(
-            animate
-          );
-
-
-        } else {
-
-          sonidoGiro.pause();
-
-          sonidoGiro.currentTime =
-            0;
-
-
-          sonidoDing.play()
-            .catch(
-              () => {}
-            );
-
-
-          currentAngle =
-            targetAngle;
-
-
-          drawRotatedWheel(
-            currentAngle
-          );
-
-
-          lastSpinTime =
-            Date.now();
-
-
-          localStorage.setItem(
-            "lastSpinTime",
-            lastSpinTime
-          );
-
-
-          /*
-           * Guardamos el ID del mismo premio
-           * que acabamos de mostrar.
-           */
-
-          localStorage.setItem(
-            "ultimoPremioId",
-            premioElegido.id
-          );
-
-
-          /*
-           * MUY IMPORTANTE:
-           * aquí se pasa el mismo premio elegido.
-           * No se vuelve a seleccionar otro.
-           */
-
-          showPopup(
-            premioElegido
-          );
-
-
-          spinButton.disabled =
-            false;
-
-        }
-
-      }
-
-
-      requestAnimationFrame(
-        animate
+      const indexElegido = premios.findIndex(
+        p => String(p.id) === String(premioElegido.id)
       );
 
+      if (indexElegido < 0) {
+        console.error("No se encontró el premio seleccionado en la rueda.", premioElegido);
+        spinButton.disabled = false;
+        return;
+      }
+
+      /*
+       * ==================================================
+       * CORRECCIÓN CLAVE
+       * ==================================================
+       *
+       * El indicador está ARRIBA de la rueda.
+       * En coordenadas de canvas, "arriba" = 270° (o -90°).
+       *
+       * Cada segmento i ocupa:
+       *   desde  i * segmentDeg
+       *   hasta  (i+1) * segmentDeg
+       * medido desde el eje 0° (derecha), en sentido horario.
+       *
+       * Su centro está en:
+       *   i * segmentDeg + segmentDeg / 2
+       *
+       * Para que ese centro quede debajo del indicador (270°),
+       * necesitamos:
+       *   ángulo_final_del_segmento = 270
+       *
+       * Por lo tanto:
+       *   rotación_necesaria = 270 - centerDeg
+       */
+
+      const centerDeg = (indexElegido * segmentDeg) + (segmentDeg / 2);
+
+      const jitter = (Math.random() - 0.5) * (segmentDeg * 0.6);
+
+      const INDICATOR_DEG = 270;
+
+      const desiredMod =
+        (((INDICATOR_DEG - centerDeg - jitter) % 360) + 360) % 360;
+
+      const startMod =
+        (((startAngle % 360) + 360) % 360);
+
+      const delta =
+        ((desiredMod - startMod + 360) % 360);
+
+      const extraSpins = 5 + Math.floor(Math.random() * 3);
+      const spinAngle = (extraSpins * 360) + delta;
+      const targetAngle = startAngle + spinAngle;
+
+      const startTime = performance.now();
+
+      function animate(time) {
+        const elapsed = time - startTime;
+
+        if (elapsed < spinTime) {
+          const progress = elapsed / spinTime;
+
+          currentAngle = startAngle + (spinAngle * (1 - Math.pow(1 - progress, 3)));
+
+          drawRotatedWheel(currentAngle);
+
+          requestAnimationFrame(animate);
+
+        } else {
+          sonidoGiro.pause();
+          sonidoGiro.currentTime = 0;
+
+          sonidoDing.play().catch(() => {});
+
+          currentAngle = targetAngle;
+          drawRotatedWheel(currentAngle);
+
+          lastSpinTime = Date.now();
+          localStorage.setItem("lastSpinTime", lastSpinTime);
+          localStorage.setItem("ultimoPremioId", premioElegido.id);
+
+          showPopup(premioElegido);
+
+          spinButton.disabled = false;
+        }
+      }
+
+      requestAnimationFrame(animate);
     }
 
 
-    /* ==========================================================
-       DIBUJAR RUEDA ROTADA
-    ========================================================== */
-
-    function drawRotatedWheel(
-      angle
-    ) {
-
-      ctx.clearRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-      );
-
+    function drawRotatedWheel(angle) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       ctx.save();
-
-
-      ctx.translate(
-        150,
-        150
-      );
-
-
-      ctx.rotate(
-        angle *
-        Math.PI /
-        180
-      );
-
-
-      ctx.translate(
-        -150,
-        -150
-      );
-
+      ctx.translate(150, 150);
+      ctx.rotate(angle * Math.PI / 180);
+      ctx.translate(-150, -150);
 
       drawWheel();
 
-
       ctx.restore();
-
     }
 
 
-    /* ==========================================================
-       INICIALIZACIÓN
-    ========================================================== */
-
     async function iniciar() {
-
       try {
-
-        loading.innerText =
-          "Cargando contenido...";
-
+        loading.innerText = "Cargando contenido...";
 
         await cargarConfiguracion();
-
-
         await cargarRotaciones();
-
-
         await cargarPremios();
-
-
-        /*
-         * La rueda se dibuja únicamente después
-         * de haber cargado los premios reales
-         * desde el panel.
-         */
 
         drawWheel();
 
+        loading.style.display = "none";
 
-        loading.style.display =
-          "none";
-
-
-        if (
-          premios.length
-        ) {
-
-          spinButton.disabled =
-            false;
-
+        if (premios.length) {
+          spinButton.disabled = false;
         } else {
-
-          loading.style.display =
-          "block";
-
-          loading.innerText =
-            "No hay beneficios activos configurados.";
-
+          loading.style.display = "block";
+          loading.innerText = "No hay beneficios activos configurados.";
         }
 
-
       } catch (error) {
-
-        console.error(
-          "Error iniciando:",
-          error
-        );
-
-
-        loading.innerText =
-          "No se pudo cargar la configuración.";
-
+        console.error("Error iniciando:", error);
+        loading.innerText = "No se pudo cargar la configuración.";
       }
-
     }
 
 
-    spinButton.addEventListener(
-      "click",
-      spinWheel
-    );
+    spinButton.addEventListener("click", spinWheel);
 
-
-    closePopup.addEventListener(
-      "click",
-      () => {
-
-        popup.style.display =
-          "none";
-
-      }
-    );
-
+    closePopup.addEventListener("click", () => {
+      popup.style.display = "none";
+    });
 
     iniciar();
 
